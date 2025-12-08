@@ -3,47 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>行程規劃 App - 極簡風格</title>
+    <title>旅遊行程規劃 App - 完整版</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
-        /* 1. 日系極簡配色與字體 */
-        body {
-            background-color: #f7f7f7; /* 淺灰色背景 */
-            font-family: 'Noto Sans TC', sans-serif; /* 假設使用 Google Fonts Noto Sans TC */
+        /* CSS 保持不變，維持極簡風格和 App 佈局 */
+        body { background-color: #f7f7f7; font-family: 'Noto Sans TC', sans-serif; }
+        #app { height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+        .mobile-container { max-width: 450px; margin: 0 auto; border: 1px solid #e0e0e0; }
+        .content-area { flex-grow: 1; overflow-y: auto; padding-bottom: 70px; } /* 底部留空間給浮動按鈕 */
+
+        /* 日期選單樣式 */
+        .date-slider { overflow-x: scroll; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
+        .date-item { min-width: 60px; scroll-snap-align: start; }
+        .date-item span:first-child { font-size: 0.9rem; } /* 星期字體大 */
+        .date-item span:last-child { font-size: 1.5rem; line-height: 1; } /* 日期數字字體大 */
+
+        /* 浮動 Tab 導航按鈕 (依照要求定位在頁首右下方，浮在圖片上方) */
+        .tab-nav {
+            position: absolute;
+            top: 10px; /* 距離頂部 */
+            right: 10px; /* 距離右邊 */
+            z-index: 50; /* 確保浮在圖片/地圖上方 */
+            background-color: rgba(255, 255, 255, 0.9); /* 半透明背景 */
+            border-radius: 9999px; /* 圓角膠囊 */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+            padding: 4px;
         }
-        /* 2. 確保地圖和 App 結構 */
-        #app {
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
-        #map {
-            flex-grow: 1;
-            min-height: 50vh;
-            width: 100%;
-        }
-        /* 3. 手機 App 介面樣式調整 (保持簡潔線條) */
-        .mobile-container {
-            max-width: 450px; 
-            margin: 0 auto;
-            border: 1px solid #e0e0e0; /* 細邊框取代厚重陰影 */
-        }
-        /* 4. 行程列表的滾動區 */
-        .itinerary-list {
-            max-height: 25vh; 
-            overflow-y: auto; 
-            /* 柔和滾動條樣式 (針對 Webkit 瀏覽器) */
-            scrollbar-width: thin;
-            scrollbar-color: #a3a3a3 #f0f0f0;
-        }
-        .itinerary-list::-webkit-scrollbar {
-            width: 6px;
-        }
-        .itinerary-list::-webkit-scrollbar-thumb {
-            background-color: #a3a3a3;
-            border-radius: 3px;
+
+        /* 浮動新增按鈕 */
+        .fab-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 40;
+            width: 56px;
+            height: 56px;
+            font-size: 28px;
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -51,257 +49,338 @@
 <body>
 
 <div id="app" class="mobile-container bg-white">
-    <header class="bg-white p-4 border-b border-gray-200 text-gray-800">
-        <h1 class="text-xl font-medium text-center tracking-wider">🗓️ 極簡行程筆記</h1>
-    </header>
+    <header class="bg-white p-4 border-b border-gray-200 text-gray-800 relative">
+        <h1 class="text-xl font-medium text-center tracking-wider text-blue-600">
+            {{ tabs.find(t => t.id === activeTab).label }}
+        </h1>
+        
+        <div v-if="activeTab === 'schedule'" id="map" class="h-64 w-full bg-gray-200 flex items-center justify-center text-gray-500 border-b border-gray-300">
+            Google Map 區域
+        </div>
 
-    <div id="map" class="border-b border-gray-200"></div>
-
-    <div class="p-4 bg-white z-10 border-b border-gray-100">
-        <h2 class="text-base font-medium mb-3 text-gray-700 tracking-wide">新增地點</h2>
-        <div class="flex space-x-2 mb-4">
-            <input 
-                v-model="newPlace" 
-                @keyup.enter="addPlace" 
-                type="text" 
-                placeholder="輸入地點名稱或地址..." 
-                class="flex-grow p-2 border border-gray-300 rounded-sm focus:ring-green-600 focus:border-green-600 outline-none transition duration-150 text-sm"
-            >
+        <div class="tab-nav flex space-x-2">
             <button 
-                @click="addPlace" 
-                class="bg-green-700 hover:bg-green-800 text-white font-normal py-2 px-4 rounded-sm transition duration-150 ease-in-out text-sm tracking-wider"
+                v-for="tab in tabs" 
+                :key="tab.id"
+                @click="activeTab = tab.id" 
+                :class="{'bg-blue-600 text-white': activeTab === tab.id, 'bg-gray-200 text-gray-600': activeTab !== tab.id}"
+                class="w-10 h-10 flex items-center justify-center rounded-full transition-colors"
+                :title="tab.label"
             >
-                加入
+                <i :class="tab.icon"></i>
             </button>
         </div>
+    </header>
 
-        <button 
-            @click="calculateRoute" 
-            :disabled="places.length < 2"
-            :class="{
-                'bg-gray-800 hover:bg-gray-700': places.length >= 2, 
-                'bg-gray-300 text-gray-600 cursor-not-allowed': places.length < 2
-            }"
-            class="w-full text-white font-medium py-3 rounded-sm transition duration-150 ease-in-out text-sm tracking-wider"
-        >
-            🚗 開始路線規劃
-        </button>
+    <div class="content-area">
         
-        <div v-if="routeInfo" class="mt-4 p-3 bg-gray-50 rounded-sm border border-gray-200 text-sm text-gray-700">
-            <p class="font-medium">距離: <span class="text-green-700">{{ routeInfo.distance }}</span></p>
-            <p class="font-medium">時間: <span class="text-green-700">{{ routeInfo.duration }}</span></p>
+        <div v-if="activeTab === 'schedule'" class="p-4">
+            
+            <div class="p-3 bg-blue-50 border-l-4 border-blue-400 rounded-md mb-4 flex justify-between items-center text-sm">
+                <p class="text-blue-700 font-medium">☀️ 晴朗 28°C (體感 30°C)</p>
+                <i class="fas fa-cloud-sun text-xl text-blue-500"></i>
+            </div>
+            
+            <div class="date-slider flex space-x-4 pb-2 mb-4 border-b border-gray-200">
+                <button v-for="date in dates" :key="date.fullDate" class="date-item flex flex-col items-center p-2 rounded-lg transition-colors"
+                    :class="{'bg-blue-100 text-blue-700 font-bold': date.isActive, 'text-gray-600 hover:bg-gray-100': !date.isActive}">
+                    <span class="font-bold">{{ date.dayOfWeek }}</span>
+                    <span class="font-extrabold">{{ date.dayOfMonth }}</span>
+                </button>
+            </div>
+            
+            <ul class="space-y-4">
+                <template v-for="(item, index) in itinerary" :key="item.id">
+                    <div v-if="index > 0" class="flex items-center text-sm text-gray-500 my-1 ml-4 border-l-2 border-dashed pl-2">
+                        <i class="fas fa-car mr-2"></i> <span>{{ item.travelTime }} (開車)</span>
+                    </div>
+
+                    <li v-if="index === 0 && item.category === '航班'" 
+                        class="p-4 bg-yellow-50 border-l-4 border-yellow-500 shadow-sm rounded-lg cursor-pointer hover:bg-yellow-100 transition-shadow"
+                        @click="showEditModal(item)">
+                        <h3 class="text-lg font-bold text-yellow-800"><i class="fas fa-plane-departure mr-2"></i> {{ item.name }}</h3>
+                        <p class="text-sm">航班編號: {{ item.flightNumber }}</p>
+                        <div class="flex justify-between text-xs mt-1">
+                            <span>起飛: {{ item.departureTime }}</span>
+                            <span>抵達: {{ item.arrivalTime }}</span>
+                        </div>
+                        <p class="text-right text-xs text-gray-500 mt-2">(點擊跳轉 Google Map - (9))</p>
+                    </li>
+
+                    <li v-else 
+                        class="bg-white p-4 shadow-md rounded-lg border-l-4 border-blue-500 cursor-grab hover:shadow-lg transition-shadow" 
+                        @click="showEditModal(item)">
+                        
+                        <h3 class="text-lg font-bold text-gray-800">{{ item.name }}</h3>
+                        <p v-if="item.businessHours" class="text-sm text-gray-600"><i class="far fa-clock mr-1"></i> 營業時間: {{ item.businessHours }}</p>
+                        <p v-if="item.ticketPrice" class="text-sm text-gray-600"><i class="fas fa-ticket-alt mr-1"></i> 門票: {{ item.ticketPrice }} JPY</p>
+                        <p class="text-sm mt-2">備註: {{ item.notes }}</p>
+                        <p class="text-right text-xs text-gray-500 mt-2">(點擊跳轉 Google Map - (9))</p>
+                    </li>
+                </template>
+            </ul>
+        </div>
+        
+        <div v-else-if="activeTab === 'info'" class="p-4 space-y-4">
+            <h2 class="text-xl font-bold text-blue-600">ℹ️ 旅遊資訊</h2>
+
+            <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <h3 class="text-lg font-semibold mb-3">匯率換算 (JPY → TWD)</h3>
+                <div class="flex space-x-3 mb-2">
+                    <input type="number" v-model="jpyAmount" placeholder="日幣金額" class="p-2 border rounded-lg w-1/2 focus:ring-blue-500">
+                    <span class="text-2xl">→</span>
+                    <input type="text" :value="twdAmount" readonly class="p-2 border rounded-lg w-1/2 bg-white font-bold text-blue-600">
+                </div>
+                <p class="text-sm text-gray-500">當日匯率 (1 JPY ≈ 0.22 TWD - 模擬)</p>
+            </div>
+
+            <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <h3 class="text-lg font-semibold mb-2"><i class="fas fa-plane mr-2"></i> 航班資訊</h3>
+                <div v-for="f in flightInfo" :key="f.type" class="mb-2 p-2 border-b">
+                    <p class="font-medium">{{ f.type }}</p>
+                    <p class="text-sm">從 {{ f.departureAirport }} 至 {{ f.arrivalAirport }}</p>
+                    <p class="text-xs">起飛: {{ f.departureTime }} | 抵達: {{ f.arrivalTime }} | 飛行時間: {{ f.flightDuration }}</p>
+                    <p class="text-xs text-blue-500">航班編號: {{ f.flightNumber }}</p>
+                </div>
+            </div>
+
+            <div class="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                <h3 class="text-lg font-semibold mb-2"><i class="fas fa-hotel mr-2"></i> 住宿與租車</h3>
+                <p class="font-medium">飯店: {{ accommodation.name }}</p>
+                <p class="text-sm">地址: {{ accommodation.address }} (<a :href="accommodation.navLink" target="_blank" class="text-blue-500 hover:underline">導航</a>)</p>
+                <p class="mt-3 font-medium">租車: {{ rental.company }}</p>
+                <p class="text-sm">取車處: {{ rental.location }} (<a :href="rental.navLink" target="_blank" class="text-blue-500 hover:underline">導航</a>)</p>
+            </div>
+            
+            <div class="p-4 bg-red-50 rounded-lg border border-red-200">
+                <h3 class="text-lg font-semibold mb-2 text-red-700"><i class="fas fa-ambulance mr-2"></i> 緊急連絡</h3>
+                <p class="text-sm">警察: 110 (當地號碼)</p>
+                <p class="text-sm">救護車: 119 (當地號碼)</p>
+            </div>
+        </div>
+
+        <div v-else-if="activeTab === 'shopping'" class="p-4">
+            <h2 class="text-xl font-bold text-blue-600">🧺 購物清單</h2>
+            <ul class="space-y-3 mt-4">
+                <li v-for="item in shoppingList" :key="item.id" class="flex items-center p-3 bg-white shadow-sm rounded-md border-l-4 border-blue-400">
+                    <span class="flex-grow font-medium text-gray-700">{{ item.name }}</span>
+                    <span v-if="item.image" class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">已上傳圖</span>
+                    <span v-else class="text-xs text-gray-400">無圖</span>
+                </li>
+            </ul>
+            <p v-if="shoppingList.length === 0" class="text-center text-gray-400 mt-8 text-sm">請新增想買的物品</p>
+        </div>
+        
+        <div v-else-if="activeTab === 'expense'" class="p-4">
+            <div class="bg-indigo-600 text-white p-4 rounded-lg mb-4 flex justify-between items-center">
+                <h2 class="text-lg font-medium">總花費</h2>
+                <span class="text-3xl font-extrabold">{{ totalExpense.toLocaleString() }} JPY</span>
+            </div>
+
+            <ul class="space-y-3">
+                <li v-for="item in expenseRecords" :key="item.id" class="bg-white p-3 rounded-md shadow flex justify-between items-center border-l-4 border-indigo-400">
+                    <div>
+                        <p class="font-semibold">{{ item.name }} (<span class="text-xs text-indigo-500">{{ item.category }}</span>)</p>
+                        <p class="text-xs text-gray-500">{{ item.date }} | {{ item.paymentMethod }}</p>
+                    </div>
+                    <span class="font-bold text-red-600">{{ item.amount.toLocaleString() }} JPY</span>
+                </li>
+            </ul>
+            <p v-if="expenseRecords.length === 0" class="text-center text-gray-400 mt-8 text-sm">請新增花費記錄</p>
+        </div>
+    </div>
+    
+    <button 
+        v-if="['schedule', 'shopping', 'expense'].includes(activeTab)"
+        @click="showAddModal(activeTab)"
+        class="fab-button bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-xl transition-transform transform hover:scale-105 flex items-center justify-center"
+        title="新增項目"
+    >
+        <i class="fas fa-plus"></i>
+    </button>
+
+
+    <div v-if="isModalOpen" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-sm p-6">
+            <h3 class="text-xl font-bold mb-4">新增/編輯項目</h3>
+            
+            <div v-if="currentModalType === 'schedule'" class="mb-4">
+                <label class="block text-sm font-medium text-gray-700">分類</label>
+                <select class="mt-1 block w-full p-2 border border-gray-300 rounded-md">
+                    <option>景點</option>
+                    <option>住宿</option>
+                    <option>美食</option>
+                    <option>購物</option>
+                    <option>航班</option>
+                    <option>其他</option>
+                </select>
+            </div>
+            
+            <input type="text" placeholder="名稱/內容..." class="w-full p-2 border rounded-md mb-4">
+            
+            <div v-if="isEditing" class="flex justify-between mt-4">
+                <button @click="confirmDelete" class="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded-md">
+                    <i class="fas fa-trash-alt mr-1"></i> 刪除
+                </button>
+                <button @click="closeModal" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md">
+                    儲存
+                </button>
+            </div>
+            <div v-else class="flex justify-end mt-4">
+                 <button @click="closeModal" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md">
+                    儲存
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <div v-if="isConfirmDeleteOpen" class="fixed inset-0 bg-black bg-opacity-60 z-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-xs p-6 text-center">
+            <h4 class="text-lg font-bold text-red-600 mb-4">⚠️ 確定刪除嗎？</h4>
+            <p class="text-sm text-gray-600 mb-6">此操作無法復原。</p>
+            <div class="flex justify-between space-x-4">
+                <button @click="isConfirmDeleteOpen = false" class="flex-1 border border-gray-300 py-2 rounded-md hover:bg-gray-100">取消</button>
+                <button @click="handleDelete" class="flex-1 bg-red-500 hover:bg-red-600 text-white py-2 rounded-md">確認刪除</button>
+            </div>
         </div>
     </div>
 
-    <div class="itinerary-list p-4 bg-white">
-        <h2 class="text-base font-medium mb-3 text-gray-700 tracking-wide border-b pb-2 border-gray-200">我的行程</h2>
-        <ul class="space-y-3">
-            <li 
-                v-for="(place, index) in places" 
-                :key="index" 
-                class="flex items-center justify-between p-2 bg-white border-b border-gray-100 transition hover:bg-gray-50"
-            >
-                <div class="flex items-center space-x-4">
-                    <span class="inline-flex items-center justify-center w-6 h-6 bg-green-700 text-white text-xs font-medium rounded-full flex-shrink-0">{{ index + 1 }}</span>
-                    <span class="text-gray-700 text-sm font-normal">{{ place.name }}</span>
-                </div>
-                <button 
-                    @click="removePlace(index)" 
-                    class="text-red-500 hover:text-red-600 p-1 transition opacity-70 hover:opacity-100"
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
-            </li>
-        </ul>
-        <p v-if="places.length === 0" class="text-center text-gray-400 mt-4 text-sm">請新增第一個地點</p>
-    </div>
 </div>
 
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&libraries=places&callback=initMap"></script>
 
 <script>
-    const { createApp, ref, onMounted } = Vue;
+    const { createApp, ref, computed } = Vue;
 
-    let map;
-    let directionsService;
-    let directionsRenderer;
-
-    // --- Google 地圖和服務初始化 ---
+    // 模擬 Google 地圖初始化函數 (保持原有的函式名稱)
     window.initMap = () => {
-        const taipei = { lat: 25.0330, lng: 121.5654 }; // 預設中心點: 台北
-        map = new google.maps.Map(document.getElementById('map'), {
-            center: taipei,
-            zoom: 12,
-            mapTypeControl: false,
-            streetViewControl: false,
-        });
-        
-        directionsService = new google.maps.DirectionsService();
-        directionsRenderer = new google.maps.DirectionsRenderer({ map: map });
-        
-        // 檢查是否有儲存的行程
-        const savedPlaces = localStorage.getItem('itinerary_places');
-        if (savedPlaces) {
-            app.config.globalProperties.places.value = JSON.parse(savedPlaces);
-            if (app.config.globalProperties.places.value.length >= 2) {
-                app.config.globalProperties.calculateRoute(false);
-            } else if (app.config.globalProperties.places.value.length === 1) {
-                map.setCenter(app.config.globalProperties.places.value[0].location);
-                new google.maps.Marker({
-                    position: app.config.globalProperties.places.value[0].location,
-                    map: map,
-                    title: app.config.globalProperties.places.value[0].name
-                });
-            }
-        }
+        console.log("Google Maps 初始化完成 (本次範例僅為模擬)");
     };
 
-    // --- Vue App 邏輯 ---
     const app = createApp({
         setup() {
-            const newPlace = ref('');
-            const places = ref([]);
-            const routeInfo = ref(null);
+            // --- 核心狀態 ---
+            const activeTab = ref('schedule'); // 當前分頁
+            const isModalOpen = ref(false);    // 新增/編輯彈窗狀態
+            const isEditing = ref(false);      // 判斷是否為編輯模式
+            const isConfirmDeleteOpen = ref(false); // 刪除確認彈窗
+            const currentModalType = ref(''); // 記錄目前是哪個功能的 Modal
 
-            const savePlaces = () => {
-                localStorage.setItem('itinerary_places', JSON.stringify(places.value));
+            // --- 模擬數據 ---
+            const tabs = [
+                { id: 'schedule', label: '每日行程表', icon: 'fas fa-map-marker-alt' },
+                { id: 'info', label: '資訊', icon: 'fas fa-info-circle' },
+                { id: 'shopping', label: '購物清單', icon: 'fas fa-shopping-basket' },
+                { id: 'expense', label: '花費', icon: 'fas fa-coins' },
+            ];
+            
+            // 模擬每日行程數據
+            const itinerary = ref([
+                { id: 1, name: '桃園國際機場 (TPE) - 啟程', category: '航班', travelTime: null, departureTime: '09:00', arrivalTime: '13:00', flightNumber: 'BR198' }, // 第一個行程
+                { id: 2, name: '成田機場取車', category: '其他', travelTime: '1小時 30分鐘', businessHours: '08:00-20:00', notes: '租車公司櫃檯在第二航廈' },
+                { id: 3, name: '東京灣希爾頓飯店', category: '住宿', travelTime: '40分鐘', businessHours: '全天', notes: '提早 Check-in' },
+                { id: 4, name: '東京迪士尼樂園', category: '景點', travelTime: '10分鐘', businessHours: '09:00-21:00', ticketPrice: '8900', notes: '記得買快速通關' },
+            ]);
+
+            // 模擬日期選單數據 (當日為 Fri 6)
+            const dates = ref([
+                { dayOfWeek: 'Thu', dayOfMonth: 5, fullDate: '2025-12-05', isActive: false },
+                { dayOfWeek: 'Fri', dayOfMonth: 6, fullDate: '2025-12-06', isActive: true },
+                { dayOfWeek: 'Sat', dayOfMonth: 7, fullDate: '2025-12-07', isActive: false },
+                { dayOfWeek: 'Sun', dayOfMonth: 8, fullDate: '2025-12-08', isActive: false },
+                { dayOfWeek: 'Mon', dayOfMonth: 9, fullDate: '2025-12-09', isActive: false },
+            ]);
+
+            // 模擬資訊頁數據
+            const flightInfo = ref([
+                { type: '去程', departureAirport: 'TPE', arrivalAirport: 'NRT', departureTime: '09:00', arrivalTime: '13:00', flightDuration: '3hr', flightNumber: 'BR198' },
+                { type: '回程', departureAirport: 'NRT', arrivalAirport: 'TPE', departureTime: '18:00', arrivalTime: '21:00', flightDuration: '3hr', flightNumber: 'BR197' },
+            ]);
+            const accommodation = ref({ name: '東京灣希爾頓飯店', address: '千葉縣舞濱', navLink: '#' });
+            const rental = ref({ company: 'Toyota Rent a Car', location: '成田機場店', navLink: '#' });
+
+            // 模擬購物清單數據
+            const shoppingList = ref([
+                { id: 101, name: '薯條三兄弟', image: true },
+                { id: 102, name: '限定鋼彈模型', image: false },
+            ]);
+
+            // 模擬花費數據
+            const expenseRecords = ref([
+                { id: 201, category: '交通', name: 'NEX 車票', date: '2025-12-06', amount: 4070, paymentMethod: '信用卡' },
+                { id: 202, category: '餐飲', name: '拉麵午餐', date: '2025-12-06', amount: 1500, paymentMethod: '現金' },
+            ]);
+
+
+            // --- 運算屬性 (Computed Properties) ---
+            
+            // 匯率換算邏輯
+            const jpyAmount = ref(10000);
+            const exchangeRate = 0.22; // 模擬當日匯率
+            const twdAmount = computed(() => {
+                return (jpyAmount.value * exchangeRate).toFixed(0);
+            });
+            
+            // 總花費計算
+            const totalExpense = computed(() => {
+                return expenseRecords.value.reduce((sum, item) => sum + item.amount, 0);
+            });
+
+
+            // --- 方法 (Methods) ---
+            
+            const showAddModal = (type) => {
+                isEditing.value = false;
+                currentModalType.value = type;
+                isModalOpen.value = true;
             };
 
-            const addPlace = () => {
-                if (!newPlace.value.trim() || !map) return;
-
-                const geocoder = new google.maps.Geocoder();
-                geocoder.geocode({ 'address': newPlace.value }, (results, status) => {
-                    if (status === 'OK' && results[0]) {
-                        const location = results[0].geometry.location;
-                        
-                        places.value.push({
-                            name: newPlace.value,
-                            location: { lat: location.lat(), lng: location.lng() }
-                        });
-                        
-                        newPlace.value = '';
-                        savePlaces();
-
-                        if (places.value.length >= 2) {
-                            calculateRoute();
-                        } else {
-                            map.setCenter(places.value[0].location);
-                            directionsRenderer.setDirections({ routes: [] });
-                            // 重新繪製單一標記
-                            new google.maps.Marker({
-                                position: places.value[0].location,
-                                map: map,
-                                title: places.value[0].name
-                            });
-                        }
-
-                    } else {
-                        alert('地點搜尋失敗，請檢查地址拼寫: ' + status);
-                    }
-                });
+            const showEditModal = (item) => {
+                isEditing.value = true;
+                currentModalType.value = 'schedule'; // 假設從行程卡片進入編輯
+                isModalOpen.value = true;
+                // 這裡應該載入 item 數據到表單
             };
 
-            const removePlace = (index) => {
-                places.value.splice(index, 1);
-                savePlaces();
-                
-                if (places.value.length >= 2) {
-                    calculateRoute();
-                } else {
-                    directionsRenderer.setDirections({ routes: [] });
-                    routeInfo.value = null;
-                    // 清除所有標記 (簡化處理: 重新繪製一個或清除)
-                    if (places.value.length === 1) {
-                         new google.maps.Marker({
-                            position: places.value[0].location,
-                            map: map,
-                            title: places.value[0].name
-                        });
-                    }
-                }
+            const closeModal = () => {
+                isModalOpen.value = false;
+                isEditing.value = false;
+            };
+            
+            const confirmDelete = () => {
+                isModalOpen.value = false;
+                isConfirmDeleteOpen.value = true;
             };
 
-            const calculateRoute = (showDirections = true) => {
-                if (places.value.length < 2) return;
-
-                const origin = places.value[0].location;
-                const destination = places.value[places.value.length - 1].location;
-                
-                const waypoints = places.value.slice(1, -1).map(p => ({
-                    location: p.location,
-                    stopover: true
-                }));
-
-                const request = {
-                    origin: origin,
-                    destination: destination,
-                    waypoints: waypoints,
-                    optimizeWaypoints: true,
-                    travelMode: google.maps.TravelMode.DRIVING
-                };
-
-                directionsService.route(request, (response, status) => {
-                    if (status === 'OK') {
-                        if (showDirections) {
-                            directionsRenderer.setDirections(response);
-                        }
-
-                        // 計算並格式化距離和時間
-                        const route = response.routes[0];
-                        let totalDistance = 0;
-                        let totalDuration = 0;
-
-                        for (let i = 0; i < route.legs.length; i++) {
-                            totalDistance += route.legs[i].distance.value;
-                            totalDuration += route.legs[i].duration.value;
-                        }
-
-                        const formatDistance = (totalDistance / 1000).toFixed(1) + ' 公里';
-                        const hours = Math.floor(totalDuration / 3600);
-                        const minutes = Math.floor((totalDuration % 3600) / 60);
-                        let formatDuration = '';
-                        if (hours > 0) formatDuration += hours + ' 小時 ';
-                        formatDuration += minutes + ' 分鐘';
-
-                        routeInfo.value = { distance: formatDistance, duration: formatDuration };
-
-                        // 根據優化後的路線更新行程列表
-                        const newOrder = route.waypoint_order;
-                        const orderedPlaces = [places.value[0]];
-                        
-                        for (let i = 0; i < newOrder.length; i++) {
-                            const originalIndex = newOrder[i] + 1; 
-                            orderedPlaces.push(places.value[originalIndex]);
-                        }
-
-                        orderedPlaces.push(places.value[places.value.length - 1]);
-
-                        places.value = orderedPlaces; 
-                        savePlaces();
-                        
-                    } else {
-                        directionsRenderer.setDirections({ routes: [] });
-                        routeInfo.value = null;
-                        alert('路線規劃失敗: ' + status + '。請檢查所有地點是否有效。');
-                    }
-                });
+            const handleDelete = () => {
+                // 執行刪除邏輯 (例如：從 itinerary.value 中移除)
+                alert('項目已刪除！ (模擬)');
+                isConfirmDeleteOpen.value = false;
             };
-
-            // 讓 calculateRoute 在 initMap 後也能被訪問
-            app.config.globalProperties.calculateRoute = calculateRoute;
-            app.config.globalProperties.places = places;
 
 
             return {
-                newPlace,
-                places,
-                routeInfo,
-                addPlace,
-                removePlace,
-                calculateRoute
+                activeTab,
+                tabs,
+                itinerary,
+                dates,
+                flightInfo,
+                jpyAmount,
+                twdAmount,
+                totalExpense,
+                expenseRecords,
+                shoppingList,
+                accommodation,
+                rental,
+                isModalOpen,
+                isEditing,
+                isConfirmDeleteOpen,
+                currentModalType,
+                showAddModal,
+                showEditModal,
+                closeModal,
+                confirmDelete,
+                handleDelete
             };
         }
     });
