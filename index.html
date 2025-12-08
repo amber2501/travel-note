@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>行程規劃 App - 極簡風格</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+    <style>
+        /* 1. 日系極簡配色與字體 */
+        body {
+            background-color: #f7f7f7; /* 淺灰色背景 */
+            font-family: 'Noto Sans TC', sans-serif; /* 假設使用 Google Fonts Noto Sans TC */
+        }
+        /* 2. 確保地圖和 App 結構 */
+        #app {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        #map {
+            flex-grow: 1;
+            min-height: 50vh;
+            width: 100%;
+        }
+        /* 3. 手機 App 介面樣式調整 (保持簡潔線條) */
+        .mobile-container {
+            max-width: 450px; 
+            margin: 0 auto;
+            border: 1px solid #e0e0e0; /* 細邊框取代厚重陰影 */
+        }
+        /* 4. 行程列表的滾動區 */
+        .itinerary-list {
+            max-height: 25vh; 
+            overflow-y: auto; 
+            /* 柔和滾動條樣式 (針對 Webkit 瀏覽器) */
+            scrollbar-width: thin;
+            scrollbar-color: #a3a3a3 #f0f0f0;
+        }
+        .itinerary-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        .itinerary-list::-webkit-scrollbar-thumb {
+            background-color: #a3a3a3;
+            border-radius: 3px;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div id="app" class="mobile-container bg-white">
+    <header class="bg-white p-4 border-b border-gray-200 text-gray-800">
+        <h1 class="text-xl font-medium text-center tracking-wider">🗓️ 極簡行程筆記</h1>
+    </header>
+
+    <div id="map" class="border-b border-gray-200"></div>
+
+    <div class="p-4 bg-white z-10 border-b border-gray-100">
+        <h2 class="text-base font-medium mb-3 text-gray-700 tracking-wide">新增地點</h2>
+        <div class="flex space-x-2 mb-4">
+            <input 
+                v-model="newPlace" 
+                @keyup.enter="addPlace" 
+                type="text" 
+                placeholder="輸入地點名稱或地址..." 
+                class="flex-grow p-2 border border-gray-300 rounded-sm focus:ring-green-600 focus:border-green-600 outline-none transition duration-150 text-sm"
+            >
+            <button 
+                @click="addPlace" 
+                class="bg-green-700 hover:bg-green-800 text-white font-normal py-2 px-4 rounded-sm transition duration-150 ease-in-out text-sm tracking-wider"
+            >
+                加入
+            </button>
+        </div>
+
+        <button 
+            @click="calculateRoute" 
+            :disabled="places.length < 2"
+            :class="{
+                'bg-gray-800 hover:bg-gray-700': places.length >= 2, 
+                'bg-gray-300 text-gray-600 cursor-not-allowed': places.length < 2
+            }"
+            class="w-full text-white font-medium py-3 rounded-sm transition duration-150 ease-in-out text-sm tracking-wider"
+        >
+            🚗 開始路線規劃
+        </button>
+        
+        <div v-if="routeInfo" class="mt-4 p-3 bg-gray-50 rounded-sm border border-gray-200 text-sm text-gray-700">
+            <p class="font-medium">距離: <span class="text-green-700">{{ routeInfo.distance }}</span></p>
+            <p class="font-medium">時間: <span class="text-green-700">{{ routeInfo.duration }}</span></p>
+        </div>
+    </div>
+
+    <div class="itinerary-list p-4 bg-white">
+        <h2 class="text-base font-medium mb-3 text-gray-700 tracking-wide border-b pb-2 border-gray-200">我的行程</h2>
+        <ul class="space-y-3">
+            <li 
+                v-for="(place, index) in places" 
+                :key="index" 
+                class="flex items-center justify-between p-2 bg-white border-b border-gray-100 transition hover:bg-gray-50"
+            >
+                <div class="flex items-center space-x-4">
+                    <span class="inline-flex items-center justify-center w-6 h-6 bg-green-700 text-white text-xs font-medium rounded-full flex-shrink-0">{{ index + 1 }}</span>
+                    <span class="text-gray-700 text-sm font-normal">{{ place.name }}</span>
+                </div>
+                <button 
+                    @click="removePlace(index)" 
+                    class="text-red-500 hover:text-red-600 p-1 transition opacity-70 hover:opacity-100"
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </li>
+        </ul>
+        <p v-if="places.length === 0" class="text-center text-gray-400 mt-4 text-sm">請新增第一個地點</p>
+    </div>
+</div>
+
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY&libraries=places&callback=initMap"></script>
+
+<script>
+    const { createApp, ref, onMounted } = Vue;
+
+    let map;
+    let directionsService;
+    let directionsRenderer;
+
+    // --- Google 地圖和服務初始化 ---
+    window.initMap = () => {
+        const taipei = { lat: 25.0330, lng: 121.5654 }; // 預設中心點: 台北
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: taipei,
+            zoom: 12,
+            mapTypeControl: false,
+            streetViewControl: false,
+        });
+        
+        directionsService = new google.maps.DirectionsService();
+        directionsRenderer = new google.maps.DirectionsRenderer({ map: map });
+        
+        // 檢查是否有儲存的行程
+        const savedPlaces = localStorage.getItem('itinerary_places');
+        if (savedPlaces) {
+            app.config.globalProperties.places.value = JSON.parse(savedPlaces);
+            if (app.config.globalProperties.places.value.length >= 2) {
+                app.config.globalProperties.calculateRoute(false);
+            } else if (app.config.globalProperties.places.value.length === 1) {
+                map.setCenter(app.config.globalProperties.places.value[0].location);
+                new google.maps.Marker({
+                    position: app.config.globalProperties.places.value[0].location,
+                    map: map,
+                    title: app.config.globalProperties.places.value[0].name
+                });
+            }
+        }
+    };
+
+    // --- Vue App 邏輯 ---
+    const app = createApp({
+        setup() {
+            const newPlace = ref('');
+            const places = ref([]);
+            const routeInfo = ref(null);
+
+            const savePlaces = () => {
+                localStorage.setItem('itinerary_places', JSON.stringify(places.value));
+            };
+
+            const addPlace = () => {
+                if (!newPlace.value.trim() || !map) return;
+
+                const geocoder = new google.maps.Geocoder();
+                geocoder.geocode({ 'address': newPlace.value }, (results, status) => {
+                    if (status === 'OK' && results[0]) {
+                        const location = results[0].geometry.location;
+                        
+                        places.value.push({
+                            name: newPlace.value,
+                            location: { lat: location.lat(), lng: location.lng() }
+                        });
+                        
+                        newPlace.value = '';
+                        savePlaces();
+
+                        if (places.value.length >= 2) {
+                            calculateRoute();
+                        } else {
+                            map.setCenter(places.value[0].location);
+                            directionsRenderer.setDirections({ routes: [] });
+                            // 重新繪製單一標記
+                            new google.maps.Marker({
+                                position: places.value[0].location,
+                                map: map,
+                                title: places.value[0].name
+                            });
+                        }
+
+                    } else {
+                        alert('地點搜尋失敗，請檢查地址拼寫: ' + status);
+                    }
+                });
+            };
+
+            const removePlace = (index) => {
+                places.value.splice(index, 1);
+                savePlaces();
+                
+                if (places.value.length >= 2) {
+                    calculateRoute();
+                } else {
+                    directionsRenderer.setDirections({ routes: [] });
+                    routeInfo.value = null;
+                    // 清除所有標記 (簡化處理: 重新繪製一個或清除)
+                    if (places.value.length === 1) {
+                         new google.maps.Marker({
+                            position: places.value[0].location,
+                            map: map,
+                            title: places.value[0].name
+                        });
+                    }
+                }
+            };
+
+            const calculateRoute = (showDirections = true) => {
+                if (places.value.length < 2) return;
+
+                const origin = places.value[0].location;
+                const destination = places.value[places.value.length - 1].location;
+                
+                const waypoints = places.value.slice(1, -1).map(p => ({
+                    location: p.location,
+                    stopover: true
+                }));
+
+                const request = {
+                    origin: origin,
+                    destination: destination,
+                    waypoints: waypoints,
+                    optimizeWaypoints: true,
+                    travelMode: google.maps.TravelMode.DRIVING
+                };
+
+                directionsService.route(request, (response, status) => {
+                    if (status === 'OK') {
+                        if (showDirections) {
+                            directionsRenderer.setDirections(response);
+                        }
+
+                        // 計算並格式化距離和時間
+                        const route = response.routes[0];
+                        let totalDistance = 0;
+                        let totalDuration = 0;
+
+                        for (let i = 0; i < route.legs.length; i++) {
+                            totalDistance += route.legs[i].distance.value;
+                            totalDuration += route.legs[i].duration.value;
+                        }
+
+                        const formatDistance = (totalDistance / 1000).toFixed(1) + ' 公里';
+                        const hours = Math.floor(totalDuration / 3600);
+                        const minutes = Math.floor((totalDuration % 3600) / 60);
+                        let formatDuration = '';
+                        if (hours > 0) formatDuration += hours + ' 小時 ';
+                        formatDuration += minutes + ' 分鐘';
+
+                        routeInfo.value = { distance: formatDistance, duration: formatDuration };
+
+                        // 根據優化後的路線更新行程列表
+                        const newOrder = route.waypoint_order;
+                        const orderedPlaces = [places.value[0]];
+                        
+                        for (let i = 0; i < newOrder.length; i++) {
+                            const originalIndex = newOrder[i] + 1; 
+                            orderedPlaces.push(places.value[originalIndex]);
+                        }
+
+                        orderedPlaces.push(places.value[places.value.length - 1]);
+
+                        places.value = orderedPlaces; 
+                        savePlaces();
+                        
+                    } else {
+                        directionsRenderer.setDirections({ routes: [] });
+                        routeInfo.value = null;
+                        alert('路線規劃失敗: ' + status + '。請檢查所有地點是否有效。');
+                    }
+                });
+            };
+
+            // 讓 calculateRoute 在 initMap 後也能被訪問
+            app.config.globalProperties.calculateRoute = calculateRoute;
+            app.config.globalProperties.places = places;
+
+
+            return {
+                newPlace,
+                places,
+                routeInfo,
+                addPlace,
+                removePlace,
+                calculateRoute
+            };
+        }
+    });
+
+    app.mount('#app');
+</script>
+
+</body>
+</html>
