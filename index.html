@@ -271,4 +271,122 @@
             // 模擬每日行程數據
             const itinerary = ref([
                 { id: 1, name: '桃園國際機場 (TPE) - 啟程', category: '航班', travelTime: null, departureTime: '09:00', arrivalTime: '13:00', flightNumber: 'BR198' }, // 第一個行程
-                { id: 2,
+                { id: 2, name: '成田機場取車', category: '其他', travelTime: '1小時 30分鐘', businessHours: '08:00-20:00', notes: '租車公司櫃檯在第二航廈' },
+                { id: 3, name: '東京灣希爾頓飯店', category: '住宿', travelTime: '40分鐘', businessHours: '全天', notes: '提早 Check-in' },
+                { id: 4, name: '東京迪士尼樂園', category: '景點', travelTime: '10分鐘', businessHours: '09:00-21:00', ticketPrice: '8900', notes: '記得買快速通關' },
+            ]);
+
+            // 模擬日期選單數據 (當日為 Fri 6)
+            const dates = ref([
+                { dayOfWeek: 'Thu', dayOfMonth: 5, fullDate: '2025-12-05', isActive: false },
+                { dayOfWeek: 'Fri', dayOfMonth: 6, fullDate: '2025-12-06', isActive: true },
+                { dayOfWeek: 'Sat', dayOfMonth: 7, fullDate: '2025-12-07', isActive: false },
+                { dayOfWeek: 'Sun', dayOfMonth: 8, fullDate: '2025-12-08', isActive: false },
+                { dayOfWeek: 'Mon', dayOfMonth: 9, fullDate: '2025-12-09', isActive: false },
+            ]);
+
+            // 模擬資訊頁數據
+            const flightInfo = ref([
+                { type: '去程', departureAirport: 'TPE', arrivalAirport: 'NRT', departureTime: '09:00', arrivalTime: '13:00', flightDuration: '3hr', flightNumber: 'BR198' },
+                { type: '回程', departureAirport: 'NRT', arrivalAirport: 'TPE', departureTime: '18:00', arrivalTime: '21:00', flightDuration: '3hr', flightNumber: 'BR197' },
+            ]);
+            const accommodation = ref({ name: '東京灣希爾頓飯店', address: '千葉縣舞濱', navLink: '#' });
+            const rental = ref({ company: 'Toyota Rent a Car', location: '成田機場店', navLink: '#' });
+
+            // 模擬購物清單數據
+            const shoppingList = ref([
+                { id: 101, name: '薯條三兄弟', image: true },
+                { id: 102, name: '限定鋼彈模型', image: false },
+            ]);
+
+            // 模擬花費數據
+            const expenseRecords = ref([
+                { id: 201, category: '交通', name: 'NEX 車票', date: '2025-12-06', amount: 4070, paymentMethod: '信用卡' },
+                { id: 202, category: '餐飲', name: '拉麵午餐', date: '2025-12-06', amount: 1500, paymentMethod: '現金' },
+            ]);
+
+
+            // --- 運算屬性 (Computed Properties) ---
+            
+            // 匯率換算邏輯
+            const jpyAmount = ref(10000);
+            const exchangeRate = 0.22; // 模擬當日匯率
+            const twdAmount = computed(() => {
+                return (jpyAmount.value * exchangeRate).toFixed(0);
+            });
+            
+            // 總花費計算
+            const totalExpense = computed(() => {
+                return expenseRecords.value.reduce((sum, item) => sum + item.amount, 0);
+            });
+
+
+            // --- 方法 (Methods) ---
+            
+            const showAddModal = (type) => {
+                isEditing.value = false;
+                currentModalType.value = type;
+                isModalOpen.value = true;
+            };
+
+            const showEditModal = (item) => {
+                isEditing.value = true;
+                currentModalType.value = 'schedule'; // 假設從行程卡片進入編輯
+                isModalOpen.value = true;
+                // 這裡應該載入 item 數據到表單
+            };
+
+            const closeModal = () => {
+                isModalOpen.value = false;
+                isEditing.value = false;
+            };
+            
+            const confirmDelete = () => {
+                isModalOpen.value = false;
+                isConfirmDeleteOpen.value = true;
+            };
+
+            const handleDelete = () => {
+                // 執行刪除邏輯 (例如：從 itinerary.value 中移除)
+                alert('項目已刪除！ (模擬)');
+                isConfirmDeleteOpen.value = false;
+            };
+
+            // 模擬導航點擊事件
+            const simulateNavigation = (itemName) => {
+                alert(`模擬跳轉到 Google Map 導航：${itemName}`);
+            };
+
+
+            return {
+                activeTab,
+                tabs,
+                itinerary,
+                dates,
+                flightInfo,
+                jpyAmount,
+                twdAmount,
+                totalExpense,
+                expenseRecords,
+                shoppingList,
+                accommodation,
+                rental,
+                isModalOpen,
+                isEditing,
+                isConfirmDeleteOpen,
+                currentModalType,
+                showAddModal,
+                showEditModal,
+                closeModal,
+                confirmDelete,
+                handleDelete,
+                simulateNavigation
+            };
+        }
+    });
+
+    app.mount('#app');
+</script>
+
+</body>
+</html>
