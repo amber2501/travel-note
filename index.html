@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>☁️旅遊規劃☁️</title>
+    <title>旅遊手帳 Ultimate 4.1 ☁️</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -15,6 +15,7 @@
 
     <style>
         :root {
+            /* 莫蘭迪/寧靜藍色系 */
             --primary: #7FA9BE;        
             --primary-light: #EBF3F7;  
             --primary-dark: #5A8296;   
@@ -28,17 +29,16 @@
             --nav-height: 75px;
             --radius-L: 24px;
             --radius-M: 16px;
-            --radius-S: 10px;
+            --radius-S: 12px;
             --shadow-card: 0 8px 20px rgba(100, 110, 130, 0.06);
             --shadow-float: 0 10px 30px rgba(127, 169, 190, 0.25);
 
-            /* 行程類別顏色 (柔和色系) */
-            --bg-spot: #E3F2FD; /* 藍 */
-            --bg-food: #FFF3E0; /* 橘 */
-            --bg-shop: #F3E5F5; /* 紫 */
-            --bg-transport: #E0F2F1; /* 綠 */
-            --bg-hotel: #ECEFF1; /* 灰 */
-            --bg-other: #FFF8E1; /* 黃 */
+            /* 行程類別背景色 (同色系微調) */
+            --bg-spot: #E1F5FE;      /* 極淺藍 */
+            --bg-food: #EFF4F5;      /* 冷灰白 */
+            --bg-shop: #E8EAF6;      /* 極淺靛 */
+            --bg-transport: #E0F2F1; /* 極淺青 */
+            --bg-other: #FAFAFA;     /* 純灰白 */
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -57,7 +57,6 @@
         /* --- SVG 圖示系統 --- */
         .icon-svg { width: 24px; height: 24px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; transition: 0.3s; }
         .icon-sm { width: 18px; height: 18px; stroke-width: 2; }
-        .icon-fill { fill: currentColor; stroke: none; }
         
         /* --- UI 元件 --- */
         .btn {
@@ -77,17 +76,24 @@
         .btn-del { color: var(--accent); background: var(--accent-bg); padding: 6px 14px; font-size: 0.85rem; border: none; border-radius: 12px; font-weight: bold; cursor: pointer;}
         .btn-edit { color: var(--primary); background: var(--primary-light); padding: 6px 14px; font-size: 0.85rem; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; margin-right: 8px;}
 
+        /* 輸入框樣式統一 */
         input, select, textarea {
             width: 100%; padding: 12px 16px;
             border: 1px solid transparent; border-radius: var(--radius-S);
             background: #F0F4F8; font-size: 15px; outline: none;
             margin-bottom: 12px; font-family: inherit; font-weight: 500;
             color: var(--text); transition: 0.2s;
+            appearance: none; -webkit-appearance: none; /* 移除瀏覽器預設樣式 */
+        }
+        input[type="date"], input[type="time"] {
+            /* 確保日期時間選擇器高度與文字框一致 */
+            min-height: 44px; 
+            display: block;
         }
         input:focus, textarea:focus { background: white; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(127, 169, 190, 0.15); }
         
-        .row { display: flex; gap: 12px; }
-        .col { flex: 1; }
+        .row { display: flex; gap: 12px; width: 100%; }
+        .col { flex: 1; min-width: 0; } /* min-width:0 確保 flex 子元素不會撐開 */
 
         /* Header */
         .sticky-header {
@@ -125,7 +131,7 @@
         .card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 15px; color: var(--primary-dark); font-weight: 800; font-size: 1.1rem; }
         .card-label { font-size: 0.8rem; color: var(--text-light); font-weight: 700; margin-bottom: 6px; display: block; margin-left: 4px;}
 
-        /* 1. 機票 (Boarding Pass Look) */
+        /* 1. 機票 (Boarding Pass) */
         .bp-card {
             background: white; border-radius: var(--radius-M);
             margin-bottom: 25px; overflow: hidden; position: relative;
@@ -143,23 +149,17 @@
         .bp-line { width: 100%; height: 2px; background: #E0E0E0; position: relative; margin: 10px 0; }
         .bp-line::after { content:''; position:absolute; top:-10px; left:50%; transform:translateX(-50%); width:20px; height:20px; background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%237FA9BE'%3E%3Cpath d='M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z'/%3E%3C/svg%3E") no-repeat center; background-size:contain; background-color:white; padding:0 2px;} 
         .bp-duration { font-size: 0.75rem; color: var(--text-light); font-weight: bold; margin-top: 4px; }
+        
+        .tz-select { width: auto; padding: 6px; font-size: 0.8rem; background: #eef2f5; border: 1px solid #ddd; border-radius: 6px; margin-left: 5px; font-weight:bold; height: 44px;}
 
         /* 2. 住宿與門票列表 */
         .item-list-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #F5F5F5; }
         .item-list-row:last-child { border-bottom: none; }
         .item-icon-box { width: 44px; height: 44px; border-radius: 12px; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; margin-right: 15px; flex-shrink: 0; }
         
-        /* 3. 清單 (Checklist) */
-        .check-item { 
-            display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #FAFAFA;
-            transition: 0.2s;
-        }
-        .check-item:last-child { border-bottom: none; }
-        .check-box {
-            width: 20px; height: 20px; border: 2px solid var(--primary); border-radius: 6px;
-            margin-right: 12px; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; flex-shrink: 0; transition: 0.2s;
-        }
+        /* 3. 清單 */
+        .check-item { display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #FAFAFA; transition: 0.2s; }
+        .check-box { width: 20px; height: 20px; border: 2px solid var(--primary); border-radius: 6px; margin-right: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; transition: 0.2s; }
         .check-item.checked .check-box { background: var(--primary); }
         .check-item.checked .check-box::after { content: '✓'; color: white; font-size: 14px; font-weight: bold; }
         .check-item.checked span { text-decoration: line-through; color: var(--text-done); }
@@ -192,15 +192,14 @@
         }
         .it-card:active { transform: scale(0.98); }
         
-        /* 不同類別的顏色背景 */
+        /* 類別顏色 */
         .type-spot { background-color: var(--bg-spot); }
         .type-food { background-color: var(--bg-food); }
         .type-shop { background-color: var(--bg-shop); }
         .type-transport { background-color: var(--bg-transport); }
-        .type-hotel { background-color: var(--bg-hotel); }
         .type-other { background-color: var(--bg-other); }
 
-        .it-icon { width: 32px; height: 32px; border-radius: 10px; background: rgba(255,255,255,0.6); color: var(--text); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .it-icon { width: 32px; height: 32px; border-radius: 10px; background: rgba(255,255,255,0.7); color: var(--primary-dark); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 
         /* 當晚住宿顯示 */
         .night-stay-box {
@@ -244,7 +243,7 @@
         .modal-content { background: white; width: 88%; max-width: 380px; padding: 25px; border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.2); animation: modalUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-height: 90vh; overflow-y: auto;}
         @keyframes modalUp { from { opacity: 0; transform: translateY(20px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
 
-        /* Method Chips */
+        /* Chips */
         .chip-group { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
         .chip-btn { padding: 8px 16px; border-radius: 20px; background: #F2F4F6; color: var(--text-light); border: none; font-weight: bold; font-size: 0.85rem; }
         .chip-btn.active { background: var(--primary); color: white; }
@@ -282,7 +281,7 @@
         <div style="text-align:center; padding-top:80px; padding-bottom:50px;">
             <div style="font-size:3rem; margin-bottom:10px;">☁️</div>
             <h1 style="color:var(--primary-dark); margin:0; font-size:2rem; letter-spacing:1px;">旅遊手帳</h1>
-            <p style="color:var(--text-light); font-size:0.9rem; margin-top:5px;">Travel Log 3.0</p>
+            <p style="color:var(--text-light); font-size:0.9rem; margin-top:5px;">Travel Log 4.1</p>
         </div>
         <div id="trip-list-container" class="container"></div>
         <button class="fab" onclick="openCreateTripModal()">
@@ -335,15 +334,17 @@
                                 <input class="col" placeholder="航班" oninput="saveFlight('out', 'code', this.value)" id="f-out-code">
                                 <input class="col" placeholder="航空" oninput="saveFlight('out', 'airline', this.value)" id="f-out-airline">
                             </div>
-                            <span class="card-label">起飛</span>
-                            <div class="row">
+                            <span class="card-label">起飛 (當地時間 + 時區)</span>
+                            <div class="row" style="align-items:center;">
                                 <input type="time" class="col" oninput="saveFlight('out', 'depTime', this.value)" id="f-out-depTime">
-                                <input class="col" placeholder="機場代碼 (TPE)" oninput="saveFlight('out', 'depAir', this.value)" id="f-out-depAir">
+                                <select class="tz-select" onchange="saveFlight('out', 'depTz', this.value)" id="f-out-depTz"><option value="8">UTC+8</option><option value="9">UTC+9</option><option value="1">UTC+1</option><option value="-7">UTC-7</option><option value="0">UTC+0</option></select>
+                                <input class="col" placeholder="TPE" oninput="saveFlight('out', 'depAir', this.value)" id="f-out-depAir">
                             </div>
-                            <span class="card-label">降落</span>
-                            <div class="row">
+                            <span class="card-label">降落 (當地時間 + 時區)</span>
+                            <div class="row" style="align-items:center;">
                                 <input type="time" class="col" oninput="saveFlight('out', 'arrTime', this.value)" id="f-out-arrTime">
-                                <input class="col" placeholder="機場代碼 (NRT)" oninput="saveFlight('out', 'arrAir', this.value)" id="f-out-arrAir">
+                                <select class="tz-select" onchange="saveFlight('out', 'arrTz', this.value)" id="f-out-arrTz"><option value="8">UTC+8</option><option value="9" selected>UTC+9</option><option value="1">UTC+1</option><option value="-7">UTC-7</option><option value="0">UTC+0</option></select>
+                                <input class="col" placeholder="NRT" oninput="saveFlight('out', 'arrAir', this.value)" id="f-out-arrAir">
                             </div>
                         </div>
                     </div>
@@ -356,14 +357,16 @@
                                 <input class="col" placeholder="航班" oninput="saveFlight('in', 'code', this.value)" id="f-in-code">
                                 <input class="col" placeholder="航空" oninput="saveFlight('in', 'airline', this.value)" id="f-in-airline">
                             </div>
-                            <span class="card-label">起飛</span>
-                            <div class="row">
+                            <span class="card-label">起飛 (當地時間 + 時區)</span>
+                            <div class="row" style="align-items:center;">
                                 <input type="time" class="col" oninput="saveFlight('in', 'depTime', this.value)" id="f-in-depTime">
+                                <select class="tz-select" onchange="saveFlight('in', 'depTz', this.value)" id="f-in-depTz"><option value="9" selected>UTC+9</option><option value="8">UTC+8</option><option value="1">UTC+1</option><option value="-7">UTC-7</option><option value="0">UTC+0</option></select>
                                 <input class="col" placeholder="機場代碼" oninput="saveFlight('in', 'depAir', this.value)" id="f-in-depAir">
                             </div>
-                            <span class="card-label">降落</span>
-                            <div class="row">
+                            <span class="card-label">降落 (當地時間 + 時區)</span>
+                            <div class="row" style="align-items:center;">
                                 <input type="time" class="col" oninput="saveFlight('in', 'arrTime', this.value)" id="f-in-arrTime">
+                                <select class="tz-select" onchange="saveFlight('in', 'arrTz', this.value)" id="f-in-arrTz"><option value="8">UTC+8</option><option value="9">UTC+9</option><option value="1">UTC+1</option><option value="-7">UTC-7</option><option value="0">UTC+0</option></select>
                                 <input class="col" placeholder="機場代碼" oninput="saveFlight('in', 'arrAir', this.value)" id="f-in-arrAir">
                             </div>
                         </div>
@@ -567,11 +570,13 @@
                     <option value="food">🍽️ 美食</option>
                     <option value="shop">🛍️ 購物</option>
                     <option value="transport">🚋 交通</option>
-                    <option value="hotel">🏨 住宿</option>
                     <option value="other">✨ 其他</option>
                 </select>
             </div>
             <input type="text" id="i-title" placeholder="名稱">
+            <!-- 營業時間欄位 (動態顯示) -->
+            <input type="text" id="i-open" placeholder="營業時間 (如: 09:00 - 17:00)" class="hidden">
+            
             <div style="position:relative;">
                 <input type="text" id="i-loc" placeholder="地點 (Google Maps)" style="padding-right:40px;">
                 <div style="position:absolute; right:10px; top:10px; color:var(--primary);"><svg class="icon-svg icon-sm"><use href="#icon-pin"></use></svg></div>
@@ -669,7 +674,7 @@
     </div>
 
 <script>
-    const DB_KEY = 'trip_v3_ultimate';
+    const DB_KEY = 'trip_v4_ult';
     let allTrips = [];
     let currentTrip = null;
     let appState = { dayIdx: 0, editId: null, editType: null, charterType: '接送' };
@@ -679,11 +684,18 @@
     window.onload = function() {
         const saved = localStorage.getItem(DB_KEY);
         if (saved) { try { allTrips = JSON.parse(saved); } catch(e) {} }
+        // 綁定行程類別變更事件 (顯示營業時間)
+        document.getElementById('i-type').addEventListener('change', function() {
+            const val = this.value;
+            const openInput = document.getElementById('i-open');
+            if(val === 'food' || val === 'spot') openInput.classList.remove('hidden');
+            else openInput.classList.add('hidden');
+        });
         renderHome();
     };
     function saveData() { localStorage.setItem(DB_KEY, JSON.stringify(allTrips)); }
 
-    // --- 匯率 API ---
+    // --- 匯率 ---
     async function fetchRate() {
         const curr = document.getElementById('rate-currency').value;
         const display = document.getElementById('rate-display');
@@ -703,7 +715,7 @@
         document.getElementById('rate-display').innerText = amt === 0 ? `1 : ${currentRate.toFixed(2)}` : `$${total.toFixed(0)}`;
     }
 
-    // --- Weather API (含日出日落) ---
+    // --- Weather ---
     async function fetchWeatherForDay() {
         if(!currentTrip.city) {
             document.getElementById('weather-text').innerText = "未設定城市";
@@ -715,7 +727,6 @@
         targetDate.setDate(targetDate.getDate() + appState.dayIdx);
         const dateStr = targetDate.toISOString().split('T')[0];
 
-        // 1. Geocoding
         let lat = currentTrip.lat, lon = currentTrip.lon;
         if (!lat || !lon) {
             try {
@@ -732,7 +743,6 @@
         if(!lat) { document.getElementById('weather-text').innerText = "找不到城市"; return; }
         document.getElementById('weather-loc').innerText = currentTrip.city;
 
-        // 2. Forecast
         try {
             const wRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,sunrise,sunset&timezone=auto&start_date=${dateStr}&end_date=${dateStr}`);
             const wData = await wRes.json();
@@ -763,7 +773,7 @@
         document.getElementById('weather-text').innerText = text;
     }
 
-    // --- Home ---
+    // --- Core Logic ---
     function renderHome() {
         document.getElementById('view-home').classList.remove('hidden');
         document.getElementById('view-detail').classList.add('hidden');
@@ -802,7 +812,7 @@
         allTrips.push({
             id: Date.now(), name, city, startDate: date, days, members,
             itinerary: [], money: [], shopping: [], packing: [],
-            flights: { out:{}, in:{} }, hotels: [], tickets: [], charters: []
+            flights: { out:{depTz:8, arrTz:9}, in:{depTz:9, arrTz:8} }, hotels: [], tickets: [], charters: []
         });
         saveData(); closeModal('create-trip'); renderHome();
     }
@@ -814,7 +824,7 @@
     
     function openTrip(id) {
         currentTrip = allTrips.find(t => t.id === id);
-        // Data Init
+        // Init Check
         if(!currentTrip.flights) currentTrip.flights = { out:{}, in:{} };
         if(!currentTrip.hotels) currentTrip.hotels = [];
         if(!currentTrip.tickets) currentTrip.tickets = [];
@@ -854,26 +864,48 @@
         if(sub === 'charter') renderCharters();
         if(sub === 'packing') renderPacking();
     }
+    function switchMoneySub(sub) {
+        const listView = document.getElementById('money-view-list');
+        const analysisView = document.getElementById('money-view-analysis');
+        const btnList = document.getElementById('btn-money-list');
+        const btnAnalysis = document.getElementById('btn-money-analysis');
 
-    // --- Flight (修正時數計算) ---
+        if(sub === 'list') {
+            listView.classList.remove('hidden'); analysisView.classList.add('hidden');
+            btnList.classList.add('active'); btnAnalysis.classList.remove('active');
+        } else {
+            listView.classList.add('hidden'); analysisView.classList.remove('hidden');
+            btnList.classList.remove('active'); btnAnalysis.classList.add('active');
+            renderMoneyAnalysis();
+        }
+    }
+
+    // --- Flight (TimeZone Aware) ---
     function fillFlightInputs() {
         const f = currentTrip.flights;
-        ['code','airline','depTime','depAir','arrTime','arrAir'].forEach(k => {
-            const elOut = document.getElementById('f-out-'+k); if(elOut) elOut.value = f.out[k] || '';
-            const elIn = document.getElementById('f-in-'+k); if(elIn) elIn.value = f.in[k] || '';
+        ['code','airline','depTime','depTz','depAir','arrTime','arrTz','arrAir'].forEach(k => {
+            const elOut = document.getElementById('f-out-'+k); if(elOut) elOut.value = f.out[k] || (k.includes('Tz')? (k==='arrTz'?9:8) : '');
+            const elIn = document.getElementById('f-in-'+k); if(elIn) elIn.value = f.in[k] || (k.includes('Tz')? (k==='depTz'?9:8) : '');
         });
     }
     function saveFlight(dir, field, val) {
         currentTrip.flights[dir][field] = val; saveData();
     }
-    function calcDuration(t1, t2) {
+    // 計算飛行時間 (UTC)
+    function calcDuration(t1, tz1, t2, tz2) {
         if(!t1 || !t2) return '';
-        const [h1, m1] = t1.split(':').map(Number);
-        const [h2, m2] = t2.split(':').map(Number);
-        let min = (h2*60 + m2) - (h1*60 + m1);
-        if(min < 0) min += 24*60; // 跨日處理
-        const h = Math.floor(min/60);
-        const m = min % 60;
+        const getUtcMin = (time, tz) => {
+            const [h, m] = time.split(':').map(Number);
+            return (h * 60 + m) - (parseInt(tz) * 60);
+        };
+        const m1 = getUtcMin(t1, tz1||8);
+        const m2 = getUtcMin(t2, tz2||8);
+        
+        let diff = m2 - m1;
+        if (diff < 0) diff += 24 * 60; // 簡單跨日處理
+        
+        const h = Math.floor(diff/60);
+        const m = diff % 60;
         return `${h}h ${m}m`;
     }
 
@@ -1110,7 +1142,7 @@
         const nightStayContainer = document.getElementById('night-stay-container');
         list.innerHTML = ''; flightContainer.innerHTML = ''; nightStayContainer.innerHTML = '';
 
-        // Flight Card (修正時數顯示)
+        // Flight Card (Timezone Calc)
         let fData = null, title = '';
         if (appState.dayIdx === 0 && currentTrip.flights.out.code) {
             fData = currentTrip.flights.out; title = '去程 OUTBOUND';
@@ -1131,7 +1163,7 @@
                              <div style="font-weight:900; color:var(--text-light); letter-spacing:1px; font-size:0.8rem;">${fData.airline || ''}</div>
                              <div class="bp-line"></div>
                              <div style="color:var(--primary); font-weight:bold; font-size:0.9rem;">${fData.code || ''}</div>
-                             <div class="bp-duration">${calcDuration(fData.depTime, fData.arrTime)}</div>
+                             <div class="bp-duration">${calcDuration(fData.depTime, fData.depTz, fData.arrTime, fData.arrTz)}</div>
                         </div>
                         <div class="bp-group">
                             <span class="bp-code">${fData.arrAir || 'ARR'}</span>
@@ -1141,22 +1173,24 @@
                 </div>`;
         }
 
-        // Itinerary Items (配色)
+        // Itinerary Items
         const items = currentTrip.itinerary.filter(i => i.dayIdx === appState.dayIdx);
         const iconMap = { spot:'icon-spot', food:'icon-food', shop:'icon-nav-shop', transport:'icon-transport', hotel:'icon-house', other:'icon-star' };
         
         items.forEach(item => {
             const mapBtn = item.loc ? `<button class="btn-ghost" onclick="openMap(event, '${item.loc}')"><svg class="icon-svg icon-sm"><use href="#icon-pin"></use></svg></button>` : '';
             const typeClass = `type-${item.type}`;
-            
+            const openTime = item.open ? `<div style="font-size:0.75rem; color:#E67C73; margin-top:2px;">🕒 ${item.open}</div>` : '';
+
             list.innerHTML += `
                 <div class="timeline-item" onclick="editItinerary(${item.id})">
                     <div class="time-bubble">${item.time}</div>
                     <div class="it-card ${typeClass}">
                         <div class="it-icon"><svg class="icon-svg icon-sm"><use href="#${iconMap[item.type]||'icon-star'}"></use></svg></div>
                         <div style="flex:1;">
-                            <div style="font-weight:bold; color:var(--text); margin-bottom:4px;">${item.title}</div>
-                            <div style="font-size:0.85rem; color:var(--text); white-space:pre-wrap;">${item.note || ''}</div>
+                            <div style="font-weight:bold; color:var(--text); margin-bottom:2px;">${item.title}</div>
+                            ${openTime}
+                            <div style="font-size:0.85rem; color:var(--text); white-space:pre-wrap; margin-top:4px;">${item.note || ''}</div>
                         </div>
                         ${mapBtn}
                     </div>
@@ -1189,7 +1223,8 @@
     function openNewItinerary() {
         appState.editId = null;
         document.getElementById('modal-title-itinerary').innerText = "✨ 新增行程";
-        ['i-time','i-title','i-loc','i-note'].forEach(id=>document.getElementById(id).value='');
+        ['i-time','i-title','i-loc','i-note','i-open'].forEach(id=>document.getElementById(id).value='');
+        document.getElementById('i-open').classList.add('hidden'); // Default hide
         openModal('itinerary');
     }
     function editItinerary(id) {
@@ -1200,8 +1235,14 @@
         document.getElementById('i-time').value = item.time;
         document.getElementById('i-type').value = item.type;
         document.getElementById('i-title').value = item.title;
+        document.getElementById('i-open').value = item.open || '';
         document.getElementById('i-loc').value = item.loc;
         document.getElementById('i-note').value = item.note || '';
+        
+        // Toggle Opening Hours visibility based on saved type
+        if(item.type === 'food' || item.type === 'spot') document.getElementById('i-open').classList.remove('hidden');
+        else document.getElementById('i-open').classList.add('hidden');
+
         openModal('itinerary');
     }
     function saveItinerary() {
@@ -1212,6 +1253,7 @@
         const newData = {
             id: appState.editId || Date.now(), dayIdx: appState.dayIdx, time,
             type: document.getElementById('i-type').value, title,
+            open: document.getElementById('i-open').value,
             loc: document.getElementById('i-loc').value, note: document.getElementById('i-note').value
         };
 
@@ -1287,23 +1329,46 @@
         });
         document.getElementById('day-total').innerText = total.toLocaleString();
     }
+    
+    // --- Money Analysis (Fix) ---
     function renderMoneyAnalysis() {
         const container = document.getElementById('analysis-content'); container.innerHTML = '';
-        let stats = {}; let grandTotal = 0;
-        currentTrip.members.forEach(m => { stats[m] = { total: 0 }; });
-        currentTrip.money.forEach(m => {
-            const p = m.payer || '我';
-            if (!stats[p]) stats[p] = { total: 0 };
-            stats[p].total += m.cost; grandTotal += m.cost;
+        let stats = {}; 
+        let grandTotal = 0;
+        
+        // Initialize stats for all members
+        currentTrip.members.forEach(m => { 
+            stats[m] = { total: 0 }; 
         });
 
+        // Accumulate costs
+        currentTrip.money.forEach(m => {
+            // Default to first member if payer is missing (legacy data support)
+            const p = m.payer || currentTrip.members[0];
+            if (!stats[p]) stats[p] = { total: 0 }; // Just in case
+            
+            const cost = parseFloat(m.cost);
+            stats[p].total += cost; 
+            grandTotal += cost;
+        });
+
+        // Render Cards
         Object.keys(stats).forEach(member => {
             container.innerHTML += `
-                <div class="card">
-                    <div class="card-header">👤 ${member}</div>
-                    <div style="text-align:right; font-weight:900; font-size:1.5rem; color:var(--primary);">$${stats[member].total.toLocaleString()}</div>
+                <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
+                    <div style="font-weight:bold; font-size:1.1rem;">👤 ${member}</div>
+                    <div style="text-align:right;">
+                        <div style="font-size:0.8rem; color:var(--text-light);">先付總額</div>
+                        <div style="font-weight:900; font-size:1.3rem; color:var(--primary);">$${stats[member].total.toLocaleString()}</div>
+                    </div>
                 </div>`;
         });
+        
+        container.innerHTML += `
+            <div style="text-align:center; margin-top:30px; padding-bottom:20px;">
+                <div style="font-size:0.9rem; color:var(--text-light);">旅程總支出</div>
+                <div style="font-size:2rem; font-weight:900; color:var(--primary-dark);">$${grandTotal.toLocaleString()}</div>
+            </div>`;
     }
 
     // --- Shopping ---
