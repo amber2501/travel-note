@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>旅遊手帳 Ultimate 4.1 ☁️</title>
+    <title>旅遊手帳 Ultimate 4.6 ☁️</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -15,7 +15,7 @@
 
     <style>
         :root {
-            /* 莫蘭迪/寧靜藍色系 */
+            /* 主題色系 */
             --primary: #7FA9BE;        
             --primary-light: #EBF3F7;  
             --primary-dark: #5A8296;   
@@ -24,21 +24,23 @@
             --text: #58555A;           
             --text-light: #9DA0A8;     
             --text-done: #CCCDD2; 
-            --bg-body: #F8F9FB;        
+            --bg-body: #F9FAFC;        
             --card-bg: #FFFFFF;        
             --nav-height: 75px;
             --radius-L: 24px;
             --radius-M: 16px;
             --radius-S: 12px;
             --shadow-card: 0 8px 20px rgba(100, 110, 130, 0.06);
-            --shadow-float: 0 10px 30px rgba(127, 169, 190, 0.25);
 
-            /* 行程類別背景色 (同色系微調) */
-            --bg-spot: #E1F5FE;      /* 極淺藍 */
-            --bg-food: #EFF4F5;      /* 冷灰白 */
-            --bg-shop: #E8EAF6;      /* 極淺靛 */
-            --bg-transport: #E0F2F1; /* 極淺青 */
-            --bg-other: #FAFAFA;     /* 純灰白 */
+            /* 行程類別顏色 */
+            --c-spot-bg: #E3F2FD; --c-spot-line: #64B5F6;   /* 藍：景點 */
+            --c-food-bg: #FFF3E0; --c-food-line: #FFB74D;   /* 橘：美食 */
+            --c-shop-bg: #FCE4EC; --c-shop-line: #F06292;   /* 粉：購物 */
+            --c-trans-bg:#E0F2F1; --c-trans-line:#4DB6AC;   /* 青：交通 */
+            --c-other-bg:#F3E5F5; --c-other-line:#BA68C8;   /* 紫：其他 */
+            
+            --c-ticket-bg: #FFF8E1; --c-ticket-line: #FFD54F; /* 黃：門票 */
+            --c-chart-bg:  #E8EAF6; --c-chart-line:  #7986CB; /* 靛：包車 */
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -72,7 +74,7 @@
             background: var(--primary); color: white; 
             box-shadow: 0 4px 15px rgba(127, 169, 190, 0.4); 
         }
-        .btn-ghost { background: transparent; box-shadow: none; color: var(--text-light); padding: 5px; }
+        .btn-ghost { background: transparent; box-shadow: none; color: var(--text-light); padding: 5px; cursor: pointer; border: none;}
         .btn-del { color: var(--accent); background: var(--accent-bg); padding: 6px 14px; font-size: 0.85rem; border: none; border-radius: 12px; font-weight: bold; cursor: pointer;}
         .btn-edit { color: var(--primary); background: var(--primary-light); padding: 6px 14px; font-size: 0.85rem; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; margin-right: 8px;}
 
@@ -83,22 +85,18 @@
             background: #F0F4F8; font-size: 15px; outline: none;
             margin-bottom: 12px; font-family: inherit; font-weight: 500;
             color: var(--text); transition: 0.2s;
-            appearance: none; -webkit-appearance: none; /* 移除瀏覽器預設樣式 */
+            appearance: none; -webkit-appearance: none;
         }
-        input[type="date"], input[type="time"] {
-            /* 確保日期時間選擇器高度與文字框一致 */
-            min-height: 44px; 
-            display: block;
-        }
+        input[type="date"], input[type="time"] { min-height: 44px; display: block; }
         input:focus, textarea:focus { background: white; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(127, 169, 190, 0.15); }
         
         .row { display: flex; gap: 12px; width: 100%; }
-        .col { flex: 1; min-width: 0; } /* min-width:0 確保 flex 子元素不會撐開 */
+        .col { flex: 1; min-width: 0; }
 
         /* Header */
         .sticky-header {
             position: sticky; top: 0; z-index: 100;
-            background: rgba(248, 249, 251, 0.95);
+            background: rgba(249, 250, 252, 0.95);
             backdrop-filter: blur(10px);
             padding-top: env(safe-area-inset-top);
             border-bottom: 1px solid rgba(0,0,0,0.05);
@@ -131,7 +129,7 @@
         .card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 15px; color: var(--primary-dark); font-weight: 800; font-size: 1.1rem; }
         .card-label { font-size: 0.8rem; color: var(--text-light); font-weight: 700; margin-bottom: 6px; display: block; margin-left: 4px;}
 
-        /* 1. 機票 (Boarding Pass) */
+        /* Boarding Pass */
         .bp-card {
             background: white; border-radius: var(--radius-M);
             margin-bottom: 25px; overflow: hidden; position: relative;
@@ -149,22 +147,21 @@
         .bp-line { width: 100%; height: 2px; background: #E0E0E0; position: relative; margin: 10px 0; }
         .bp-line::after { content:''; position:absolute; top:-10px; left:50%; transform:translateX(-50%); width:20px; height:20px; background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%237FA9BE'%3E%3Cpath d='M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z'/%3E%3C/svg%3E") no-repeat center; background-size:contain; background-color:white; padding:0 2px;} 
         .bp-duration { font-size: 0.75rem; color: var(--text-light); font-weight: bold; margin-top: 4px; }
-        
         .tz-select { width: auto; padding: 6px; font-size: 0.8rem; background: #eef2f5; border: 1px solid #ddd; border-radius: 6px; margin-left: 5px; font-weight:bold; height: 44px;}
 
-        /* 2. 住宿與門票列表 */
+        /* Lists */
         .item-list-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #F5F5F5; }
         .item-list-row:last-child { border-bottom: none; }
         .item-icon-box { width: 44px; height: 44px; border-radius: 12px; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; margin-right: 15px; flex-shrink: 0; }
         
-        /* 3. 清單 */
+        /* Checkbox Style (共用) */
         .check-item { display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #FAFAFA; transition: 0.2s; }
-        .check-box { width: 20px; height: 20px; border: 2px solid var(--primary); border-radius: 6px; margin-right: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; transition: 0.2s; }
-        .check-item.checked .check-box { background: var(--primary); }
-        .check-item.checked .check-box::after { content: '✓'; color: white; font-size: 14px; font-weight: bold; }
-        .check-item.checked span { text-decoration: line-through; color: var(--text-done); }
+        .check-box { width: 22px; height: 22px; border: 2px solid var(--primary); border-radius: 6px; margin-right: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; transition: 0.2s; background:white;}
+        .checked .check-box { background: var(--primary); }
+        .checked .check-box::after { content: '✓'; color: white; font-size: 14px; font-weight: bold; }
+        .checked span, .checked .shop-text-content { text-decoration: line-through; color: var(--text-done); opacity: 0.7; }
 
-        /* 4. 行程時間軸 */
+        /* Timeline */
         .day-scroller { display: flex; overflow-x: auto; padding: 10px 20px; gap: 10px; scrollbar-width: none; }
         .day-chip { 
             flex: 0 0 auto; padding: 10px 18px; border-radius: 20px; min-width: 70px;
@@ -183,25 +180,32 @@
         .time-bubble {
             flex-shrink: 0; width: 56px; text-align: center; background: white; color: var(--primary-dark);
             border-radius: 12px; padding: 6px 0; font-weight: 800; font-size: 0.9rem; 
-            border: 2px solid var(--primary-light); box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+            border: 2px solid var(--primary-light); box-shadow: 0 2px 5px rgba(0,0,0,0.03); display: flex; flex-direction: column; justify-content: center;
         }
+        .time-bubble span.end-time { font-size: 0.75rem; color: var(--text-light); font-weight: normal; margin-top: 2px; display: block; border-top: 1px solid #eee; padding-top: 2px;}
+
         .it-card {
             flex: 1; background: white; border-radius: 16px; padding: 15px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.03);
             display: flex; align-items: flex-start; gap: 12px; transition: 0.1s; position: relative;
+            overflow: hidden;
         }
         .it-card:active { transform: scale(0.98); }
         
-        /* 類別顏色 */
-        .type-spot { background-color: var(--bg-spot); }
-        .type-food { background-color: var(--bg-food); }
-        .type-shop { background-color: var(--bg-shop); }
-        .type-transport { background-color: var(--bg-transport); }
-        .type-other { background-color: var(--bg-other); }
+        /* 類別顏色美化 */
+        .type-spot { background-color: var(--c-spot-bg); border-left: 5px solid var(--c-spot-line); }
+        .type-food { background-color: var(--c-food-bg); border-left: 5px solid var(--c-food-line); }
+        .type-shop { background-color: var(--c-shop-bg); border-left: 5px solid var(--c-shop-line); }
+        .type-transport { background-color: var(--c-trans-bg); border-left: 5px solid var(--c-trans-line); }
+        .type-other { background-color: var(--c-other-bg); border-left: 5px solid var(--c-other-line); }
+        
+        .type-ticket { background-color: var(--c-ticket-bg); border-left: 5px solid var(--c-ticket-line); }
+        .type-charter { background-color: var(--c-chart-bg); border-left: 5px solid var(--c-chart-line); }
 
         .it-icon { width: 32px; height: 32px; border-radius: 10px; background: rgba(255,255,255,0.7); color: var(--primary-dark); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 
-        /* 當晚住宿顯示 */
+        .it-actions { display: flex; flex-direction: column; gap: 5px; margin-left: auto; justify-content: flex-start; }
+
         .night-stay-box {
             margin-top: 30px; background: #353b48; color: white;
             border-radius: var(--radius-M); padding: 15px;
@@ -209,7 +213,6 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
-        /* Weather Badge */
         .weather-badge {
             background: white; border-radius: 12px; padding: 4px 10px; font-size: 0.75rem; 
             display: inline-flex; align-items: center; gap: 4px; color: var(--text-light); font-weight: bold;
@@ -243,7 +246,6 @@
         .modal-content { background: white; width: 88%; max-width: 380px; padding: 25px; border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.2); animation: modalUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-height: 90vh; overflow-y: auto;}
         @keyframes modalUp { from { opacity: 0; transform: translateY(20px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
 
-        /* Chips */
         .chip-group { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
         .chip-btn { padding: 8px 16px; border-radius: 20px; background: #F2F4F6; color: var(--text-light); border: none; font-weight: bold; font-size: 0.85rem; }
         .chip-btn.active { background: var(--primary); color: white; }
@@ -266,7 +268,7 @@
         <symbol id="icon-house" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></symbol>
         <symbol id="icon-ticket" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"></rect><circle cx="12" cy="12" r="2"></circle><path d="M6 12h.01M18 12h.01"></path></symbol>
         <symbol id="icon-pack" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="2"></rect><path d="M16 2v4"></path><path d="M8 2v4"></path><path d="M3 10h18"></path></symbol>
-        <symbol id="icon-car" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></symbol>
+        <symbol id="icon-car" viewBox="0 0 24 24"><path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"></path></symbol>
         <symbol id="icon-spot" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></symbol>
         <symbol id="icon-food" viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></symbol>
         <symbol id="icon-transport" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="8" y1="21" x2="8" y2="21.01"></line><line x1="16" y1="21" x2="16" y2="21.01"></line><line x1="3" y1="10" x2="21" y2="10"></line><path d="M8 15h.01"></path><path d="M16 15h.01"></path></symbol>
@@ -274,6 +276,8 @@
         <symbol id="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></symbol>
         <symbol id="icon-rain" viewBox="0 0 24 24"><line x1="16" y1="13" x2="16" y2="21"></line><line x1="8" y1="13" x2="8" y2="21"></line><line x1="12" y1="15" x2="12" y2="23"></line><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"></path></symbol>
         <symbol id="icon-cloud" viewBox="0 0 24 24"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></symbol>
+        <symbol id="icon-list-simple" viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></symbol>
+        <symbol id="icon-chart-pie" viewBox="0 0 24 24"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path><path d="M22 12A10 10 0 0 0 12 2v10z"></path></symbol>
     </svg>
 
     <!-- 1. 主畫面 -->
@@ -281,7 +285,7 @@
         <div style="text-align:center; padding-top:80px; padding-bottom:50px;">
             <div style="font-size:3rem; margin-bottom:10px;">☁️</div>
             <h1 style="color:var(--primary-dark); margin:0; font-size:2rem; letter-spacing:1px;">旅遊手帳</h1>
-            <p style="color:var(--text-light); font-size:0.9rem; margin-top:5px;">Travel Log 4.1</p>
+            <p style="color:var(--text-light); font-size:0.9rem; margin-top:5px;">Travel Log 4.6</p>
         </div>
         <div id="trip-list-container" class="container"></div>
         <button class="fab" onclick="openCreateTripModal()">
@@ -487,8 +491,12 @@
 
             <div class="sticky-header" style="top:0; border-bottom:none; background:transparent;">
                 <div class="sub-nav" style="justify-content:center; padding-top:15px;">
-                    <button class="sub-nav-btn active" id="btn-money-list" onclick="switchMoneySub('list')">📝 列表</button>
-                    <button class="sub-nav-btn" id="btn-money-analysis" onclick="switchMoneySub('analysis')">📊 統計</button>
+                    <button class="sub-nav-btn active" id="btn-money-list" onclick="switchMoneySub('list')">
+                        <svg class="icon-svg icon-sm"><use href="#icon-list-simple"></use></svg> 列表
+                    </button>
+                    <button class="sub-nav-btn" id="btn-money-analysis" onclick="switchMoneySub('analysis')">
+                        <svg class="icon-svg icon-sm"><use href="#icon-chart-pie"></use></svg> 統計
+                    </button>
                 </div>
             </div>
 
@@ -509,7 +517,7 @@
             </button>
         </div>
 
-        <!-- D. 購物 -->
+        <!-- D. 購物 (Updated) -->
         <div id="tab-shopping" class="tab-content hidden">
             <div class="sticky-header">
                 <div class="header-top">
@@ -520,16 +528,17 @@
             </div>
             <div class="container">
                 <div class="card">
-                    <div style="display:flex; gap:10px; margin-bottom:10px;">
-                        <input type="text" id="shop-input" placeholder="想買什麼..." style="margin:0;">
-                        <label class="btn" style="background:#F0F4F8; color:var(--text-light); padding:0 12px;">
+                    <input type="text" id="shop-input" placeholder="想買什麼..." style="margin-bottom:12px;">
+                    <div class="row">
+                        <input type="text" class="col" id="shop-price" placeholder="預算/備註">
+                        <input type="text" class="col" id="shop-loc" placeholder="購入地點 (店名)">
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:5px;">
+                         <label class="btn" style="background:#F0F4F8; color:var(--text-light); padding:10px 16px;">
                             <svg class="icon-svg icon-sm"><use href="#icon-camera"></use></svg>
                             <input type="file" id="shop-img" accept="image/*" style="display:none;">
                         </label>
-                    </div>
-                    <div style="display:flex; gap:10px;">
-                        <input type="text" id="shop-price" placeholder="預算 / 備註" style="margin:0;">
-                        <button class="btn btn-primary" onclick="addShoppingItem()">新增</button>
+                        <button class="btn btn-primary" onclick="addShoppingItem()" style="padding-left:30px; padding-right:30px;">新增</button>
                     </div>
                 </div>
                 <div id="list-shopping"></div>
@@ -559,30 +568,43 @@
         </div>
     </div>
 
-    <!-- 行程編輯 -->
+    <!-- 行程編輯 (Updated: Delete btn & Transport logic) -->
     <div id="modal-itinerary" class="modal hidden">
         <div class="modal-content">
             <h3 style="text-align:center; color:var(--primary);" id="modal-title-itinerary">行程細項</h3>
             <div class="row">
-                <input type="time" id="i-time" style="flex:1">
-                <select id="i-type" style="flex:1">
-                    <option value="spot">📍 景點</option>
-                    <option value="food">🍽️ 美食</option>
-                    <option value="shop">🛍️ 購物</option>
-                    <option value="transport">🚋 交通</option>
-                    <option value="other">✨ 其他</option>
-                </select>
+                <input type="time" id="i-time" class="col" placeholder="開始時間">
+                <input type="time" id="i-end-time" class="col hidden" placeholder="抵達時間">
             </div>
+            
+            <select id="i-type" style="width:100%; margin-bottom:12px;">
+                <option value="spot">📍 景點</option>
+                <option value="food">🍽️ 美食</option>
+                <option value="shop">🛍️ 購物</option>
+                <option value="transport">🚋 交通</option>
+                <option value="other">✨ 其他</option>
+            </select>
+            
             <input type="text" id="i-title" placeholder="名稱">
-            <!-- 營業時間欄位 (動態顯示) -->
             <input type="text" id="i-open" placeholder="營業時間 (如: 09:00 - 17:00)" class="hidden">
             
             <div style="position:relative;">
                 <input type="text" id="i-loc" placeholder="地點 (Google Maps)" style="padding-right:40px;">
                 <div style="position:absolute; right:10px; top:10px; color:var(--primary);"><svg class="icon-svg icon-sm"><use href="#icon-pin"></use></svg></div>
             </div>
+            
+            <div style="position:relative;" id="wrapper-dest" class="hidden">
+                 <input type="text" id="i-dest" placeholder="目的地點 (Google Maps)" style="padding-right:40px;">
+                 <div style="position:absolute; right:10px; top:10px; color:var(--primary);"><svg class="icon-svg icon-sm"><use href="#icon-pin"></use></svg></div>
+            </div>
+
             <textarea id="i-note" placeholder="備註..." style="height:80px;"></textarea>
-            <div style="display:flex; gap:10px; margin-top:10px;">
+            
+            <!-- 按鈕區：增加刪除鍵 -->
+            <div style="display:flex; gap:10px; margin-top:15px;">
+                <button class="btn" onclick="deleteItineraryItemInModal()" style="background:#FFF0F0; color:var(--accent); min-width:50px; padding:0 12px;">
+                    <svg class="icon-svg icon-sm"><use href="#icon-trash"></use></svg>
+                </button>
                 <button class="btn col" onclick="closeModal('itinerary')" style="background:#F2F4F6; color:#999;">取消</button>
                 <button class="btn btn-primary col" onclick="saveItinerary()">儲存</button>
             </div>
@@ -684,16 +706,54 @@
     window.onload = function() {
         const saved = localStorage.getItem(DB_KEY);
         if (saved) { try { allTrips = JSON.parse(saved); } catch(e) {} }
-        // 綁定行程類別變更事件 (顯示營業時間)
+        
+        // Transport Logic in Modal (Improved Labels)
         document.getElementById('i-type').addEventListener('change', function() {
             const val = this.value;
             const openInput = document.getElementById('i-open');
-            if(val === 'food' || val === 'spot') openInput.classList.remove('hidden');
-            else openInput.classList.add('hidden');
+            const endTimeInput = document.getElementById('i-end-time');
+            const destWrapper = document.getElementById('wrapper-dest');
+            
+            // Labels
+            const titleInput = document.getElementById('i-title');
+            const locInput = document.getElementById('i-loc');
+            const destInput = document.getElementById('i-dest');
+
+            openInput.classList.add('hidden');
+            endTimeInput.classList.add('hidden');
+            destWrapper.classList.add('hidden');
+            
+            // Reset placeholders
+            titleInput.placeholder = "名稱";
+            locInput.placeholder = "地點 (Google Maps)";
+
+            if(val === 'food' || val === 'spot' || val === 'shop') {
+                openInput.classList.remove('hidden');
+            } else if (val === 'transport') {
+                endTimeInput.classList.remove('hidden');
+                destWrapper.classList.remove('hidden');
+                
+                // Specific placeholders for Transport
+                titleInput.placeholder = "交通方式/班次 (如: JR山手線, 巴士50號)";
+                locInput.placeholder = "出發地";
+                destInput.placeholder = "目的地";
+            }
         });
         renderHome();
     };
     function saveData() { localStorage.setItem(DB_KEY, JSON.stringify(allTrips)); }
+
+    // --- Helper for Date String (Fix Timezone Issue) ---
+    function getTargetDateStr(startStr, dayOffset) {
+        const parts = startStr.split('-');
+        const d = new Date(parts[0], parts[1]-1, parts[2]);
+        d.setDate(d.getDate() + dayOffset);
+        
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        return `${yyyy}-${mm}-${dd}`;
+    }
 
     // --- 匯率 ---
     async function fetchRate() {
@@ -722,10 +782,8 @@
             document.getElementById('weather-loc').innerText = "請建立新旅程時輸入";
             return;
         }
-
-        const targetDate = new Date(currentTrip.startDate);
-        targetDate.setDate(targetDate.getDate() + appState.dayIdx);
-        const dateStr = targetDate.toISOString().split('T')[0];
+        
+        const dateStr = getTargetDateStr(currentTrip.startDate, appState.dayIdx);
 
         let lat = currentTrip.lat, lon = currentTrip.lon;
         if (!lat || !lon) {
@@ -891,7 +949,6 @@
     function saveFlight(dir, field, val) {
         currentTrip.flights[dir][field] = val; saveData();
     }
-    // 計算飛行時間 (UTC)
     function calcDuration(t1, tz1, t2, tz2) {
         if(!t1 || !t2) return '';
         const getUtcMin = (time, tz) => {
@@ -902,7 +959,7 @@
         const m2 = getUtcMin(t2, tz2||8);
         
         let diff = m2 - m1;
-        if (diff < 0) diff += 24 * 60; // 簡單跨日處理
+        if (diff < 0) diff += 24 * 60; 
         
         const h = Math.floor(diff/60);
         const m = diff % 60;
@@ -1004,7 +1061,6 @@
                             <div style="font-weight:bold; color:var(--text);">${t.name}</div>
                             <div style="font-size:0.8rem; color:var(--text-light);">${t.date || '未定日期'}</div>
                             ${t.order ? `<div style="font-size:0.75rem; color:var(--primary);">#${t.order}</div>` : ''}
-                            ${t.note ? `<div style="font-size:0.75rem; color:var(--text-light); margin-top:2px;">備註: ${t.note}</div>` : ''}
                         </div>
                     </div>
                     <div>
@@ -1111,10 +1167,9 @@
         const moneyContainer = document.getElementById('day-tabs-money');
         dayContainer.innerHTML = ''; moneyContainer.innerHTML = '';
         
-        const startDate = new Date(currentTrip.startDate);
-
         for(let i=0; i<currentTrip.days; i++) {
-            const d = new Date(startDate); d.setDate(startDate.getDate() + i);
+            const dateStr = getTargetDateStr(currentTrip.startDate, i);
+            const d = new Date(dateStr);
             const m = d.getMonth() + 1;
             const date = d.getDate();
             const week = d.toLocaleDateString('zh-TW', { weekday: 'short' });
@@ -1142,7 +1197,7 @@
         const nightStayContainer = document.getElementById('night-stay-container');
         list.innerHTML = ''; flightContainer.innerHTML = ''; nightStayContainer.innerHTML = '';
 
-        // Flight Card (Timezone Calc)
+        // 1. 機票卡片
         let fData = null, title = '';
         if (appState.dayIdx === 0 && currentTrip.flights.out.code) {
             fData = currentTrip.flights.out; title = '去程 OUTBOUND';
@@ -1173,38 +1228,120 @@
                 </div>`;
         }
 
-        // Itinerary Items
-        const items = currentTrip.itinerary.filter(i => i.dayIdx === appState.dayIdx);
-        const iconMap = { spot:'icon-spot', food:'icon-food', shop:'icon-nav-shop', transport:'icon-transport', hotel:'icon-house', other:'icon-star' };
+        // 2. 整合行程
+        const currentDateStr = getTargetDateStr(currentTrip.startDate, appState.dayIdx);
+
+        let mixedList = [];
+
+        // A. 一般行程
+        currentTrip.itinerary.filter(i => i.dayIdx === appState.dayIdx).forEach(i => {
+            mixedList.push({ ...i, source: 'itinerary' });
+        });
+
+        // B. 門票
+        currentTrip.tickets.filter(t => t.date === currentDateStr).forEach(t => {
+            mixedList.push({
+                id: t.id,
+                time: '09:00',
+                title: t.name,
+                type: 'ticket',
+                note: t.note,
+                source: 'ticket',
+                displayTime: '票券'
+            });
+        });
+
+        // C. 包車
+        currentTrip.charters.filter(c => c.date === currentDateStr).forEach(c => {
+            mixedList.push({
+                id: c.id,
+                time: c.time || '08:00',
+                title: `${c.type}: ${c.from} ➝ ${c.to}`,
+                type: 'charter',
+                note: c.note,
+                source: 'charter',
+                displayTime: c.time
+            });
+        });
+
+        mixedList.sort((a,b) => a.time.localeCompare(b.time));
+
+        const iconMap = { 
+            spot:'icon-spot', food:'icon-food', shop:'icon-nav-shop', 
+            transport:'icon-transport', hotel:'icon-house', other:'icon-star',
+            ticket:'icon-ticket', charter:'icon-car' 
+        };
         
-        items.forEach(item => {
-            const mapBtn = item.loc ? `<button class="btn-ghost" onclick="openMap(event, '${item.loc}')"><svg class="icon-svg icon-sm"><use href="#icon-pin"></use></svg></button>` : '';
+        mixedList.forEach(item => {
+            const mapBtn = item.loc ? `<button class="btn-ghost" onclick="event.stopPropagation(); openMap(event, '${item.loc}')"><svg class="icon-svg icon-sm"><use href="#icon-pin"></use></svg></button>` : '';
             const typeClass = `type-${item.type}`;
+            
+            let displayTime = item.displayTime || item.time;
+            let displayTitle = item.title;
+            let displaySub = "";
+
+            // --- 交通類別特別顯示優化 ---
+            if (item.type === 'transport') {
+                 if (item.endTime) {
+                    displayTime += `\n<span class="end-time">${item.endTime}</span>`;
+                }
+                if (item.dest) {
+                    // Arrow format for transport
+                    displaySub = `<div style="font-size:0.85rem; color:var(--text); margin-top:4px; display:flex; align-items:center; gap:5px;">
+                                    <span>${item.loc}</span>
+                                    <span style="color:var(--primary);">➝</span>
+                                    <span>${item.dest}</span>
+                                  </div>`;
+                } else {
+                    // Fallback if no dest set
+                    displaySub = `<div style="font-size:0.85rem; color:var(--text); margin-top:2px;">${item.loc}</div>`;
+                }
+            } else {
+                // Standard items
+                displaySub = item.type !== 'charter' && item.type !== 'ticket' ? `<div style="font-size:0.8rem; color:var(--text-light); margin-top:2px;">${item.loc||''}</div>` : '';
+            }
+            
             const openTime = item.open ? `<div style="font-size:0.75rem; color:#E67C73; margin-top:2px;">🕒 ${item.open}</div>` : '';
 
+            let clickAction = `editItinerary(${item.id})`;
+            if(item.source === 'ticket') clickAction = `openTicketModal(${item.id})`;
+            if(item.source === 'charter') clickAction = `openCharterModal(${item.id})`;
+
+            // Delete button logic
+            let deleteBtnHtml = '';
+            if(item.source === 'itinerary') {
+                deleteBtnHtml = `<button class="btn-ghost" onclick="event.stopPropagation(); deleteItineraryItem(${item.id})" style="color:#e57373;">
+                                    <svg class="icon-svg icon-sm"><use href="#icon-trash"></use></svg>
+                                 </button>`;
+            }
+
             list.innerHTML += `
-                <div class="timeline-item" onclick="editItinerary(${item.id})">
-                    <div class="time-bubble">${item.time}</div>
+                <div class="timeline-item" onclick="${clickAction}">
+                    <div class="time-bubble">${displayTime}</div>
                     <div class="it-card ${typeClass}">
                         <div class="it-icon"><svg class="icon-svg icon-sm"><use href="#${iconMap[item.type]||'icon-star'}"></use></svg></div>
-                        <div style="flex:1;">
-                            <div style="font-weight:bold; color:var(--text); margin-bottom:2px;">${item.title}</div>
+                        <div style="flex:1; min-width:0;">
+                            <div style="font-weight:bold; color:var(--text); margin-bottom:2px; word-wrap:break-word;">${displayTitle}</div>
+                            ${displaySub}
                             ${openTime}
-                            <div style="font-size:0.85rem; color:var(--text); white-space:pre-wrap; margin-top:4px;">${item.note || ''}</div>
+                            <div style="font-size:0.85rem; color:var(--text); white-space:pre-wrap; margin-top:4px; opacity:0.8;">${item.note || ''}</div>
                         </div>
-                        ${mapBtn}
+                        <div class="it-actions">
+                            ${mapBtn}
+                            ${deleteBtnHtml}
+                        </div>
                     </div>
                 </div>`;
         });
 
-        // Bottom Hotel Logic
-        const currentD = new Date(currentTrip.startDate);
-        currentD.setDate(currentD.getDate() + appState.dayIdx);
+        // 3. 當晚住宿
         const stay = currentTrip.hotels.find(h => {
-            const start = new Date(h.date);
-            const end = new Date(h.date);
-            end.setDate(end.getDate() + parseInt(h.days));
-            return currentD >= start && currentD < end;
+            const checkIn = new Date(h.date);
+            const checkOut = new Date(h.date);
+            checkOut.setDate(checkOut.getDate() + parseInt(h.days));
+            
+            const currentD = new Date(currentDateStr);
+            return currentD >= checkIn && currentD < checkOut;
         });
 
         if(stay) {
@@ -1223,48 +1360,144 @@
     function openNewItinerary() {
         appState.editId = null;
         document.getElementById('modal-title-itinerary').innerText = "✨ 新增行程";
-        ['i-time','i-title','i-loc','i-note','i-open'].forEach(id=>document.getElementById(id).value='');
-        document.getElementById('i-open').classList.add('hidden'); // Default hide
+        ['i-time','i-title','i-loc','i-note','i-open','i-end-time','i-dest'].forEach(id=>document.getElementById(id).value='');
+        
+        // Reset default type
+        const typeSelect = document.getElementById('i-type');
+        typeSelect.value = 'spot';
+        
+        // Trigger event manually to reset visibility
+        const event = new Event('change');
+        typeSelect.dispatchEvent(event);
+
         openModal('itinerary');
     }
+
     function editItinerary(id) {
         const item = currentTrip.itinerary.find(i => i.id === id);
         if(!item) return;
         appState.editId = id;
         document.getElementById('modal-title-itinerary').innerText = "✏️ 編輯行程";
+        
         document.getElementById('i-time').value = item.time;
-        document.getElementById('i-type').value = item.type;
+        const typeSelect = document.getElementById('i-type');
+        typeSelect.value = item.type;
+        
+        // Trigger change to update inputs
+        const event = new Event('change');
+        typeSelect.dispatchEvent(event);
+
         document.getElementById('i-title').value = item.title;
-        document.getElementById('i-open').value = item.open || '';
         document.getElementById('i-loc').value = item.loc;
         document.getElementById('i-note').value = item.note || '';
-        
-        // Toggle Opening Hours visibility based on saved type
-        if(item.type === 'food' || item.type === 'spot') document.getElementById('i-open').classList.remove('hidden');
-        else document.getElementById('i-open').classList.add('hidden');
+        document.getElementById('i-open').value = item.open || '';
+        document.getElementById('i-end-time').value = item.endTime || '';
+        document.getElementById('i-dest').value = item.dest || '';
 
         openModal('itinerary');
     }
+
+    function deleteItineraryItem(id) {
+        if(confirm('確定要刪除這個行程嗎？')) {
+            currentTrip.itinerary = currentTrip.itinerary.filter(i => i.id !== id);
+            saveData();
+            renderItinerary();
+        }
+    }
+
+    function deleteItineraryItemInModal() {
+        if(!appState.editId) return; // New item, nothing to delete
+        if(confirm('確定刪除此行程？')) {
+            currentTrip.itinerary = currentTrip.itinerary.filter(i => i.id !== appState.editId);
+            saveData();
+            closeModal('itinerary');
+            renderItinerary();
+        }
+    }
+
     function saveItinerary() {
         const time = document.getElementById('i-time').value;
         const title = document.getElementById('i-title').value;
         if(!time || !title) return;
         
         const newData = {
-            id: appState.editId || Date.now(), dayIdx: appState.dayIdx, time,
-            type: document.getElementById('i-type').value, title,
+            id: appState.editId || Date.now(), 
+            dayIdx: appState.dayIdx, 
+            time,
+            type: document.getElementById('i-type').value, 
+            title,
             open: document.getElementById('i-open').value,
-            loc: document.getElementById('i-loc').value, note: document.getElementById('i-note').value
+            loc: document.getElementById('i-loc').value, 
+            note: document.getElementById('i-note').value,
+            endTime: document.getElementById('i-end-time').value,
+            dest: document.getElementById('i-dest').value
         };
 
         if(appState.editId) {
             const idx = currentTrip.itinerary.findIndex(i => i.id === appState.editId);
             if(idx!==-1) currentTrip.itinerary[idx] = newData;
         } else { currentTrip.itinerary.push(newData); }
+        
         currentTrip.itinerary.sort((a,b)=>a.time.localeCompare(b.time));
         saveData(); closeModal('itinerary'); renderItinerary();
     }
 
+    // --- Shopping (Updated) ---
+    function addShoppingItem() {
+        const input = document.getElementById('shop-input');
+        const price = document.getElementById('shop-price');
+        const loc = document.getElementById('shop-loc');
+        const fileInput = document.getElementById('shop-img');
+        if(!input.value) return;
+
+        const save = (img) => {
+            currentTrip.shopping.push({ 
+                id:Date.now(), 
+                text:input.value, 
+                price:price.value, 
+                location: loc.value, 
+                checked:false, 
+                image:img 
+            });
+            saveData(); 
+            input.value = ''; price.value = ''; loc.value=''; fileInput.value = ''; 
+            renderShopping();
+        };
+
+        if(fileInput.files[0]) {
+            const r = new FileReader();
+            r.onload = e => {
+                const img = new Image();
+                img.onload = () => {
+                    const c = document.createElement('canvas'); const ctx = c.getContext('2d');
+                    const s = 300/img.width; c.width=300; c.height=img.height*s;
+                    ctx.drawImage(img,0,0,c.width,c.height); save(c.toDataURL('image/jpeg',0.5));
+                }; img.src = e.target.result;
+            }; r.readAsDataURL(fileInput.files[0]);
+        } else save(null);
+    }
+
+    function renderShopping() {
+        const list = document.getElementById('list-shopping'); list.innerHTML = '';
+        currentTrip.shopping.forEach(item => {
+            const imgHtml = item.image ? `<img src="${item.image}" style="width:50px; height:50px; border-radius:10px; object-fit:cover; margin-right:10px;" onclick="window.open('${item.image}')">` : '';
+            const locHtml = item.location ? `<span style="font-size:0.8rem; color:var(--text-light); margin-left:8px;">📍 ${item.location}</span>` : '';
+            
+            list.innerHTML += `
+                <div class="card check-item ${item.checked?'checked':''}" style="padding:15px; display:flex; align-items:center;" onclick="toggleCheck('shopping', ${item.id})">
+                    <div class="check-box"></div>
+                    ${imgHtml}
+                    <div style="flex:1;">
+                        <div class="shop-text-content" style="font-weight:bold; color:var(--text);">${item.text}</div>
+                        <div class="shop-text-content" style="font-size:0.85rem; color:var(--accent);">
+                            ${item.price||''} ${locHtml}
+                        </div>
+                    </div>
+                    <button class="btn-del" onclick="event.stopPropagation(); delItem('shopping', ${item.id})">移除</button>
+                </div>`;
+        });
+    }
+    
     // --- Money ---
     function openMoneyModal() {
         document.getElementById('m-title').value = '';
@@ -1303,7 +1536,7 @@
             id: Date.now(), dayIdx: appState.dayIdx,
             date: document.getElementById('m-date').value,
             title, cost: parseFloat(cost), curr: document.getElementById('m-curr').value,
-            payer: moneyState.payer, method: moneyState.method
+            payer: moneyState.payer, method: moneyState.method || 'cash'
         });
         saveData(); closeModal('money'); renderMoney();
     }
@@ -1330,36 +1563,47 @@
         document.getElementById('day-total').innerText = total.toLocaleString();
     }
     
-    // --- Money Analysis (Fix) ---
+    // --- Money Analysis ---
     function renderMoneyAnalysis() {
         const container = document.getElementById('analysis-content'); container.innerHTML = '';
         let stats = {}; 
         let grandTotal = 0;
         
-        // Initialize stats for all members
-        currentTrip.members.forEach(m => { 
-            stats[m] = { total: 0 }; 
-        });
+        currentTrip.members.forEach(m => { stats[m] = { total: 0, cash: 0, card: 0, other: 0 }; });
 
-        // Accumulate costs
         currentTrip.money.forEach(m => {
-            // Default to first member if payer is missing (legacy data support)
             const p = m.payer || currentTrip.members[0];
-            if (!stats[p]) stats[p] = { total: 0 }; // Just in case
-            
+            const method = m.method || 'cash';
             const cost = parseFloat(m.cost);
-            stats[p].total += cost; 
+            if (!stats[p]) stats[p] = { total: 0, cash: 0, card: 0, other: 0 };
+            stats[p].total += cost;
+            if(stats[p][method] !== undefined) stats[p][method] += cost;
+            else stats[p]['other'] += cost;
             grandTotal += cost;
         });
 
-        // Render Cards
+        container.innerHTML += `<div style="font-weight:bold; margin-bottom:15px; color:var(--primary);">📊 成員支出詳細</div>`;
         Object.keys(stats).forEach(member => {
+            const s = stats[member];
             container.innerHTML += `
-                <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
-                    <div style="font-weight:bold; font-size:1.1rem;">👤 ${member}</div>
-                    <div style="text-align:right;">
-                        <div style="font-size:0.8rem; color:var(--text-light);">先付總額</div>
-                        <div style="font-weight:900; font-size:1.3rem; color:var(--primary);">$${stats[member].total.toLocaleString()}</div>
+                <div class="card" style="padding:15px; margin-bottom:15px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; border-bottom:1px solid #F0F0F0; padding-bottom:10px;">
+                        <div style="font-weight:900; font-size:1.1rem; color:var(--text);">👤 ${member}</div>
+                        <div style="font-weight:900; font-size:1.3rem; color:var(--primary);">$${s.total.toLocaleString()}</div>
+                    </div>
+                    <div style="display:flex; gap:10px; font-size:0.85rem;">
+                        <div class="col" style="background:#FFF8E1; padding:8px; border-radius:8px; text-align:center;">
+                            <div style="color:#F57C00; font-weight:bold;">現金</div>
+                            <div>$${s.cash.toLocaleString()}</div>
+                        </div>
+                        <div class="col" style="background:#E3F2FD; padding:8px; border-radius:8px; text-align:center;">
+                            <div style="color:#1976D2; font-weight:bold;">信用卡</div>
+                            <div>$${s.card.toLocaleString()}</div>
+                        </div>
+                        <div class="col" style="background:#F5F5F5; padding:8px; border-radius:8px; text-align:center;">
+                            <div style="color:#666; font-weight:bold;">其他</div>
+                            <div>$${s.other.toLocaleString()}</div>
+                        </div>
                     </div>
                 </div>`;
         });
@@ -1369,46 +1613,6 @@
                 <div style="font-size:0.9rem; color:var(--text-light);">旅程總支出</div>
                 <div style="font-size:2rem; font-weight:900; color:var(--primary-dark);">$${grandTotal.toLocaleString()}</div>
             </div>`;
-    }
-
-    // --- Shopping ---
-    function addShoppingItem() {
-        const input = document.getElementById('shop-input');
-        const price = document.getElementById('shop-price');
-        const fileInput = document.getElementById('shop-img');
-        if(!input.value) return;
-
-        const save = (img) => {
-            currentTrip.shopping.push({ id:Date.now(), text:input.value, price:price.value, checked:false, image:img });
-            saveData(); input.value = ''; price.value = ''; fileInput.value = ''; renderShopping();
-        };
-
-        if(fileInput.files[0]) {
-            const r = new FileReader();
-            r.onload = e => {
-                const img = new Image();
-                img.onload = () => {
-                    const c = document.createElement('canvas'); const ctx = c.getContext('2d');
-                    const s = 300/img.width; c.width=300; c.height=img.height*s;
-                    ctx.drawImage(img,0,0,c.width,c.height); save(c.toDataURL('image/jpeg',0.5));
-                }; img.src = e.target.result;
-            }; r.readAsDataURL(fileInput.files[0]);
-        } else save(null);
-    }
-    function renderShopping() {
-        const list = document.getElementById('list-shopping'); list.innerHTML = '';
-        currentTrip.shopping.forEach(item => {
-            const imgHtml = item.image ? `<img src="${item.image}" style="width:50px; height:50px; border-radius:10px; object-fit:cover; margin-right:10px;" onclick="window.open('${item.image}')">` : '';
-            list.innerHTML += `
-                <div class="card" style="padding:15px; display:flex; align-items:center;">
-                    ${imgHtml}
-                    <div style="flex:1;">
-                        <div style="font-weight:bold; color:var(--text);">${item.text}</div>
-                        <div style="font-size:0.85rem; color:var(--accent);">${item.price||''}</div>
-                    </div>
-                    <button class="btn-del" onclick="delItem('shopping', ${item.id})">移除</button>
-                </div>`;
-        });
     }
 
     // --- Utils ---
