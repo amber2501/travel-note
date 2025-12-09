@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>旅。計畫</title>
+    <title>旅遊行程規劃</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     
@@ -20,37 +20,39 @@
             --text-light: #90A4AE;
             --danger: #FF8A80;
             --nav-height: 60px;
-            --header-height: 50px;
-            --day-bar-height: 50px;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        
         body {
             margin: 0; padding: 0;
             font-family: 'Noto Sans TC', sans-serif;
             background: var(--bg);
             color: var(--text-main);
-            padding-bottom: calc(var(--nav-height) + 20px); /* 避開底部導航 */
+            padding-bottom: calc(var(--nav-height) + 80px); /* 預留底部空間 */
             -webkit-overflow-scrolling: touch;
         }
 
-        /* --- 共用元件 --- */
+        /* --- 隱藏/顯示控制 --- */
         .hidden { display: none !important; }
         
+        /* --- 按鈕與輸入框 --- */
         .btn {
             border: none; border-radius: 8px;
-            padding: 10px 16px; font-size: 1rem;
+            padding: 12px 16px; font-size: 1rem;
             cursor: pointer; transition: 0.2s;
             display: flex; align-items: center; justify-content: center;
         }
         .btn-primary { background: var(--primary); color: white; width: 100%; box-shadow: 0 4px 10px rgba(137, 207, 240, 0.3); }
-        .btn-icon { background: transparent; color: var(--text-light); font-size: 1.2rem; }
+        .btn-icon { background: transparent; color: #CFD8DC; font-size: 1.5rem; padding: 5px; }
+        .btn-icon:active { color: var(--danger); }
         
         input, select {
             width: 100%; padding: 12px;
             border: 1px solid #ECEFF1; border-radius: 8px;
             background: #FAFAFA; font-size: 16px; outline: none;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            -webkit-appearance: none; /* iOS 優化 */
         }
         input:focus { border-color: var(--primary); background: #FFF; }
 
@@ -58,19 +60,28 @@
         #setup-view {
             height: 100vh; display: flex; flex-direction: column;
             justify-content: center; padding: 40px; text-align: center;
-            background: white; z-index: 2000; position: fixed; top: 0; width: 100%;
+            background: white; z-index: 2000; position: fixed; top: 0; left: 0; width: 100%;
         }
 
-        /* --- 頂部 Day 切換列 (Sticky) --- */
+        /* --- 頂部固定區 --- */
         .sticky-header {
             position: sticky; top: 0; z-index: 100;
             background: var(--bg);
+            padding-top: env(safe-area-inset-top);
             box-shadow: 0 2px 10px rgba(0,0,0,0.03);
         }
+        
+        .header-title {
+            padding: 15px 20px 5px; 
+            font-size: 1.2rem; font-weight: bold; 
+            color: var(--primary);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+
         .day-scroller {
             display: flex; overflow-x: auto;
             padding: 10px 15px; gap: 10px;
-            scrollbar-width: none; /* Firefox */
+            scrollbar-width: none;
         }
         .day-scroller::-webkit-scrollbar { display: none; }
         
@@ -86,117 +97,499 @@
         .day-chip.active {
             background: var(--primary); color: white;
             box-shadow: 0 2px 8px rgba(137, 207, 240, 0.4);
+            font-weight: 500;
         }
 
-        /* --- 卡片樣式 --- */
+        /* --- 列表卡片 --- */
         .container { padding: 15px; }
         .card {
             background: var(--card); border-radius: 12px;
             padding: 16px; margin-bottom: 15px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-            position: relative;
         }
         
-        /* 標籤 Tag */
         .tag {
             display: inline-block; padding: 2px 8px;
             border-radius: 4px; font-size: 0.75rem;
-            margin-bottom: 4px; color: #555;
+            margin-bottom: 6px; color: #555;
         }
-        .tag.flight { background: #E1F5FE; color: #0288D1; }
+        /* 標籤顏色 */
+        .tag.flight { background: #E3F2FD; color: #1565C0; }
         .tag.food { background: #FFF3E0; color: #EF6C00; }
         .tag.hotel { background: #E8F5E9; color: #2E7D32; }
         .tag.transport { background: #F3E5F5; color: #7B1FA2; }
         .tag.spot { background: #FCE4EC; color: #C2185B; }
         .tag.shop { background: #FFF8E1; color: #FBC02D; }
+        .tag.fun { background: #E0F2F1; color: #00695C; }
+        .tag.other { background: #ECEFF1; color: #455A64; }
 
-        /* 列表內容 */
         .item-row { display: flex; justify-content: space-between; align-items: flex-start; }
-        .item-main { flex: 1; }
-        .item-time { font-weight: 700; color: var(--primary); margin-right: 10px; font-size: 0.9rem;}
-        .item-title { font-size: 1rem; font-weight: 500; margin: 0; }
-        .item-sub { font-size: 0.85rem; color: var(--text-light); margin-top: 4px; display: flex; align-items: center; gap: 5px; }
+        .item-main { flex: 1; padding-right: 10px; }
+        .item-time { font-weight: 700; color: var(--primary); margin-right: 12px; font-size: 0.95rem; min-width: 45px;}
+        .item-title { font-size: 1rem; font-weight: 500; margin: 0 0 4px 0; color: #37474F; }
+        .item-sub { font-size: 0.85rem; color: var(--text-light); display: flex; align-items: center; gap: 5px; }
         .location-link { color: var(--primary); text-decoration: none; display: flex; align-items: center; }
 
-        /* 底部導航 */
+        /* --- 底部導航 --- */
         .bottom-nav {
             position: fixed; bottom: 0; left: 0; width: 100%;
             height: var(--nav-height); background: white;
             display: flex; justify-content: space-around; align-items: center;
             border-top: 1px solid #EEE; z-index: 1000;
+            padding-bottom: env(safe-area-inset-bottom);
         }
         .nav-item {
             text-align: center; color: #B0BEC5; font-size: 0.7rem;
-            background: none; border: none; padding: 5px;
+            background: none; border: none; padding: 5px; flex: 1;
         }
         .nav-item.active { color: var(--primary); font-weight: 700; }
         .nav-icon { font-size: 1.4rem; display: block; margin-bottom: 2px; }
 
-        /* 浮動新增按鈕 (FAB) */
+        /* --- 浮動按鈕 FAB --- */
         .fab {
-            position: fixed; bottom: calc(var(--nav-height) + 15px); right: 20px;
-            width: 50px; height: 50px; border-radius: 50%;
+            position: fixed; bottom: calc(var(--nav-height) + 20px); right: 20px;
+            width: 56px; height: 56px; border-radius: 50%;
             background: var(--primary); color: white;
-            font-size: 24px; display: flex; align-items: center; justify-content: center;
-            box-shadow: 0 4px 12px rgba(137, 207, 240, 0.5);
-            z-index: 900;
+            font-size: 28px; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 4px 15px rgba(137, 207, 240, 0.6);
+            z-index: 900; border: none; cursor: pointer;
         }
+        .fab:active { transform: scale(0.95); }
 
-        /* 彈出視窗 (Modal) */
+        /* --- 彈出視窗 Modal --- */
         .modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.5); z-index: 1100;
             display: flex; align-items: center; justify-content: center;
+            backdrop-filter: blur(2px);
         }
         .modal-content {
-            background: white; width: 90%; max-width: 400px;
-            padding: 20px; border-radius: 16px;
+            background: white; width: 85%; max-width: 400px;
+            padding: 24px; border-radius: 20px;
             animation: popUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
-        @keyframes popUp { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes popUp { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .modal h3 { margin-top: 0; color: var(--primary); text-align: center; }
 
-        /* 清單樣式 */
+        /* --- 清單 Checkbox --- */
         .check-item {
             display: flex; align-items: center; padding: 12px 0;
             border-bottom: 1px solid #F0F0F0;
         }
-        .check-item input[type="checkbox"] { width: 20px; margin-right: 15px; margin-bottom: 0; }
+        .check-item input[type="checkbox"] { width: 22px; height: 22px; margin: 0 15px 0 0; }
         .check-item.checked span { text-decoration: line-through; color: #CFD8DC; }
-
     </style>
 </head>
 <body>
 
-    <!-- 0. 初始設定頁 (第一次進入顯示) -->
+    <!-- 0. 初始設定頁 -->
     <div id="setup-view" class="hidden">
-        <h2 style="color: var(--primary);">開啟一段新旅程 ✈️</h2>
-        <p style="color: #999; margin-bottom: 30px;">設定你的出發日期與天數</p>
-        <label style="text-align: left; display: block; margin-bottom: 5px;">出發日期</label>
-        <input type="date" id="setup-date">
-        <label style="text-align: left; display: block; margin-bottom: 5px;">天數</label>
-        <input type="number" id="setup-days" placeholder="例如: 5" value="3">
-        <button class="btn btn-primary" onclick="finishSetup()" style="margin-top: 20px;">開始規劃</button>
+        <h2 style="color: var(--primary); font-size: 1.8rem;">旅。計畫 ✈️</h2>
+        <p style="color: #999; margin-bottom: 40px;">極簡風格的旅行助手</p>
+        
+        <div style="text-align: left; width: 100%; max-width: 300px; margin: 0 auto;">
+            <label style="color: #666; font-size: 0.9rem; margin-bottom: 5px; display: block;">出發日期</label>
+            <input type="date" id="setup-date">
+            
+            <label style="color: #666; font-size: 0.9rem; margin-bottom: 5px; display: block;">旅行天數</label>
+            <input type="number" id="setup-days" placeholder="例如: 5" value="3" inputmode="numeric">
+        </div>
+        
+        <button class="btn btn-primary" onclick="finishSetup()" style="margin-top: 30px;">開始規劃</button>
     </div>
 
     <!-- 1. 行程頁面 -->
     <div id="view-itinerary" class="view-section">
         <div class="sticky-header">
-            <div style="padding: 10px 20px 0; font-size:1.2rem; font-weight:bold; color:var(--primary);">行程規劃</div>
-            <div class="day-scroller" id="day-tabs-itinerary">
-                <!-- JS 產生日期按鈕 -->
-            </div>
+            <div class="header-title">行程規劃</div>
+            <div class="day-scroller" id="day-tabs-itinerary"></div>
         </div>
-        <div class="container" id="list-itinerary">
-            <!-- JS 產生行程列表 -->
-        </div>
+        <div class="container" id="list-itinerary"></div>
         <button class="fab" onclick="openModal('itinerary')">＋</button>
     </div>
 
     <!-- 2. 記帳頁面 -->
     <div id="view-money" class="view-section hidden">
         <div class="sticky-header">
-            <div style="padding: 10px 20px 0; display:flex; justify-content:space-between; align-items:center;">
-                <span style="font-size:1.2rem; font-weight:bold; color:var(--primary);">旅費記帳</span>
-                <span style="font-size:0.9rem;">當日總計: <b style="color:var(--text-main)" id="day-total">$0</b></span>
+            <div class="header-title">
+                <span>旅費記帳</span>
+                <span style="font-size:0.9rem; font-weight:normal;">當日: <b style="color:var(--text-main); font-size:1.1rem;" id="day-total">$0</b></span>
             </div>
-            <div class="day-scrolle
+            <div class="day-scroller" id="day-tabs-money"></div>
+        </div>
+        <div class="container" id="list-money"></div>
+        <button class="fab" onclick="openModal('money')">＋</button>
+    </div>
+
+    <!-- 3. 清單頁面 -->
+    <div id="view-packing" class="view-section hidden">
+        <div class="sticky-header">
+            <div class="header-title">行前準備 🎒</div>
+        </div>
+        <div class="container">
+            <div style="background: white; padding: 15px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.03);">
+                <div style="display:flex; gap:10px;">
+                    <input type="text" id="pack-input" placeholder="新增待辦事項..." style="margin-bottom:0;">
+                    <button class="btn btn-primary" style="width:auto; padding: 0 20px;" onclick="addPackItem()">新增</button>
+                </div>
+            </div>
+            
+            <div id="list-packing" style="background: white; padding: 0 15px; border-radius: 12px; min-height: 100px;"></div>
+            
+            <div style="margin-top: 50px; text-align: center;">
+                <button onclick="resetTrip()" style="background:transparent; border:1px solid #ddd; color:#999; padding:8px 20px; border-radius:20px; font-size: 0.8rem;">⚠ 重置所有資料</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: 新增行程 -->
+    <div id="modal-itinerary" class="modal hidden">
+        <div class="modal-content">
+            <h3>新增行程</h3>
+            <div style="display:flex; gap:10px;">
+                <input type="time" id="i-time" style="width:40%">
+                <select id="i-type" style="width:60%">
+                    <option value="spot">景點 🗻</option>
+                    <option value="food">餐廳 🍴</option>
+                    <option value="transport">交通 🚃</option>
+                    <option value="flight">航班 ✈️</option>
+                    <option value="hotel">住宿 🏨</option>
+                    <option value="shop">購物 🛍️</option>
+                </select>
+            </div>
+            <input type="text" id="i-title" placeholder="名稱 (例: 清水寺)">
+            <input type="text" id="i-loc" placeholder="地點 (點擊後開啟地圖)">
+            
+            <div style="display:flex; gap:10px; margin-top:10px;">
+                <button class="btn" style="background:#F5F5F5; color:#666; flex:1;" onclick="closeModal('itinerary')">取消</button>
+                <button class="btn btn-primary" style="flex:1;" onclick="saveItinerary()">儲存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: 新增記帳 -->
+    <div id="modal-money" class="modal hidden">
+        <div class="modal-content">
+            <h3>記一筆</h3>
+            <input type="text" id="m-title" placeholder="項目 (例: 拉麵)">
+            <div style="display:flex; gap:10px;">
+                <input type="number" id="m-cost" placeholder="金額" style="flex:1" inputmode="numeric">
+                <select id="m-cat" style="flex:1">
+                    <option value="food">飲食 🍱</option>
+                    <option value="transport">交通 🚕</option>
+                    <option value="shop">購物 🛍️</option>
+                    <option value="fun">娛樂 🎡</option>
+                    <option value="hotel">住宿 🏨</option>
+                    <option value="other">其他 📦</option>
+                </select>
+            </div>
+            <input type="text" id="m-payer" placeholder="誰先付的 (例: 我, 小明)">
+            
+            <div style="display:flex; gap:10px; margin-top:10px;">
+                <button class="btn" style="background:#F5F5F5; color:#666; flex:1;" onclick="closeModal('money')">取消</button>
+                <button class="btn btn-primary" style="flex:1;" onclick="saveMoney()">儲存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 底部導航列 -->
+    <nav class="bottom-nav">
+        <button class="nav-item active" onclick="switchView('itinerary')">
+            <span class="nav-icon">📅</span>行程
+        </button>
+        <button class="nav-item" onclick="switchView('money')">
+            <span class="nav-icon">💰</span>記帳
+        </button>
+        <button class="nav-item" onclick="switchView('packing')">
+            <span class="nav-icon">🎒</span>清單
+        </button>
+    </nav>
+
+<script>
+    // --- 核心資料 ---
+    const DB = {
+        SETTINGS: 'trip_v2_settings',
+        ITINERARY: 'trip_v2_itinerary',
+        MONEY: 'trip_v2_money',
+        PACKING: 'trip_v2_packing'
+    };
+
+    let appData = {
+        settings: JSON.parse(localStorage.getItem(DB.SETTINGS)) || null,
+        itinerary: JSON.parse(localStorage.getItem(DB.ITINERARY)) || [],
+        money: JSON.parse(localStorage.getItem(DB.MONEY)) || [],
+        packing: JSON.parse(localStorage.getItem(DB.PACKING)) || []
+    };
+
+    let state = {
+        dayIndex: 0,
+        currentView: 'itinerary'
+    };
+
+    // --- 啟動程式 ---
+    window.onload = function() {
+        if (!appData.settings) {
+            document.getElementById('setup-view').classList.remove('hidden');
+        } else {
+            initApp();
+        }
+    };
+
+    function finishSetup() {
+        const date = document.getElementById('setup-date').value;
+        const days = parseInt(document.getElementById('setup-days').value);
+        
+        if (!date || !days || days < 1) {
+            alert("請輸入正確的日期與天數");
+            return;
+        }
+
+        appData.settings = { startDate: date, days: days };
+        localStorage.setItem(DB.SETTINGS, JSON.stringify(appData.settings));
+        
+        document.getElementById('setup-view').classList.add('hidden');
+        initApp();
+    }
+
+    function initApp() {
+        // 預設今天日期對應的天數 (如果旅程進行中)
+        // 這裡暫時預設顯示第一天，讓邏輯簡單點
+        renderDayTabs();
+        renderItinerary();
+        renderMoney();
+        renderPacking();
+    }
+
+    function resetTrip() {
+        if(confirm("確定要刪除所有資料重新開始？(這會清空所有行程與記帳)")) {
+            localStorage.clear();
+            location.reload();
+        }
+    }
+
+    // --- 畫面切換與日期 ---
+    function switchView(viewName) {
+        state.currentView = viewName;
+        
+        // 切換內容區塊
+        document.querySelectorAll('.view-section').forEach(el => el.classList.add('hidden'));
+        document.getElementById('view-' + viewName).classList.remove('hidden');
+
+        // 切換底部按鈕狀態
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+
+        // 重新渲染該頁面資料
+        if(viewName === 'itinerary') renderItinerary();
+        if(viewName === 'money') renderMoney();
+        // 確保 Day Tabs 狀態正確
+        if(viewName !== 'packing') renderDayTabs();
+    }
+
+    function getDisplayDate(idx) {
+        const date = new Date(appData.settings.startDate);
+        date.setDate(date.getDate() + idx);
+        return (date.getMonth() + 1) + '/' + date.getDate();
+    }
+
+    function renderDayTabs() {
+        const createTabs = (containerId) => {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            for (let i = 0; i < appData.settings.days; i++) {
+                const btn = document.createElement('div');
+                btn.className = `day-chip ${i === state.dayIndex ? 'active' : ''}`;
+                btn.innerHTML = `Day ${i+1} <span class="date">${getDisplayDate(i)}</span>`;
+                btn.onclick = () => {
+                    state.dayIndex = i;
+                    renderDayTabs(); // 更新兩個頁面的 Tabs 狀態
+                    renderItinerary();
+                    renderMoney();
+                };
+                container.appendChild(btn);
+            }
+        };
+        createTabs('day-tabs-itinerary');
+        createTabs('day-tabs-money');
+    }
+
+    // --- Modal 控制 ---
+    function openModal(type) { document.getElementById('modal-' + type).classList.remove('hidden'); }
+    function closeModal(type) { document.getElementById('modal-' + type).classList.add('hidden'); }
+
+    // --- 1. 行程邏輯 ---
+    function saveItinerary() {
+        const time = document.getElementById('i-time').value;
+        const type = document.getElementById('i-type').value;
+        const title = document.getElementById('i-title').value;
+        const loc = document.getElementById('i-loc').value;
+
+        if (!time || !title) { alert("請填寫時間與名稱"); return; }
+
+        appData.itinerary.push({
+            id: Date.now(),
+            dayIdx: state.dayIndex,
+            time, type, title, loc
+        });
+        
+        appData.itinerary.sort((a, b) => a.time.localeCompare(b.time));
+        localStorage.setItem(DB.ITINERARY, JSON.stringify(appData.itinerary));
+        
+        closeModal('itinerary');
+        renderItinerary();
+        
+        // 清空
+        document.getElementById('i-title').value = '';
+        document.getElementById('i-loc').value = '';
+    }
+
+    function renderItinerary() {
+        const list = document.getElementById('list-itinerary');
+        list.innerHTML = '';
+        
+        const currentItems = appData.itinerary.filter(i => i.dayIdx === state.dayIndex);
+        
+        if (currentItems.length === 0) {
+            list.innerHTML = '<div style="text-align:center; color:#CCC; padding:50px 0;">🍃 本日尚未安排行程</div>';
+            return;
+        }
+
+        const typeNames = { spot:'景點', food:'餐廳', transport:'交通', flight:'航班', hotel:'住宿', shop:'購物' };
+
+        currentItems.forEach(item => {
+            const locHtml = item.loc ? 
+                `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(item.loc)}" target="_blank" class="location-link">📍 ${item.loc}</a>` : '';
+
+            list.innerHTML += `
+                <div class="card item-row">
+                    <div class="item-time">${item.time}</div>
+                    <div class="item-main">
+                        <span class="tag ${item.type}">${typeNames[item.type] || item.type}</span>
+                        <h3 class="item-title">${item.title}</h3>
+                        <div class="item-sub">${locHtml}</div>
+                    </div>
+                    <button class="btn-icon" onclick="delItem('itinerary', ${item.id})">×</button>
+                </div>
+            `;
+        });
+    }
+
+    // --- 2. 記帳邏輯 ---
+    function saveMoney() {
+        const title = document.getElementById('m-title').value;
+        const cost = document.getElementById('m-cost').value;
+        const type = document.getElementById('m-cat').value;
+        const payer = document.getElementById('m-payer').value;
+
+        if (!title || !cost) { alert("請輸入項目與金額"); return; }
+
+        appData.money.push({
+            id: Date.now(),
+            dayIdx: state.dayIndex,
+            title, cost: Number(cost), type, payer
+        });
+
+        localStorage.setItem(DB.MONEY, JSON.stringify(appData.money));
+        closeModal('money');
+        renderMoney();
+
+        document.getElementById('m-title').value = '';
+        document.getElementById('m-cost').value = '';
+        document.getElementById('m-payer').value = '';
+    }
+
+    function renderMoney() {
+        const list = document.getElementById('list-money');
+        const totalEl = document.getElementById('day-total');
+        list.innerHTML = '';
+
+        const currentItems = appData.money.filter(i => i.dayIdx === state.dayIndex);
+        let total = 0;
+
+        const typeNames = { food:'飲食', transport:'交通', shop:'購物', fun:'娛樂', hotel:'住宿', other:'其他' };
+
+        // 反向排序，最新的在上面
+        [...currentItems].reverse().forEach(item => {
+            total += item.cost;
+            const payerInfo = item.payer ? `<span style="margin-left:5px; color:#90A4AE;">(由 ${item.payer} 先付)</span>` : '';
+            
+            list.innerHTML += `
+                <div class="card item-row">
+                    <div class="item-main">
+                        <span class="tag ${item.type}">${typeNames[item.type] || item.type}</span>
+                        <h3 class="item-title">${item.title}</h3>
+                        <div class="item-sub">${payerInfo}</div>
+                    </div>
+                    <div style="text-align:right; display:flex; flex-direction:column; justify-content:space-between; align-items:flex-end;">
+                        <div style="font-weight:bold; color:var(--text-main); font-size:1.1rem;">$${item.cost}</div>
+                        <button class="btn-icon" style="font-size:1.2rem;" onclick="delItem('money', ${item.id})">×</button>
+                    </div>
+                </div>
+            `;
+        });
+
+        if (currentItems.length === 0) list.innerHTML = '<div style="text-align:center; color:#CCC; padding:50px 0;">☁️ 本日無消費紀錄</div>';
+        totalEl.innerText = '$' + total.toLocaleString();
+    }
+
+    // --- 3. 清單邏輯 ---
+    function addPackItem() {
+        const input = document.getElementById('pack-input');
+        const val = input.value.trim();
+        if(!val) return;
+        
+        appData.packing.push({ id: Date.now(), text: val, checked: false });
+        localStorage.setItem(DB.PACKING, JSON.stringify(appData.packing));
+        input.value = '';
+        renderPacking();
+    }
+
+    function renderPacking() {
+        const list = document.getElementById('list-packing');
+        list.innerHTML = '';
+        
+        appData.packing.forEach(item => {
+            list.innerHTML += `
+                <div class="check-item ${item.checked ? 'checked' : ''}">
+                    <input type="checkbox" ${item.checked ? 'checked' : ''} onchange="togglePack(${item.id})">
+                    <span style="flex:1;">${item.text}</span>
+                    <button class="btn-icon" onclick="delItem('packing', ${item.id})">×</button>
+                </div>
+            `;
+        });
+        
+        if (appData.packing.length === 0) list.innerHTML = '<div style="text-align:center; color:#DDD; padding:20px;">新增你的行李清單吧</div>';
+    }
+
+    function togglePack(id) {
+        const item = appData.packing.find(p => p.id === id);
+        if(item) {
+            item.checked = !item.checked;
+            localStorage.setItem(DB.PACKING, JSON.stringify(appData.packing));
+            renderPacking();
+        }
+    }
+
+    // --- 通用刪除 ---
+    function delItem(type, id) {
+        if(!confirm("確定刪除此項目？")) return;
+
+        if (type === 'itinerary') {
+            appData.itinerary = appData.itinerary.filter(i => i.id !== id);
+            localStorage.setItem(DB.ITINERARY, JSON.stringify(appData.itinerary));
+            renderItinerary();
+        } else if (type === 'money') {
+            appData.money = appData.money.filter(i => i.id !== id);
+            localStorage.setItem(DB.MONEY, JSON.stringify(appData.money));
+            renderMoney();
+        } else if (type === 'packing') {
+            appData.packing = appData.packing.filter(i => i.id !== id);
+            localStorage.setItem(DB.PACKING, JSON.stringify(appData.packing));
+            renderPacking();
+        }
+    }
+
+</script>
+</body>
+</html>
