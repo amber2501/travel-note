@@ -1,3 +1,82 @@
+// --- 函式: 行程規劃紀錄功能優化 ---
+
+function renderItinerary() {
+    loadItineraryDetails(); // 載入儲存的行程細節
+    const list = document.getElementById('itinerary-list');
+    if (!list) return;
+
+    list.innerHTML = '';
+    
+    // ... (檢查 tripSettings.duration 的邏輯不變) ...
+    if (tripSettings.duration === 0) {
+        list.innerHTML = `<p class="card" style="text-align:center;">請先在「旅程設定」頁面設定天數。</p>`;
+        return;
+    }
+    
+    for (let i = 1; i <= tripSettings.duration; i++) {
+        const dayKey = `day_${i}`;
+        const savedContent = itineraryDetails[dayKey] || 
+                             `<div style="color:#888;">尚未規劃。請點擊「編輯」開始填寫...</div>`;
+        
+        let displayDate = '';
+        if (tripSettings.startDate) {
+            const date = new Date(tripSettings.startDate);
+            date.setDate(date.getDate() + i - 1);
+            displayDate = ` (${date.getMonth() + 1}/${date.getDate()})`;
+        }
+
+        const card = document.createElement('div');
+        card.className = 'card day-card';
+        card.innerHTML = `
+            <div class="card-header">
+                <h4>Day ${i}${displayDate}</h4>
+                <button class="edit-btn primary-btn-small" data-day="${dayKey}" onclick="toggleEditMode('${dayKey}')">✏️ 編輯</button>
+            </div>
+            <div 
+                id="${dayKey}" 
+                class="itinerary-content" 
+                contenteditable="false"
+            >${savedContent}</div>
+        `;
+        list.appendChild(card);
+    }
+}
+
+
+// --- 核心 UX 優化函式：切換編輯模式 ---
+window.toggleEditMode = function(dayKey) {
+    const contentDiv = document.getElementById(dayKey);
+    const card = contentDiv.closest('.day-card');
+    const button = card.querySelector('.edit-btn');
+    
+    if (contentDiv.getAttribute('contenteditable') === 'false') {
+        // 進入編輯模式 (UX: 啟用編輯，切換按鈕，強調介面)
+        contentDiv.setAttribute('contenteditable', 'true');
+        contentDiv.focus(); // 自動聚焦，方便使用者開始輸入
+        card.classList.add('editing-mode');
+        button.textContent = '💾 儲存';
+        button.classList.add('save-mode');
+
+    } else {
+        // 退出編輯模式 (UX: 儲存內容，切換按鈕，恢復介面)
+        
+        // 1. 儲存內容到 JS 數據和 localStorage
+        itineraryDetails[dayKey] = contentDiv.innerHTML;
+        saveItineraryDetails(); // <-- 呼叫儲存函式
+        
+        // 2. 恢復顯示狀態
+        contentDiv.setAttribute('contenteditable', 'false');
+        card.classList.remove('editing-mode');
+        button.textContent = '✏️ 編輯';
+        button.classList.remove('save-mode');
+        
+        alert('✅ 行程已成功儲存！'); // <-- 給予明確的回饋
+    }
+};
+
+// ... (其他 app.js 函式，如 switchPage, setup-form listener 保持不變) ...
+
+
 // --- 應用程式全域變數 ---
 let tripSettings = {
     destination: '',
