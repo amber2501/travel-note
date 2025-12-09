@@ -2,33 +2,405 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>旅程規劃 & 家計簿</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>旅遊行程規劃</title>
+    <!-- 引入 Google Fonts: Noto Sans TC -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #89CFF0; /* 水藍色 */
+            --secondary-color: #E0F7FA; /* 極淺藍背景 */
+            --text-color: #546E7A; /* 灰藍色文字，比純黑柔和 */
+            --bg-color: #FAFAFA; /* 近乎白的背景 */
+            --card-bg: #FFFFFF;
+            --danger-color: #FF8A80;
+            --shadow: 0 4px 20px rgba(137, 207, 240, 0.2);
+            --radius: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans TC', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px; /* 手機寬度最佳化 */
+            background: var(--bg-color);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 24px;
+            padding-top: 10px;
+        }
+
+        h1 {
+            font-weight: 300;
+            letter-spacing: 2px;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+
+        /* Tabs 切換 */
+        .tabs {
+            display: flex;
+            background: var(--card-bg);
+            border-radius: 30px;
+            padding: 4px;
+            box-shadow: var(--shadow);
+            margin-bottom: 24px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            background: transparent;
+            border-radius: 25px;
+            color: #999;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .tab-btn.active {
+            background: var(--primary-color);
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 2px 10px rgba(137, 207, 240, 0.4);
+        }
+
+        /* 內容區塊 */
+        .content-section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 卡片樣式 */
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid transparent;
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+        .card.plan-item { border-left-color: var(--primary-color); }
+        .card.money-item { border-left-color: #AED581; }
+
+        .item-info h3 { font-size: 1rem; font-weight: 500; margin-bottom: 4px; }
+        .item-info p { font-size: 0.85rem; color: #90A4AE; }
+        
+        .item-action button {
+            background: transparent;
+            border: none;
+            color: #CFD8DC;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 5px;
+        }
+        .item-action button:hover { color: var(--danger-color); }
+
+        /* 輸入區域 */
+        .input-group {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #EEE;
+            border-radius: 8px;
+            outline: none;
+            font-size: 0.9rem;
+            color: var(--text-color);
+            background: #FAFAFA;
+        }
+
+        input:focus { border-color: var(--primary-color); }
+
+        .btn-add {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .btn-add:hover { background: #71BBE0; }
+
+        /* 總金額顯示 */
+        .total-banner {
+            text-align: right;
+            font-size: 1.2rem;
+            color: var(--text-color);
+            padding: 0 10px 20px;
+        }
+        .total-banner span {
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+
+        /* 刪除確認 */
+        .empty-state {
+            text-align: center;
+            color: #CFD8DC;
+            padding: 40px 0;
+            font-size: 0.9rem;
+        }
+
+    </style>
 </head>
+<body>
 
-    <section id="itinerary-page" class="app-page hidden">
-        <h2 id="itinerary-title"></h2>
-        <div id="itinerary-list">
+<div class="app-container">
+    <header>
+        <h1>TRAVEL LOG</h1>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('plan')">行程規劃</button>
+        <button class="tab-btn" onclick="switchTab('money')">旅費記帳</button>
+    </div>
+
+    <!-- 行程規劃區 -->
+    <div id="plan-section" class="content-section active">
+        <div class="input-group">
+            <div class="input-row">
+                <input type="date" id="plan-date">
+                <input type="time" id="plan-time">
             </div>
-    </section>
-
-    <section id="expense-page" class="app-page hidden">
-        <h2>💸 旅の家計簿</h2>
-        <div class="card expense-input">
-            <form id="expense-form">
-                </form>
+            <div class="input-row">
+                <input type="text" id="plan-desc" placeholder="輸入行程內容 (例如: 清水寺)">
+            </div>
+            <button class="btn-add" onclick="addPlan()">加入行程</button>
         </div>
-        <div class="card expense-summary">
+        <div id="plan-list">
+            <!-- JS 會渲染列表 -->
+        </div>
+    </div>
+
+    <!-- 記帳功能區 -->
+    <div id="money-section" class="content-section">
+        <div class="total-banner">
+            總花費: <span>$ <span id="total-amount">0</span></span>
+        </div>
+        <div class="input-group">
+            <div class="input-row">
+                <input type="text" id="money-desc" placeholder="品項名稱 (例如: 拉麵)">
             </div>
-    </section>
+            <div class="input-row">
+                <input type="number" id="money-cost" placeholder="金額">
+                <select id="money-type">
+                    <option value="食">食</option>
+                    <option value="住">住</option>
+                    <option value="行">行</option>
+                    <option value="樂">樂</option>
+                    <option value="買">買</option>
+                </select>
+            </div>
+            <button class="btn-add" onclick="addMoney()">記一筆</button>
+        </div>
+        <div id="money-list">
+            <!-- JS 會渲染列表 -->
+        </div>
+    </div>
+</div>
 
-    <nav id="bottom-nav" class="hidden">
-        <button class="nav-item active" data-page="itinerary-page">📝 行程</button>
-        <button class="nav-item" data-page="expense-page">¥ 記帳</button>
-        <button class="nav-item" data-page="bonuses-page">🎁 其他</button>
-    </nav>
+<script>
+    // 初始化資料
+    let plans = JSON.parse(localStorage.getItem('myTripPlans')) || [];
+    let expenses = JSON.parse(localStorage.getItem('myTripExpenses')) || [];
 
-    <script src="app.js"></script>
+    // 初始化頁面
+    document.addEventListener('DOMContentLoaded', () => {
+        renderPlans();
+        renderExpenses();
+    });
+
+    // 切換分頁
+    function switchTab(tabName) {
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.content-section').forEach(sec => sec.classList.remove('active'));
+        
+        if(tabName === 'plan') {
+            document.querySelector('.tab-btn:nth-child(1)').classList.add('active');
+            document.getElementById('plan-section').classList.add('active');
+        } else {
+            document.querySelector('.tab-btn:nth-child(2)').classList.add('active');
+            document.getElementById('money-section').classList.add('active');
+        }
+    }
+
+    // --- 行程功能 ---
+    function addPlan() {
+        const date = document.getElementById('plan-date').value;
+        const time = document.getElementById('plan-time').value;
+        const desc = document.getElementById('plan-desc').value;
+
+        if (!date || !time || !desc) {
+            alert("請填寫完整的日期、時間與內容");
+            return;
+        }
+
+        plans.push({ id: Date.now(), date, time, desc });
+        // 排序：先比日期，再比時間
+        plans.sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
+        
+        saveData();
+        renderPlans();
+        
+        // 清空輸入
+        document.getElementById('plan-desc').value = '';
+    }
+
+    function renderPlans() {
+        const list = document.getElementById('plan-list');
+        list.innerHTML = '';
+
+        if (plans.length === 0) {
+            list.innerHTML = '<div class="empty-state">尚未安排行程<br>享受隨興的旅行吧</div>';
+            return;
+        }
+
+        plans.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'card plan-item';
+            div.innerHTML = `
+                <div class="item-info">
+                    <h3>${item.desc}</h3>
+                    <p>${item.date} @ ${item.time}</p>
+                </div>
+                <div class="item-action">
+                    <button onclick="deletePlan(${item.id})">&times;</button>
+                </div>
+            `;
+            list.appendChild(div);
+        });
+    }
+
+    function deletePlan(id) {
+        if(confirm('確定移除此行程？')) {
+            plans = plans.filter(p => p.id !== id);
+            saveData();
+            renderPlans();
+        }
+    }
+
+    // --- 記帳功能 ---
+    function addMoney() {
+        const desc = document.getElementById('money-desc').value;
+        const cost = document.getElementById('money-cost').value;
+        const type = document.getElementById('money-type').value;
+
+        if (!desc || !cost) {
+            alert("請輸入名稱與金額");
+            return;
+        }
+
+        expenses.push({ id: Date.now(), desc, cost: parseInt(cost), type });
+        saveData();
+        renderExpenses();
+
+        // 清空輸入
+        document.getElementById('money-desc').value = '';
+        document.getElementById('money-cost').value = '';
+    }
+
+    function renderExpenses() {
+        const list = document.getElementById('money-list');
+        const totalDisplay = document.getElementById('total-amount');
+        list.innerHTML = '';
+
+        let total = 0;
+
+        if (expenses.length === 0) {
+            list.innerHTML = '<div class="empty-state">目前沒有消費紀錄</div>';
+        }
+
+        // 反向排序，最新的在上面
+        const sortedExpenses = [...expenses].reverse();
+
+        sortedExpenses.forEach(item => {
+            total += item.cost;
+            const div = document.createElement('div');
+            div.className = 'card money-item';
+            div.innerHTML = `
+                <div class="item-info">
+                    <h3>${item.desc} <span style="font-size:0.8rem; background:#E0F7FA; color:#89CFF0; padding:2px 6px; border-radius:4px;">${item.type}</span></h3>
+                </div>
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <span style="font-weight:500;">$${item.cost}</span>
+                    <div class="item-action">
+                        <button onclick="deleteExpense(${item.id})">&times;</button>
+                    </div>
+                </div>
+            `;
+            list.appendChild(div);
+        });
+
+        totalDisplay.innerText = total;
+    }
+
+    function deleteExpense(id) {
+        if(confirm('確定移除此筆消費？')) {
+            expenses = expenses.filter(e => e.id !== id);
+            saveData();
+            renderExpenses();
+        }
+    }
+
+    // 資料儲存
+    function saveData() {
+        localStorage.setItem('myTripPlans', JSON.stringify(plans));
+        localStorage.setItem('myTripExpenses', JSON.stringify(expenses));
+    }
+</script>
+
 </body>
 </html>
