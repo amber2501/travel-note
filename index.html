@@ -41,7 +41,7 @@
         .hidden { display: none !important; }
 
         /* --- SVG --- */
-        .icon-svg { width: 22px; height: 22px; stroke: currentColor; stroke-width: 2.2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+        .icon-svg { width: 22px; height: 22px; stroke: currentColor; stroke-width: 2.2; fill: none; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; } /* 修正：加入 pointer-events 防止擋住按鈕點擊 */
         .icon-sm { width: 16px; height: 16px; }
         .icon-xs { width: 14px; height: 14px; }
 
@@ -230,7 +230,8 @@
             <p style="color:#AAA;">My Travel Journal</p>
         </div>
         <div id="trip-list-container"></div>
-        <button class="fab" onclick="openCreateTripModal()">
+        <!-- 修正：這裡改成直接呼叫 openModal -->
+        <button class="fab" onclick="openModal('create-trip')">
             <svg class="icon-svg"><use href="#icon-plus"></use></svg>
         </button>
     </div>
