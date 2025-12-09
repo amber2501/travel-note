@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>旅遊手帳 Ultimate 2.0 ☁️</title>
+    <title>☁️旅遊規劃☁️</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -22,7 +22,7 @@
             --accent-bg: #FFF0F0;      
             --text: #58555A;           
             --text-light: #9DA0A8;     
-            --text-done: #CCCDD2; /* 完成項目的顏色 */
+            --text-done: #CCCDD2; 
             --bg-body: #F8F9FB;        
             --card-bg: #FFFFFF;        
             --nav-height: 75px;
@@ -31,6 +31,14 @@
             --radius-S: 10px;
             --shadow-card: 0 8px 20px rgba(100, 110, 130, 0.06);
             --shadow-float: 0 10px 30px rgba(127, 169, 190, 0.25);
+
+            /* 行程類別顏色 (柔和色系) */
+            --bg-spot: #E3F2FD; /* 藍 */
+            --bg-food: #FFF3E0; /* 橘 */
+            --bg-shop: #F3E5F5; /* 紫 */
+            --bg-transport: #E0F2F1; /* 綠 */
+            --bg-hotel: #ECEFF1; /* 灰 */
+            --bg-other: #FFF8E1; /* 黃 */
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -46,9 +54,10 @@
 
         .hidden { display: none !important; }
 
-        /* --- SVG 圖示系統 (簡約線條版) --- */
+        /* --- SVG 圖示系統 --- */
         .icon-svg { width: 24px; height: 24px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; transition: 0.3s; }
         .icon-sm { width: 18px; height: 18px; stroke-width: 2; }
+        .icon-fill { fill: currentColor; stroke: none; }
         
         /* --- UI 元件 --- */
         .btn {
@@ -122,7 +131,6 @@
             margin-bottom: 25px; overflow: hidden; position: relative;
             box-shadow: var(--shadow-card);
             filter: drop-shadow(0 4px 10px rgba(0,0,0,0.05));
-            /* 票券缺口與虛線效果 */
             mask-image: radial-gradient(circle at 0px 50%, transparent 8px, black 8.5px), radial-gradient(circle at 100% 50%, transparent 8px, black 8.5px);
             -webkit-mask-image: radial-gradient(circle at 0px 50%, transparent 8px, black 8.5px), radial-gradient(circle at 100% 50%, transparent 8px, black 8.5px);
         }
@@ -131,16 +139,10 @@
         .bp-group { text-align: center; flex: 1; }
         .bp-code { font-size: 2rem; font-weight: 900; color: var(--text); display: block; line-height: 1; margin-bottom: 5px;}
         .bp-time { font-size: 0.9rem; color: var(--text); font-weight: bold; background: #F0F4F8; padding: 4px 8px; border-radius: 6px; display: inline-block;}
-        .bp-center { display: flex; flex-direction: column; align-items: center; width: 80px; }
+        .bp-center { display: flex; flex-direction: column; align-items: center; width: 90px; }
         .bp-line { width: 100%; height: 2px; background: #E0E0E0; position: relative; margin: 10px 0; }
-        .bp-line::after { content:'✈'; position:absolute; top:-10px; left:50%; transform:translateX(-50%) rotate(90deg); color: var(--primary); font-size: 14px; background:white; padding:0 5px;}
+        .bp-line::after { content:''; position:absolute; top:-10px; left:50%; transform:translateX(-50%); width:20px; height:20px; background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%237FA9BE'%3E%3Cpath d='M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z'/%3E%3C/svg%3E") no-repeat center; background-size:contain; background-color:white; padding:0 2px;} 
         .bp-duration { font-size: 0.75rem; color: var(--text-light); font-weight: bold; margin-top: 4px; }
-        .bp-footer { 
-            border-top: 2px dashed #EEE; padding: 10px 15px; 
-            display: flex; justify-content: space-between; 
-            font-size: 0.8rem; color: var(--text-light); font-weight: bold; 
-            background: #FAFAFA;
-        }
 
         /* 2. 住宿與門票列表 */
         .item-list-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #F5F5F5; }
@@ -161,18 +163,19 @@
         .check-item.checked .check-box { background: var(--primary); }
         .check-item.checked .check-box::after { content: '✓'; color: white; font-size: 14px; font-weight: bold; }
         .check-item.checked span { text-decoration: line-through; color: var(--text-done); }
-        .check-input { display: none; }
 
         /* 4. 行程時間軸 */
         .day-scroller { display: flex; overflow-x: auto; padding: 10px 20px; gap: 10px; scrollbar-width: none; }
         .day-chip { 
-            flex: 0 0 auto; padding: 8px 16px; border-radius: 20px; min-width: 60px;
+            flex: 0 0 auto; padding: 10px 18px; border-radius: 20px; min-width: 70px;
             background: white; border: 1px solid #EEE; color: var(--text-light); 
             text-align: center; font-size: 0.85rem; font-weight: bold; transition: 0.2s; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
         }
-        .day-chip span.weekday { font-size: 0.7rem; opacity: 0.8; }
+        .day-chip span.day-idx { font-size: 0.75rem; color: var(--primary); letter-spacing: 1px; }
+        .day-chip span.date { font-size: 0.9rem; color: var(--text); }
         .day-chip.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 10px rgba(127, 169, 190, 0.4); transform: scale(1.05); }
+        .day-chip.active span.day-idx, .day-chip.active span.date { color: white; }
 
         .timeline-wrapper { position: relative; padding-left: 10px; margin-top: 15px; padding-bottom: 20px;}
         .timeline-line { position: absolute; left: 38px; top: 15px; bottom: 15px; width: 2px; background: #E0E6ED; z-index: 0; border-radius: 2px; }
@@ -184,13 +187,20 @@
         }
         .it-card {
             flex: 1; background: white; border-radius: 16px; padding: 15px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid #F0F0F0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.03);
             display: flex; align-items: flex-start; gap: 12px; transition: 0.1s; position: relative;
         }
-        .it-card:active { transform: scale(0.98); background: #FAFAFA; }
-        /* 交通類別特殊樣式 */
-        .it-card.type-transport { background: #F4F9FC; border-left: 4px solid var(--primary); }
-        .it-icon { width: 32px; height: 32px; border-radius: 10px; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px;}
+        .it-card:active { transform: scale(0.98); }
+        
+        /* 不同類別的顏色背景 */
+        .type-spot { background-color: var(--bg-spot); }
+        .type-food { background-color: var(--bg-food); }
+        .type-shop { background-color: var(--bg-shop); }
+        .type-transport { background-color: var(--bg-transport); }
+        .type-hotel { background-color: var(--bg-hotel); }
+        .type-other { background-color: var(--bg-other); }
+
+        .it-icon { width: 32px; height: 32px; border-radius: 10px; background: rgba(255,255,255,0.6); color: var(--text); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 
         /* 當晚住宿顯示 */
         .night-stay-box {
@@ -198,6 +208,13 @@
             border-radius: var(--radius-M); padding: 15px;
             display: flex; align-items: center; gap: 15px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* Weather Badge */
+        .weather-badge {
+            background: white; border-radius: 12px; padding: 4px 10px; font-size: 0.75rem; 
+            display: inline-flex; align-items: center; gap: 4px; color: var(--text-light); font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
         /* Bottom Nav & FAB */
@@ -227,40 +244,34 @@
         .modal-content { background: white; width: 88%; max-width: 380px; padding: 25px; border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.2); animation: modalUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-height: 90vh; overflow-y: auto;}
         @keyframes modalUp { from { opacity: 0; transform: translateY(20px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
 
+        /* Method Chips */
+        .chip-group { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+        .chip-btn { padding: 8px 16px; border-radius: 20px; background: #F2F4F6; color: var(--text-light); border: none; font-weight: bold; font-size: 0.85rem; }
+        .chip-btn.active { background: var(--primary); color: white; }
     </style>
 </head>
 <body>
 
-    <!-- ★★★ 重繪的線條圖示 (Simple Line Icons) ★★★ -->
+    <!-- SVG Icons -->
     <svg style="display:none;">
-        <!-- 通用 -->
         <symbol id="icon-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></symbol>
         <symbol id="icon-trash" viewBox="0 0 24 24"><path d="M3 6h18M19 6v14c0 1.1-.9 2-2 2H7c-1.1 0-2-.9-2-2V6M8 6V4c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2v2"></path></symbol>
-        <symbol id="icon-edit" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></symbol>
         <symbol id="icon-pin" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></symbol>
         <symbol id="icon-camera" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></symbol>
         <symbol id="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></symbol>
-
-        <!-- 導航列 -->
         <symbol id="icon-nav-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></symbol>
         <symbol id="icon-nav-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></symbol>
         <symbol id="icon-nav-money" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></symbol>
         <symbol id="icon-nav-shop" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></symbol>
-
-        <!-- 行前類別 (簡約版) -->
-        <symbol id="icon-flight" viewBox="0 0 24 24"><path d="M22 18h-2.9l-4.5-8.5-6.6 8.5H5.5l1.5-3.5L3 13V8l5-2 1.5 5h3.6l4-5H22v12z"></path></symbol> <!-- 替代線條飛機 -->
-        <symbol id="icon-plane-simple" viewBox="0 0 24 24"><path d="M2 12h20"/><path d="M14 6l8 6-8 6"/><path d="M6 12l4-4"/><path d="M6 12l4 4"/></symbol>
+        <symbol id="icon-plane-real" viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"></path></symbol>
         <symbol id="icon-house" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></symbol>
         <symbol id="icon-ticket" viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="12" rx="2"></rect><circle cx="12" cy="12" r="2"></circle><path d="M6 12h.01M18 12h.01"></path></symbol>
         <symbol id="icon-pack" viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="14" rx="2"></rect><path d="M16 2v4"></path><path d="M8 2v4"></path><path d="M3 10h18"></path></symbol>
-        
-        <!-- 行程類別 -->
+        <symbol id="icon-car" viewBox="0 0 24 24"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></symbol>
         <symbol id="icon-spot" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></symbol>
         <symbol id="icon-food" viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></symbol>
         <symbol id="icon-transport" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="8" y1="21" x2="8" y2="21.01"></line><line x1="16" y1="21" x2="16" y2="21.01"></line><line x1="3" y1="10" x2="21" y2="10"></line><path d="M8 15h.01"></path><path d="M16 15h.01"></path></symbol>
         <symbol id="icon-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></symbol>
-        
-        <!-- 天氣 -->
         <symbol id="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></symbol>
         <symbol id="icon-rain" viewBox="0 0 24 24"><line x1="16" y1="13" x2="16" y2="21"></line><line x1="8" y1="13" x2="8" y2="21"></line><line x1="12" y1="15" x2="12" y2="23"></line><path d="M20 16.58A5 5 0 0 0 18 7h-1.26A8 8 0 1 0 4 15.25"></path></symbol>
         <symbol id="icon-cloud" viewBox="0 0 24 24"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"></path></symbol>
@@ -271,7 +282,7 @@
         <div style="text-align:center; padding-top:80px; padding-bottom:50px;">
             <div style="font-size:3rem; margin-bottom:10px;">☁️</div>
             <h1 style="color:var(--primary-dark); margin:0; font-size:2rem; letter-spacing:1px;">旅遊手帳</h1>
-            <p style="color:var(--text-light); font-size:0.9rem; margin-top:5px;">Travel Log 2.0</p>
+            <p style="color:var(--text-light); font-size:0.9rem; margin-top:5px;">Travel Log 3.0</p>
         </div>
         <div id="trip-list-container" class="container"></div>
         <button class="fab" onclick="openCreateTripModal()">
@@ -305,9 +316,10 @@
                     <div style="width:50px;"></div>
                 </div>
                 <div class="sub-nav">
-                    <button class="sub-nav-btn active" onclick="switchInfoSub('flight')"><svg class="icon-svg icon-sm"><use href="#icon-plane-simple"></use></svg> 機票</button>
+                    <button class="sub-nav-btn active" onclick="switchInfoSub('flight')"><svg class="icon-svg icon-sm"><use href="#icon-plane-real"></use></svg> 機票</button>
                     <button class="sub-nav-btn" onclick="switchInfoSub('hotel')"><svg class="icon-svg icon-sm"><use href="#icon-house"></use></svg> 住宿</button>
                     <button class="sub-nav-btn" onclick="switchInfoSub('ticket')"><svg class="icon-svg icon-sm"><use href="#icon-ticket"></use></svg> 門票</button>
+                    <button class="sub-nav-btn" onclick="switchInfoSub('charter')"><svg class="icon-svg icon-sm"><use href="#icon-car"></use></svg> 包車</button>
                     <button class="sub-nav-btn" onclick="switchInfoSub('packing')"><svg class="icon-svg icon-sm"><use href="#icon-pack"></use></svg> 清單</button>
                 </div>
             </div>
@@ -316,7 +328,7 @@
                 <!-- 1. 機票 -->
                 <div id="info-flight" class="info-sub-tab">
                     <div class="card">
-                        <div class="card-header"><svg class="icon-svg"><use href="#icon-plane-simple"></use></svg> 去程 Outbound</div>
+                        <div class="card-header"><svg class="icon-svg"><use href="#icon-plane-real"></use></svg> 去程 Outbound</div>
                         <div class="flight-edit-block">
                             <span class="card-label">航班號 / 航空</span>
                             <div class="row">
@@ -337,7 +349,7 @@
                     </div>
 
                     <div class="card">
-                        <div class="card-header"><svg class="icon-svg" style="transform: rotate(180deg);"><use href="#icon-plane-simple"></use></svg> 回程 Inbound</div>
+                        <div class="card-header"><svg class="icon-svg" style="transform: rotate(180deg);"><use href="#icon-plane-real"></use></svg> 回程 Inbound</div>
                         <div class="flight-edit-block">
                             <span class="card-label">航班號 / 航空</span>
                             <div class="row">
@@ -378,7 +390,17 @@
                     </div>
                 </div>
 
-                <!-- 4. 清單 -->
+                <!-- 4. 包車 -->
+                <div id="info-charter" class="info-sub-tab hidden">
+                    <div class="card">
+                        <div id="charter-list"></div>
+                        <button class="btn btn-primary" style="width:100%; margin-top:10px;" onclick="openCharterModal()">
+                            <svg class="icon-svg icon-sm"><use href="#icon-plus"></use></svg> 新增包車/接送
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 5. 清單 -->
                 <div id="info-packing" class="info-sub-tab hidden">
                     <div class="card">
                         <div style="display:flex; gap:10px;">
@@ -412,12 +434,18 @@
                             <span id="weather-loc" style="font-size:0.75rem; color:var(--text-light);">Loading...</span>
                         </div>
                     </div>
-                    <div style="font-weight:900; font-size:1.5rem; color:var(--primary-dark);">
-                        <span id="weather-temp">--</span><span style="font-size:0.8rem;">°C</span>
+                    <div style="text-align:right;">
+                        <div style="font-weight:900; font-size:1.5rem; color:var(--primary-dark);">
+                            <span id="weather-temp">--</span><span style="font-size:0.8rem;">°C</span>
+                        </div>
+                        <div style="font-size:0.75rem; color:var(--text-light); margin-top:2px;">
+                            <span class="weather-badge">🌅 <span id="w-rise">--:--</span></span>
+                            <span class="weather-badge">🌇 <span id="w-set">--:--</span></span>
+                        </div>
                     </div>
                 </div>
 
-                <!-- 機票卡片 (自動顯示) -->
+                <!-- 機票卡片 -->
                 <div id="flight-card-container"></div>
 
                 <!-- 時間軸 -->
@@ -435,7 +463,7 @@
             </button>
         </div>
 
-        <!-- C. 記帳 (含匯率) -->
+        <!-- C. 記帳 -->
         <div id="tab-money" class="tab-content hidden">
             <!-- 匯率計算機 -->
             <div style="background:var(--primary); padding:20px 20px 30px 20px; border-radius:0 0 30px 30px; margin-top:-2px; color:white; box-shadow:0 10px 20px rgba(127,169,190,0.2);">
@@ -449,6 +477,7 @@
                         <option value="KRW">KRW 韓元</option>
                         <option value="EUR">EUR 歐元</option>
                         <option value="THB">THB 泰銖</option>
+                        <option value="CNY">CNY 人民幣</option>
                     </select>
                 </div>
             </div>
@@ -538,6 +567,7 @@
                     <option value="food">🍽️ 美食</option>
                     <option value="shop">🛍️ 購物</option>
                     <option value="transport">🚋 交通</option>
+                    <option value="hotel">🏨 住宿</option>
                     <option value="other">✨ 其他</option>
                 </select>
             </div>
@@ -550,6 +580,63 @@
             <div style="display:flex; gap:10px; margin-top:10px;">
                 <button class="btn col" onclick="closeModal('itinerary')" style="background:#F2F4F6; color:#999;">取消</button>
                 <button class="btn btn-primary col" onclick="saveItinerary()">儲存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 住宿 -->
+    <div id="modal-hotel" class="modal hidden">
+        <div class="modal-content">
+            <h3 style="text-align:center; color:var(--primary);">🏨 住宿資訊</h3>
+            <input type="text" id="h-name" placeholder="飯店名稱">
+            <input type="text" id="h-address" placeholder="地址">
+            <input type="text" id="h-source" placeholder="訂房來源 (如: Agoda)">
+            <input type="text" id="h-order" placeholder="訂單編號">
+            <div class="row">
+                <input type="date" id="h-date" class="col">
+                <input type="number" id="h-days" class="col" placeholder="幾晚" value="1">
+            </div>
+            <div style="display:flex; gap:10px; margin-top:10px;">
+                <button class="btn col" onclick="closeModal('hotel')" style="background:#F2F4F6; color:#999;">取消</button>
+                <button class="btn btn-primary col" onclick="saveHotel()">儲存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 票券 -->
+    <div id="modal-ticket" class="modal hidden">
+        <div class="modal-content">
+            <h3 style="text-align:center; color:var(--primary);">🎟️ 票券資訊</h3>
+            <input type="text" id="t-name" placeholder="票券名稱">
+            <input type="date" id="t-date">
+            <input type="text" id="t-order" placeholder="訂單編號/連結">
+            <textarea id="t-note" placeholder="備註..." style="height:60px;"></textarea>
+            <div style="display:flex; gap:10px; margin-top:10px;">
+                <button class="btn col" onclick="closeModal('ticket')" style="background:#F2F4F6; color:#999;">取消</button>
+                <button class="btn btn-primary col" onclick="saveTicket()">儲存</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 包車/接送 -->
+    <div id="modal-charter" class="modal hidden">
+        <div class="modal-content">
+            <h3 style="text-align:center; color:var(--primary);">🚗 包車 / 接送</h3>
+            <div class="chip-group">
+                <button class="chip-btn active" onclick="setCharterType(this, '接送')">機場接送</button>
+                <button class="chip-btn" onclick="setCharterType(this, '包車')">包車一日遊</button>
+            </div>
+            <div class="row">
+                <input type="date" id="c-date" class="col">
+                <input type="time" id="c-time" class="col">
+            </div>
+            <input type="text" id="c-from" placeholder="接送地點">
+            <input type="text" id="c-to" placeholder="目的地 (若包車可填大略範圍)">
+            <input type="text" id="c-contact" placeholder="司機/車行聯絡方式">
+            <textarea id="c-note" placeholder="備註 (車號、金額...)" style="height:60px;"></textarea>
+            <div style="display:flex; gap:10px; margin-top:10px;">
+                <button class="btn col" onclick="closeModal('charter')" style="background:#F2F4F6; color:#999;">取消</button>
+                <button class="btn btn-primary col" onclick="saveCharter()">儲存</button>
             </div>
         </div>
     </div>
@@ -581,46 +668,13 @@
         </div>
     </div>
 
-    <!-- 住宿 -->
-    <div id="modal-hotel" class="modal hidden">
-        <div class="modal-content">
-            <h3 style="text-align:center; color:var(--primary);">🏨 住宿資訊</h3>
-            <input type="text" id="h-name" placeholder="飯店名稱">
-            <input type="text" id="h-address" placeholder="地址">
-            <input type="text" id="h-order" placeholder="訂單編號">
-            <div class="row">
-                <input type="date" id="h-date" class="col">
-                <input type="number" id="h-days" class="col" placeholder="幾晚" value="1">
-            </div>
-            <div style="display:flex; gap:10px; margin-top:10px;">
-                <button class="btn col" onclick="closeModal('hotel')" style="background:#F2F4F6; color:#999;">取消</button>
-                <button class="btn btn-primary col" onclick="saveHotel()">儲存</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 票券 -->
-    <div id="modal-ticket" class="modal hidden">
-        <div class="modal-content">
-            <h3 style="text-align:center; color:var(--primary);">🎟️ 票券資訊</h3>
-            <input type="text" id="t-name" placeholder="票券名稱">
-            <input type="date" id="t-date">
-            <input type="text" id="t-order" placeholder="訂單編號/連結">
-            <textarea id="t-note" placeholder="備註..." style="height:60px;"></textarea>
-            <div style="display:flex; gap:10px; margin-top:10px;">
-                <button class="btn col" onclick="closeModal('ticket')" style="background:#F2F4F6; color:#999;">取消</button>
-                <button class="btn btn-primary col" onclick="saveTicket()">儲存</button>
-            </div>
-        </div>
-    </div>
-
 <script>
-    const DB_KEY = 'trip_v2_ultimate';
+    const DB_KEY = 'trip_v3_ultimate';
     let allTrips = [];
     let currentTrip = null;
-    let appState = { dayIdx: 0, editId: null, editType: null };
+    let appState = { dayIdx: 0, editId: null, editType: null, charterType: '接送' };
     let moneyState = { payer: '', method: 'cash' };
-    let currentRate = 0.22; // Default fallback rate
+    let currentRate = 0.22;
 
     window.onload = function() {
         const saved = localStorage.getItem(DB_KEY);
@@ -649,7 +703,7 @@
         document.getElementById('rate-display').innerText = amt === 0 ? `1 : ${currentRate.toFixed(2)}` : `$${total.toFixed(0)}`;
     }
 
-    // --- Weather API (Auto) ---
+    // --- Weather API (含日出日落) ---
     async function fetchWeatherForDay() {
         if(!currentTrip.city) {
             document.getElementById('weather-text').innerText = "未設定城市";
@@ -676,25 +730,27 @@
         }
 
         if(!lat) { document.getElementById('weather-text').innerText = "找不到城市"; return; }
-
         document.getElementById('weather-loc').innerText = currentTrip.city;
 
         // 2. Forecast
         try {
-            const wRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max&timezone=auto&start_date=${dateStr}&end_date=${dateStr}`);
+            const wRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,sunrise,sunset&timezone=auto&start_date=${dateStr}&end_date=${dateStr}`);
             const wData = await wRes.json();
             if(wData.daily && wData.daily.time.length > 0) {
                 const code = wData.daily.weathercode[0];
                 const temp = wData.daily.temperature_2m_max[0];
+                const rise = wData.daily.sunrise[0].split('T')[1];
+                const set = wData.daily.sunset[0].split('T')[1];
+
                 document.getElementById('weather-temp').innerText = temp;
+                document.getElementById('w-rise').innerText = rise;
+                document.getElementById('w-set').innerText = set;
                 setWeatherIcon(code);
             } else {
                 document.getElementById('weather-text').innerText = "無資料";
                 document.getElementById('weather-temp').innerText = "--";
             }
-        } catch(e) {
-             document.getElementById('weather-text').innerText = "離線";
-        }
+        } catch(e) { document.getElementById('weather-text').innerText = "離線"; }
     }
 
     function setWeatherIcon(code) {
@@ -746,7 +802,7 @@
         allTrips.push({
             id: Date.now(), name, city, startDate: date, days, members,
             itinerary: [], money: [], shopping: [], packing: [],
-            flights: { out:{}, in:{} }, hotels: [], tickets: []
+            flights: { out:{}, in:{} }, hotels: [], tickets: [], charters: []
         });
         saveData(); closeModal('create-trip'); renderHome();
     }
@@ -762,6 +818,7 @@
         if(!currentTrip.flights) currentTrip.flights = { out:{}, in:{} };
         if(!currentTrip.hotels) currentTrip.hotels = [];
         if(!currentTrip.tickets) currentTrip.tickets = [];
+        if(!currentTrip.charters) currentTrip.charters = [];
         
         document.getElementById('view-home').classList.add('hidden');
         document.getElementById('view-detail').classList.remove('hidden');
@@ -788,29 +845,17 @@
         document.querySelectorAll('.info-sub-tab').forEach(el => el.classList.add('hidden'));
         document.getElementById('info-' + sub).classList.remove('hidden');
         document.querySelectorAll('#tab-info .sub-nav-btn').forEach(el => el.classList.remove('active'));
-        const btnIdx = sub === 'flight' ? 0 : sub === 'hotel' ? 1 : sub === 'ticket' ? 2 : 3;
-        document.querySelectorAll('#tab-info .sub-nav-btn')[btnIdx].classList.add('active');
+        const btns = document.querySelectorAll('#tab-info .sub-nav-btn');
+        const map = {flight:0, hotel:1, ticket:2, charter:3, packing:4};
+        if(btns[map[sub]]) btns[map[sub]].classList.add('active');
+
         if(sub === 'hotel') renderHotels();
         if(sub === 'ticket') renderTickets();
+        if(sub === 'charter') renderCharters();
         if(sub === 'packing') renderPacking();
     }
-    function switchMoneySub(sub) {
-        const listView = document.getElementById('money-view-list');
-        const analysisView = document.getElementById('money-view-analysis');
-        const btnList = document.getElementById('btn-money-list');
-        const btnAnalysis = document.getElementById('btn-money-analysis');
 
-        if(sub === 'list') {
-            listView.classList.remove('hidden'); analysisView.classList.add('hidden');
-            btnList.classList.add('active'); btnAnalysis.classList.remove('active');
-        } else {
-            listView.classList.add('hidden'); analysisView.classList.remove('hidden');
-            btnList.classList.remove('active'); btnAnalysis.classList.add('active');
-            renderMoneyAnalysis();
-        }
-    }
-
-    // --- Flight ---
+    // --- Flight (修正時數計算) ---
     function fillFlightInputs() {
         const f = currentTrip.flights;
         ['code','airline','depTime','depAir','arrTime','arrAir'].forEach(k => {
@@ -826,24 +871,25 @@
         const [h1, m1] = t1.split(':').map(Number);
         const [h2, m2] = t2.split(':').map(Number);
         let min = (h2*60 + m2) - (h1*60 + m1);
-        if(min < 0) min += 24*60; 
+        if(min < 0) min += 24*60; // 跨日處理
         const h = Math.floor(min/60);
         const m = min % 60;
         return `${h}h ${m}m`;
     }
 
-    // --- Hotel (Edit & List) ---
+    // --- Hotel ---
     function openHotelModal(id=null) {
         appState.editId = id; appState.editType = 'hotel';
         if(id) {
             const h = currentTrip.hotels.find(x => x.id === id);
             document.getElementById('h-name').value = h.name;
             document.getElementById('h-address').value = h.address;
+            document.getElementById('h-source').value = h.source || '';
             document.getElementById('h-order').value = h.order || '';
             document.getElementById('h-date').value = h.date;
             document.getElementById('h-days').value = h.days;
         } else {
-            ['h-name','h-address','h-order','h-date'].forEach(k=>document.getElementById(k).value='');
+            ['h-name','h-address','h-source','h-order','h-date'].forEach(k=>document.getElementById(k).value='');
             document.getElementById('h-days').value = 1;
         }
         openModal('hotel');
@@ -854,6 +900,7 @@
         const newData = {
             id: appState.editId || Date.now(), name,
             address: document.getElementById('h-address').value,
+            source: document.getElementById('h-source').value,
             order: document.getElementById('h-order').value,
             date: document.getElementById('h-date').value,
             days: parseInt(document.getElementById('h-days').value)
@@ -873,7 +920,7 @@
                         <div class="item-icon-box"><svg class="icon-svg"><use href="#icon-house"></use></svg></div>
                         <div>
                             <div style="font-weight:bold; color:var(--text);">${h.name}</div>
-                            <div style="font-size:0.8rem; color:var(--text-light);">${h.date} (${h.days}晚)</div>
+                            <div style="font-size:0.8rem; color:var(--text-light);">${h.date} (${h.days}晚) ${h.source ? '· '+h.source : ''}</div>
                             ${h.order ? `<div style="font-size:0.75rem; color:var(--primary);">#${h.order}</div>` : ''}
                         </div>
                     </div>
@@ -885,7 +932,7 @@
         });
     }
 
-    // --- Ticket (Edit & List) ---
+    // --- Ticket ---
     function openTicketModal(id=null) {
         appState.editId = id; appState.editType = 'ticket';
         if(id) {
@@ -925,6 +972,7 @@
                             <div style="font-weight:bold; color:var(--text);">${t.name}</div>
                             <div style="font-size:0.8rem; color:var(--text-light);">${t.date || '未定日期'}</div>
                             ${t.order ? `<div style="font-size:0.75rem; color:var(--primary);">#${t.order}</div>` : ''}
+                            ${t.note ? `<div style="font-size:0.75rem; color:var(--text-light); margin-top:2px;">備註: ${t.note}</div>` : ''}
                         </div>
                     </div>
                     <div>
@@ -935,7 +983,78 @@
         });
     }
 
-    // --- Packing (Checklist style) ---
+    // --- Charter ---
+    function openCharterModal(id=null) {
+        appState.editId = id; appState.editType = 'charter';
+        if(id) {
+            const c = currentTrip.charters.find(x => x.id === id);
+            appState.charterType = c.type;
+            updateCharterBtns();
+            document.getElementById('c-date').value = c.date;
+            document.getElementById('c-time').value = c.time;
+            document.getElementById('c-from').value = c.from;
+            document.getElementById('c-to').value = c.to;
+            document.getElementById('c-contact').value = c.contact;
+            document.getElementById('c-note').value = c.note;
+        } else {
+            appState.charterType = '接送';
+            updateCharterBtns();
+            ['c-date','c-time','c-from','c-to','c-contact','c-note'].forEach(k=>document.getElementById(k).value='');
+        }
+        openModal('charter');
+    }
+    function setCharterType(el, type) {
+        appState.charterType = type;
+        updateCharterBtns();
+    }
+    function updateCharterBtns() {
+        document.querySelectorAll('#modal-charter .chip-btn').forEach(b => {
+            if(b.innerText.includes(appState.charterType)) b.classList.add('active');
+            else b.classList.remove('active');
+        });
+    }
+    function saveCharter() {
+        const date = document.getElementById('c-date').value;
+        const from = document.getElementById('c-from').value;
+        if(!date || !from) return alert('請填寫日期與接送地點');
+        const newData = {
+            id: appState.editId || Date.now(),
+            type: appState.charterType,
+            date: date,
+            time: document.getElementById('c-time').value,
+            from: from,
+            to: document.getElementById('c-to').value,
+            contact: document.getElementById('c-contact').value,
+            note: document.getElementById('c-note').value
+        };
+        if(appState.editId) {
+            const idx = currentTrip.charters.findIndex(x=>x.id===appState.editId);
+            if(idx!==-1) currentTrip.charters[idx] = newData;
+        } else { currentTrip.charters.push(newData); }
+        saveData(); closeModal('charter'); renderCharters();
+    }
+    function renderCharters() {
+        const list = document.getElementById('charter-list'); list.innerHTML = '';
+        currentTrip.charters.sort((a,b)=>a.date.localeCompare(b.date)).forEach(c => {
+            list.innerHTML += `
+                <div class="item-list-row">
+                    <div style="display:flex; align-items:center;">
+                        <div class="item-icon-box"><svg class="icon-svg"><use href="#icon-car"></use></svg></div>
+                        <div>
+                            <div style="font-weight:bold; color:var(--text);">${c.type} · ${c.date} ${c.time}</div>
+                            <div style="font-size:0.8rem; color:var(--text); margin-top:2px;">${c.from} ➝ ${c.to||'未知'}</div>
+                            <div style="font-size:0.75rem; color:var(--text-light);">${c.contact}</div>
+                        </div>
+                    </div>
+                    <div>
+                        <button class="btn-edit" onclick="openCharterModal(${c.id})">編輯</button>
+                        <button class="btn-del" onclick="delItem('charters', ${c.id})">刪除</button>
+                    </div>
+                </div>`;
+        });
+    }
+
+    // --- Packing ---
     function addPackItem() {
         const val = document.getElementById('pack-input').value;
         if(!val) return;
@@ -970,7 +1089,7 @@
             
             const btn = document.createElement('div');
             btn.className = `day-chip ${i===appState.dayIdx?'active':''}`;
-            btn.innerHTML = `<span class="weekday">${week}</span><span>${m}/${date}</span>`;
+            btn.innerHTML = `<span class="day-idx">DAY ${i+1}</span><span class="date">${m}/${date} (${week})</span>`;
             btn.onclick = () => { appState.dayIdx = i; renderAllDetail(); };
             
             const btnMoney = btn.cloneNode(true);
@@ -982,7 +1101,7 @@
 
         renderItinerary();
         renderMoney();
-        fetchWeatherForDay(); // Auto Fetch Weather
+        fetchWeatherForDay();
     }
 
     function renderItinerary() {
@@ -991,7 +1110,7 @@
         const nightStayContainer = document.getElementById('night-stay-container');
         list.innerHTML = ''; flightContainer.innerHTML = ''; nightStayContainer.innerHTML = '';
 
-        // Flight Card (Day 1 & Last Day)
+        // Flight Card (修正時數顯示)
         let fData = null, title = '';
         if (appState.dayIdx === 0 && currentTrip.flights.out.code) {
             fData = currentTrip.flights.out; title = '去程 OUTBOUND';
@@ -1022,13 +1141,13 @@
                 </div>`;
         }
 
-        // Itinerary Items
+        // Itinerary Items (配色)
         const items = currentTrip.itinerary.filter(i => i.dayIdx === appState.dayIdx);
-        const iconMap = { spot:'icon-spot', food:'icon-food', shop:'icon-nav-shop', transport:'icon-transport', other:'icon-star' };
-
+        const iconMap = { spot:'icon-spot', food:'icon-food', shop:'icon-nav-shop', transport:'icon-transport', hotel:'icon-house', other:'icon-star' };
+        
         items.forEach(item => {
             const mapBtn = item.loc ? `<button class="btn-ghost" onclick="openMap(event, '${item.loc}')"><svg class="icon-svg icon-sm"><use href="#icon-pin"></use></svg></button>` : '';
-            const typeClass = item.type === 'transport' ? 'type-transport' : '';
+            const typeClass = `type-${item.type}`;
             
             list.innerHTML += `
                 <div class="timeline-item" onclick="editItinerary(${item.id})">
@@ -1037,7 +1156,7 @@
                         <div class="it-icon"><svg class="icon-svg icon-sm"><use href="#${iconMap[item.type]||'icon-star'}"></use></svg></div>
                         <div style="flex:1;">
                             <div style="font-weight:bold; color:var(--text); margin-bottom:4px;">${item.title}</div>
-                            <div style="font-size:0.85rem; color:var(--text-light); white-space:pre-wrap;">${item.note || ''}</div>
+                            <div style="font-size:0.85rem; color:var(--text); white-space:pre-wrap;">${item.note || ''}</div>
                         </div>
                         ${mapBtn}
                     </div>
@@ -1047,14 +1166,10 @@
         // Bottom Hotel Logic
         const currentD = new Date(currentTrip.startDate);
         currentD.setDate(currentD.getDate() + appState.dayIdx);
-        const dStr = currentD.toISOString().split('T')[0];
-        
-        // Find hotel covering this date
         const stay = currentTrip.hotels.find(h => {
             const start = new Date(h.date);
             const end = new Date(h.date);
             end.setDate(end.getDate() + parseInt(h.days));
-            // Check if current date is >= start AND < end (check-in night)
             return currentD >= start && currentD < end;
         });
 
@@ -1234,7 +1349,7 @@
     // --- Utils ---
     function openMap(e, loc) { e.stopPropagation(); window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(loc)}`, '_blank'); }
     function toggleCheck(type, id) { const i = currentTrip[type].find(x => x.id === id); if(i) { i.checked = !i.checked; saveData(); type==='packing'?renderPacking():renderShopping(); } }
-    function delItem(type, id) { if(!confirm('刪除？')) return; currentTrip[type] = currentTrip[type].filter(x => x.id !== id); saveData(); if(type==='hotels') renderHotels(); else if(type==='tickets') renderTickets(); else if(type==='packing') renderPacking(); else if(type==='money') { renderMoney(); renderMoneyAnalysis(); } else if(type==='shopping') renderShopping(); }
+    function delItem(type, id) { if(!confirm('刪除？')) return; currentTrip[type] = currentTrip[type].filter(x => x.id !== id); saveData(); if(type==='hotels') renderHotels(); else if(type==='tickets') renderTickets(); else if(type==='charters') renderCharters(); else if(type==='packing') renderPacking(); else if(type==='money') { renderMoney(); renderMoneyAnalysis(); } else if(type==='shopping') renderShopping(); }
     function closeModal(id) { document.getElementById('modal-'+id).classList.add('hidden'); }
     function openModal(id) { document.getElementById('modal-'+id).classList.remove('hidden'); }
 </script>
