@@ -1,75 +1,84 @@
-/* --- iOS 風格變數 --- */
+/* --- 基礎設定與配色 (Cute & Minimal) --- */
 :root {
-    --ios-blue: #007AFF;           /* 經典 iOS 藍色 */
-    --color-background: #F4F4F4;   /* 淺灰色背景 */
-    --color-text: #1C1C1C;         /* 深色文字 */
-    --color-border: #D1D1D1;       /* 淺邊框 */
-    --color-card-bg: #FFFFFF;
-    --color-highlight-bg: #E8F0FE; /* 淺藍色背景，用於區塊選擇 */
+    /* 主配色：柔和水藍與奶油白 */
+    --aqua-blue: #40A4C8;       /* 主水藍色，可愛且清新 */
+    --aqua-light: #B4E8F8;      /* 輔助淺藍，用於背景和選中狀態 */
+    --color-background: #F8F7F4; /* 奶油色背景，柔和基調 */
+    --color-card-bg: #FFFFFF;    /* 卡片白色 */
+    --color-text: #333333;       /* 深灰文字 */
+    --color-border: #E0E0E0;     /* 柔和邊框 */
+    --color-shadow-light: 0 2px 4px rgba(0, 0, 0, 0.05); /* 輕微陰影 */
 }
 
-/* --- 基礎重置與手機視口設定 --- */
+/* --- 視口與字體 --- */
 * {
     box-sizing: border-box;
-    -webkit-tap-highlight-color: transparent; /* 移除點擊時的灰色背景 */
+    -webkit-tap-highlight-color: transparent;
 }
 
 body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; /* iOS 優先字體 */
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     background-color: var(--color-background);
     color: var(--color-text);
-    /* 限制內容寬度，模擬 iPhone */
     max-width: 450px; 
     margin: 0 auto;
-    padding-bottom: 70px; /* 留給浮動導覽條空間 */
-    height: 100vh;
+    padding-bottom: 70px; /* 留給浮動導覽條 */
+    min-height: 100vh;
     overflow-x: hidden;
 }
 
-/* --- 頁面切換控制 --- */
+/* 頁面通用樣式 */
 .app-page {
     padding: 15px;
-    padding-top: 25px; /* 頂部留白 */
+    padding-top: 40px; 
 }
 .hidden {
     display: none !important;
 }
 
-/* --- 標題與卡片 --- */
+/* --- 標題與容器 --- */
 h2 {
     font-size: 24px;
-    font-weight: bold;
+    font-weight: 700;
     color: var(--color-text);
-    margin-bottom: 20px;
+    margin-bottom: 25px;
+    border-bottom: 3px solid var(--aqua-light); /* 淺藍色底線 */
+    padding-bottom: 5px;
 }
 
 .card {
     background-color: var(--color-card-bg);
-    border-radius: 12px; /* iOS 圓角 */
-    padding: 15px;
+    border-radius: 16px; /* 更大的圓角，增加可愛感 */
+    padding: 18px;
     margin-bottom: 15px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--color-shadow-light);
+    border: 1px solid var(--color-border);
 }
 
-/* --- 設定頁 (Setup Page Style) --- */
+/* --- 設定頁 (Setup Page) --- */
 #setup-page {
-    height: 100vh; /* 佔滿全螢幕 */
+    height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    text-align: center;
     padding: 0 30px;
+    text-align: center;
+}
+
+.setup-container h2 {
+    color: var(--aqua-blue);
+    font-size: 2em;
+    margin-bottom: 30px;
+    border: none;
 }
 
 #setup-form {
     width: 100%;
-    padding: 20px;
-    background-color: var(--color-card-bg);
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 25px;
 }
 
+/* --- 表單通用樣式 (可愛圓潤輸入框) --- */
 .form-group {
     margin-bottom: 18px;
     text-align: left;
@@ -77,42 +86,101 @@ h2 {
 
 .form-group label {
     display: block;
-    font-size: 14px;
-    color: var(--color-text);
-    margin-bottom: 5px;
-    font-weight: 500;
+    font-size: 15px;
+    color: var(--aqua-blue); /* 標籤使用水藍色 */
+    margin-bottom: 6px;
+    font-weight: 600;
 }
 
-/* --- 輸入框與按鈕 (Input & Button) --- */
 input[type="text"],
 input[type="number"],
 input[type="date"],
 select {
     width: 100%;
-    padding: 10px;
-    border: 1px solid var(--color-border);
-    border-radius: 8px; /* iOS 標準圓角 */
+    padding: 12px;
+    border: 2px solid var(--aqua-light); /* 較粗的淺藍邊框 */
+    border-radius: 12px; 
     font-size: 16px;
-    appearance: none; /* 移除原生樣式 */
+    transition: border-color 0.2s;
 }
 
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--aqua-blue); /* 聚焦時變深水藍色 */
+}
+
+/* --- 按鈕樣式 (可愛圓潤按鈕) --- */
 .primary-btn {
     width: 100%;
-    background-color: var(--ios-blue);
+    background-color: var(--aqua-blue);
     color: white;
     border: none;
-    padding: 14px;
-    border-radius: 10px;
-    font-weight: bold;
+    padding: 15px;
+    border-radius: 15px; /* 更大的圓角 */
+    font-weight: 700;
     cursor: pointer;
-    transition: background-color 0.15s ease;
+    box-shadow: 0 3px 6px rgba(64, 164, 200, 0.4); /* 柔和的藍色陰影 */
+    transition: all 0.15s ease;
 }
 
 .primary-btn:active {
-    background-color: #0056b3; /* 點擊時的深色反饋 */
+    background-color: #358099; 
+    transform: translateY(1px); /* 點擊下壓效果 */
 }
 
-/* --- 浮動導覽條 (Bottom Fixed Nav) --- */
+/* --- 行程卡片區 --- */
+#itinerary-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.day-card {
+    /* 移除強硬的邊框，改用陰影和圓角 */
+    border: none; 
+    padding: 15px;
+    background-color: var(--color-card-bg);
+}
+
+.day-card h4 {
+    color: var(--aqua-blue);
+    font-size: 1.1em;
+    margin-bottom: 5px;
+    padding-left: 5px;
+    border-left: 5px solid var(--aqua-light); /* 淺藍色小標記 */
+}
+
+.day-card p {
+    margin-top: 8px;
+    line-height: 1.4;
+    font-size: 0.9em;
+}
+
+
+/* --- 記帳總計與明細 --- */
+.expense-summary {
+    text-align: center;
+}
+
+.total-amount {
+    font-size: 2.5em;
+    font-weight: 800;
+    color: var(--aqua-blue); /* 總計使用主色 */
+    margin: 10px 0;
+}
+
+#expense-list {
+    list-style: none;
+    padding: 0;
+}
+
+#expense-list li {
+    padding: 12px 0;
+    border-bottom: 1px dashed var(--aqua-light); /* 柔和虛線 */
+    font-size: 0.95em;
+}
+
+/* --- 底部浮動導覽條 (Bottom Fixed Nav) --- */
 #bottom-nav {
     position: fixed;
     bottom: 0;
@@ -123,10 +191,11 @@ select {
     display: flex;
     justify-content: space-around;
     align-items: center;
-    background-color: #fcfcfc; /* 接近白色的底色 */
+    background-color: var(--color-card-bg); 
     border-top: 1px solid var(--color-border);
-    height: 60px; /* 標準高度 */
+    height: 65px; 
     z-index: 1000;
+    box-shadow: 0 -1px 8px rgba(0, 0, 0, 0.1);
 }
 
 .nav-item {
@@ -135,20 +204,25 @@ select {
     border: none;
     padding: 8px 0;
     cursor: pointer;
-    color: var(--color-text);
-    font-size: 12px;
+    color: var(--color-light-text);
+    font-size: 13px;
     display: flex;
     flex-direction: column;
     align-items: center;
     transition: color 0.15s ease;
+    border-radius: 10px; /* 增加圓角 */
+}
+
+.nav-item:active {
+    background-color: var(--color-background); /* 點擊背景回饋 */
 }
 
 .nav-item.active {
-    color: var(--ios-blue); /* 選中時使用 iOS 藍色 */
+    color: var(--aqua-blue); /* 選中時使用主水藍色 */
     font-weight: 600;
 }
 
 .nav-item span {
-    font-size: 20px;
+    font-size: 22px;
     margin-bottom: 2px;
 }
