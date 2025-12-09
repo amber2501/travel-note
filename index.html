@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>旅遊手帳 Ultimate 4.6 ☁️</title>
+    <title>旅遊手帳 Ultimate 5.0 ☁️</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -37,7 +37,9 @@
             --c-food-bg: #FFF3E0; --c-food-line: #FFB74D;   /* 橘：美食 */
             --c-shop-bg: #FCE4EC; --c-shop-line: #F06292;   /* 粉：購物 */
             --c-trans-bg:#E0F2F1; --c-trans-line:#4DB6AC;   /* 青：交通 */
-            --c-other-bg:#F3E5F5; --c-other-line:#BA68C8;   /* 紫：其他 */
+            
+            /* 修改：其他類別改為質感灰 Sage/Grey */
+            --c-other-bg:#ECEFF1; --c-other-line:#78909C;
             
             --c-ticket-bg: #FFF8E1; --c-ticket-line: #FFD54F; /* 黃：門票 */
             --c-chart-bg:  #E8EAF6; --c-chart-line:  #7986CB; /* 靛：包車 */
@@ -129,6 +131,16 @@
         .card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 15px; color: var(--primary-dark); font-weight: 800; font-size: 1.1rem; }
         .card-label { font-size: 0.8rem; color: var(--text-light); font-weight: 700; margin-bottom: 6px; display: block; margin-left: 4px;}
 
+        /* Beautified Info Cards */
+        .info-card-item {
+            background: #F9FAFC; border-radius: var(--radius-M);
+            padding: 15px; margin-bottom: 12px;
+            border: 1px solid #EFF2F5; display: flex; justify-content: space-between; align-items: center;
+        }
+        .info-card-content { flex: 1; }
+        .info-card-title { font-weight: bold; color: var(--text); font-size: 1rem; margin-bottom: 4px; }
+        .info-card-sub { font-size: 0.85rem; color: var(--text-light); display: flex; gap: 8px; align-items: center; }
+
         /* Boarding Pass */
         .bp-card {
             background: white; border-radius: var(--radius-M);
@@ -149,6 +161,37 @@
         .bp-duration { font-size: 0.75rem; color: var(--text-light); font-weight: bold; margin-top: 4px; }
         .tz-select { width: auto; padding: 6px; font-size: 0.8rem; background: #eef2f5; border: 1px solid #ddd; border-radius: 6px; margin-left: 5px; font-weight:bold; height: 44px;}
 
+        /* Countdown Banner */
+        .countdown-banner {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white; border-radius: var(--radius-M); padding: 20px;
+            text-align: center; margin-bottom: 20px;
+            box-shadow: 0 5px 15px rgba(90, 130, 150, 0.3);
+        }
+        .countdown-num { font-size: 2.5rem; font-weight: 900; line-height: 1.1; }
+        .countdown-text { font-size: 0.9rem; opacity: 0.9; font-weight: bold; }
+
+        /* Weather Card (Beautified) */
+        .weather-card {
+            border-radius: var(--radius-L); padding: 20px; margin-bottom: 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            background: white;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            border: 1px solid rgba(255,255,255,0.6);
+            position: relative; overflow: hidden;
+        }
+        /* Glass effect gradient background */
+        .weather-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: linear-gradient(120deg, rgba(227, 242, 253, 0.4) 0%, rgba(255, 255, 255, 0) 100%);
+            z-index: 0;
+        }
+        .weather-info { position: relative; z-index: 1; display: flex; align-items: center; gap: 15px; }
+        .weather-icon-box { color: #F57C00; filter: drop-shadow(0 2px 4px rgba(245, 124, 0, 0.3)); transform: scale(1.2); }
+        .weather-temp-box { position: relative; z-index: 1; text-align: right; }
+        .temp-main { font-weight: 900; font-size: 2.2rem; color: var(--text); line-height: 1; }
+        .temp-range { font-size: 0.85rem; color: var(--text-light); font-weight: bold; margin-top: 4px; }
+        
         /* Lists */
         .item-list-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #F5F5F5; }
         .item-list-row:last-child { border-bottom: none; }
@@ -205,18 +248,13 @@
         .it-icon { width: 32px; height: 32px; border-radius: 10px; background: rgba(255,255,255,0.7); color: var(--primary-dark); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
 
         .it-actions { display: flex; flex-direction: column; gap: 5px; margin-left: auto; justify-content: flex-start; }
+        .btn-map-icon { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: white; color: #4285F4; border: 1px solid #E0E0E0; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
 
         .night-stay-box {
             margin-top: 30px; background: #353b48; color: white;
             border-radius: var(--radius-M); padding: 15px;
             display: flex; align-items: center; gap: 15px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .weather-badge {
-            background: white; border-radius: 12px; padding: 4px 10px; font-size: 0.75rem; 
-            display: inline-flex; align-items: center; gap: 4px; color: var(--text-light); font-weight: bold;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
         /* Bottom Nav & FAB */
@@ -285,7 +323,7 @@
         <div style="text-align:center; padding-top:80px; padding-bottom:50px;">
             <div style="font-size:3rem; margin-bottom:10px;">☁️</div>
             <h1 style="color:var(--primary-dark); margin:0; font-size:2rem; letter-spacing:1px;">旅遊手帳</h1>
-            <p style="color:var(--text-light); font-size:0.9rem; margin-top:5px;">Travel Log 4.6</p>
+            <p style="color:var(--text-light); font-size:0.9rem; margin-top:5px;">Travel Log 5.0</p>
         </div>
         <div id="trip-list-container" class="container"></div>
         <button class="fab" onclick="openCreateTripModal()">
@@ -306,7 +344,7 @@
                 <svg class="icon-svg"><use href="#icon-nav-money"></use></svg> 記帳
             </button>
             <button class="nav-item" onclick="switchTab('shopping')">
-                <svg class="icon-svg"><use href="#icon-nav-shop"></use></svg> 購物
+                <svg class="icon-svg"><use href="#icon-nav-shop"></use></svg> 清單
             </button>
         </nav>
 
@@ -323,13 +361,19 @@
                     <button class="sub-nav-btn" onclick="switchInfoSub('hotel')"><svg class="icon-svg icon-sm"><use href="#icon-house"></use></svg> 住宿</button>
                     <button class="sub-nav-btn" onclick="switchInfoSub('ticket')"><svg class="icon-svg icon-sm"><use href="#icon-ticket"></use></svg> 門票</button>
                     <button class="sub-nav-btn" onclick="switchInfoSub('charter')"><svg class="icon-svg icon-sm"><use href="#icon-car"></use></svg> 包車</button>
-                    <button class="sub-nav-btn" onclick="switchInfoSub('packing')"><svg class="icon-svg icon-sm"><use href="#icon-pack"></use></svg> 清單</button>
+                    <button class="sub-nav-btn" onclick="switchInfoSub('packing')"><svg class="icon-svg icon-sm"><use href="#icon-pack"></use></svg> 行李</button>
                 </div>
             </div>
             
             <div class="container">
                 <!-- 1. 機票 -->
                 <div id="info-flight" class="info-sub-tab">
+                    <!-- 倒數計時區 -->
+                    <div id="countdown-area" class="countdown-banner hidden">
+                        <div class="countdown-num" id="countdown-val">0</div>
+                        <div class="countdown-text">DAYS TO GO!</div>
+                    </div>
+
                     <div class="card">
                         <div class="card-header"><svg class="icon-svg"><use href="#icon-plane-real"></use></svg> 去程 Outbound</div>
                         <div class="flight-edit-block">
@@ -379,32 +423,26 @@
 
                 <!-- 2. 住宿 -->
                 <div id="info-hotel" class="info-sub-tab hidden">
-                    <div class="card">
-                        <div id="hotel-list"></div>
-                        <button class="btn btn-primary" style="width:100%; margin-top:10px;" onclick="openHotelModal()">
-                            <svg class="icon-svg icon-sm"><use href="#icon-plus"></use></svg> 新增住宿
-                        </button>
-                    </div>
+                    <div id="hotel-list"></div>
+                    <button class="btn btn-primary" style="width:100%; margin-top:10px;" onclick="openHotelModal()">
+                        <svg class="icon-svg icon-sm"><use href="#icon-plus"></use></svg> 新增住宿
+                    </button>
                 </div>
 
                 <!-- 3. 門票 -->
                 <div id="info-ticket" class="info-sub-tab hidden">
-                    <div class="card">
-                        <div id="ticket-list"></div>
-                        <button class="btn btn-primary" style="width:100%; margin-top:10px;" onclick="openTicketModal()">
-                            <svg class="icon-svg icon-sm"><use href="#icon-plus"></use></svg> 新增票券
-                        </button>
-                    </div>
+                    <div id="ticket-list"></div>
+                    <button class="btn btn-primary" style="width:100%; margin-top:10px;" onclick="openTicketModal()">
+                        <svg class="icon-svg icon-sm"><use href="#icon-plus"></use></svg> 新增票券
+                    </button>
                 </div>
 
                 <!-- 4. 包車 -->
                 <div id="info-charter" class="info-sub-tab hidden">
-                    <div class="card">
-                        <div id="charter-list"></div>
-                        <button class="btn btn-primary" style="width:100%; margin-top:10px;" onclick="openCharterModal()">
-                            <svg class="icon-svg icon-sm"><use href="#icon-plus"></use></svg> 新增包車/接送
-                        </button>
-                    </div>
+                    <div id="charter-list"></div>
+                    <button class="btn btn-primary" style="width:100%; margin-top:10px;" onclick="openCharterModal()">
+                        <svg class="icon-svg icon-sm"><use href="#icon-plus"></use></svg> 新增包車/接送
+                    </button>
                 </div>
 
                 <!-- 5. 清單 -->
@@ -432,22 +470,21 @@
             </div>
             
             <div class="container">
-                <!-- 自動天氣顯示區 -->
-                <div class="card" style="padding:15px; display:flex; justify-content:space-between; align-items:center; background:linear-gradient(135deg, #fff 0%, #f7fcff 100%);">
-                    <div style="display:flex; align-items:center; gap:10px;">
-                        <div id="weather-icon-box" style="color:#F57C00;"><svg class="icon-svg"><use href="#icon-sun"></use></svg></div>
+                <!-- Weather Card (美化後) -->
+                <div class="weather-card">
+                    <div class="weather-info">
+                        <div id="weather-icon-box" class="weather-icon-box"><svg class="icon-svg"><use href="#icon-sun"></use></svg></div>
                         <div style="display:flex; flex-direction:column;">
-                            <span id="weather-text" style="font-weight:bold; font-size:0.9rem; color:var(--text);">晴朗</span>
-                            <span id="weather-loc" style="font-size:0.75rem; color:var(--text-light);">Loading...</span>
+                            <span id="weather-text" style="font-weight:bold; font-size:1.1rem; color:var(--text);">晴朗</span>
+                            <span id="weather-loc" style="font-size:0.8rem; color:var(--text-light); font-weight:bold;">Loading...</span>
                         </div>
                     </div>
-                    <div style="text-align:right;">
-                        <div style="font-weight:900; font-size:1.5rem; color:var(--primary-dark);">
-                            <span id="weather-temp">--</span><span style="font-size:0.8rem;">°C</span>
+                    <div class="weather-temp-box">
+                        <div class="temp-main">
+                            <span id="weather-temp">--</span><span style="font-size:1rem;">°C</span>
                         </div>
-                        <div style="font-size:0.75rem; color:var(--text-light); margin-top:2px;">
-                            <span class="weather-badge">🌅 <span id="w-rise">--:--</span></span>
-                            <span class="weather-badge">🌇 <span id="w-set">--:--</span></span>
+                        <div class="temp-range">
+                            L:<span id="w-min">--</span>° H:<span id="w-max">--</span>°
                         </div>
                     </div>
                 </div>
@@ -517,31 +554,39 @@
             </button>
         </div>
 
-        <!-- D. 購物 (Updated) -->
+        <!-- D. 清單 (Lists) -->
         <div id="tab-shopping" class="tab-content hidden">
             <div class="sticky-header">
                 <div class="header-top">
                     <button class="back-btn" onclick="goHome()">◀</button>
-                    <div class="header-title">購物清單</div>
+                    <div class="header-title">必買 / 必吃</div>
                     <div style="width:30px;"></div>
+                </div>
+                <div class="sub-nav" style="justify-content:center;">
+                    <button class="sub-nav-btn active" onclick="switchListSub('shop')">
+                         <svg class="icon-svg icon-sm"><use href="#icon-nav-shop"></use></svg> 購物清單
+                    </button>
+                    <button class="sub-nav-btn" onclick="switchListSub('food')">
+                         <svg class="icon-svg icon-sm"><use href="#icon-food"></use></svg> 美食清單
+                    </button>
                 </div>
             </div>
             <div class="container">
                 <div class="card">
-                    <input type="text" id="shop-input" placeholder="想買什麼..." style="margin-bottom:12px;">
+                    <input type="text" id="shop-input" placeholder="名稱..." style="margin-bottom:12px;">
                     <div class="row">
                         <input type="text" class="col" id="shop-price" placeholder="預算/備註">
-                        <input type="text" class="col" id="shop-loc" placeholder="購入地點 (店名)">
+                        <input type="text" class="col" id="shop-loc" placeholder="地點/店家">
                     </div>
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-top:5px;">
                          <label class="btn" style="background:#F0F4F8; color:var(--text-light); padding:10px 16px;">
                             <svg class="icon-svg icon-sm"><use href="#icon-camera"></use></svg>
                             <input type="file" id="shop-img" accept="image/*" style="display:none;">
                         </label>
-                        <button class="btn btn-primary" onclick="addShoppingItem()" style="padding-left:30px; padding-right:30px;">新增</button>
+                        <button class="btn btn-primary" onclick="addListItem()" style="padding-left:30px; padding-right:30px;">新增</button>
                     </div>
                 </div>
-                <div id="list-shopping"></div>
+                <div id="list-items-container"></div>
             </div>
         </div>
     </div>
@@ -568,7 +613,7 @@
         </div>
     </div>
 
-    <!-- 行程編輯 (Updated: Delete btn & Transport logic) -->
+    <!-- 行程編輯 (地點導向) -->
     <div id="modal-itinerary" class="modal hidden">
         <div class="modal-content">
             <h3 style="text-align:center; color:var(--primary);" id="modal-title-itinerary">行程細項</h3>
@@ -585,11 +630,8 @@
                 <option value="other">✨ 其他</option>
             </select>
             
-            <input type="text" id="i-title" placeholder="名稱">
-            <input type="text" id="i-open" placeholder="營業時間 (如: 09:00 - 17:00)" class="hidden">
-            
             <div style="position:relative;">
-                <input type="text" id="i-loc" placeholder="地點 (Google Maps)" style="padding-right:40px;">
+                <input type="text" id="i-loc" placeholder="地點名稱 (Google Maps)" style="padding-right:40px; font-weight:bold;">
                 <div style="position:absolute; right:10px; top:10px; color:var(--primary);"><svg class="icon-svg icon-sm"><use href="#icon-pin"></use></svg></div>
             </div>
             
@@ -597,6 +639,9 @@
                  <input type="text" id="i-dest" placeholder="目的地點 (Google Maps)" style="padding-right:40px;">
                  <div style="position:absolute; right:10px; top:10px; color:var(--primary);"><svg class="icon-svg icon-sm"><use href="#icon-pin"></use></svg></div>
             </div>
+
+            <input type="text" id="i-title" placeholder="補充標題 (選填，如: 搭乘JR)" class="hidden">
+            <input type="text" id="i-open" placeholder="營業時間 (如: 09:00 - 17:00)" class="hidden">
 
             <textarea id="i-note" placeholder="備註..." style="height:80px;"></textarea>
             
@@ -696,10 +741,10 @@
     </div>
 
 <script>
-    const DB_KEY = 'trip_v4_ult';
+    const DB_KEY = 'trip_v5_ult';
     let allTrips = [];
     let currentTrip = null;
-    let appState = { dayIdx: 0, editId: null, editType: null, charterType: '接送' };
+    let appState = { dayIdx: 0, editId: null, editType: null, charterType: '接送', listType: 'shop' };
     let moneyState = { payer: '', method: 'cash' };
     let currentRate = 0.22;
 
@@ -707,43 +752,33 @@
         const saved = localStorage.getItem(DB_KEY);
         if (saved) { try { allTrips = JSON.parse(saved); } catch(e) {} }
         
-        // Transport Logic in Modal (Improved Labels)
+        // Transport Logic in Modal
         document.getElementById('i-type').addEventListener('change', function() {
             const val = this.value;
             const openInput = document.getElementById('i-open');
             const endTimeInput = document.getElementById('i-end-time');
             const destWrapper = document.getElementById('wrapper-dest');
-            
-            // Labels
-            const titleInput = document.getElementById('i-title');
             const locInput = document.getElementById('i-loc');
-            const destInput = document.getElementById('i-dest');
 
             openInput.classList.add('hidden');
             endTimeInput.classList.add('hidden');
             destWrapper.classList.add('hidden');
             
-            // Reset placeholders
-            titleInput.placeholder = "名稱";
-            locInput.placeholder = "地點 (Google Maps)";
+            locInput.placeholder = "地點名稱 (Google Maps)";
 
             if(val === 'food' || val === 'spot' || val === 'shop') {
                 openInput.classList.remove('hidden');
             } else if (val === 'transport') {
                 endTimeInput.classList.remove('hidden');
                 destWrapper.classList.remove('hidden');
-                
-                // Specific placeholders for Transport
-                titleInput.placeholder = "交通方式/班次 (如: JR山手線, 巴士50號)";
                 locInput.placeholder = "出發地";
-                destInput.placeholder = "目的地";
             }
         });
         renderHome();
     };
     function saveData() { localStorage.setItem(DB_KEY, JSON.stringify(allTrips)); }
 
-    // --- Helper for Date String (Fix Timezone Issue) ---
+    // --- Helper for Date String ---
     function getTargetDateStr(startStr, dayOffset) {
         const parts = startStr.split('-');
         const d = new Date(parts[0], parts[1]-1, parts[2]);
@@ -775,7 +810,7 @@
         document.getElementById('rate-display').innerText = amt === 0 ? `1 : ${currentRate.toFixed(2)}` : `$${total.toFixed(0)}`;
     }
 
-    // --- Weather ---
+    // --- Weather (Max/Min) ---
     async function fetchWeatherForDay() {
         if(!currentTrip.city) {
             document.getElementById('weather-text').innerText = "未設定城市";
@@ -784,7 +819,6 @@
         }
         
         const dateStr = getTargetDateStr(currentTrip.startDate, appState.dayIdx);
-
         let lat = currentTrip.lat, lon = currentTrip.lon;
         if (!lat || !lon) {
             try {
@@ -802,21 +836,19 @@
         document.getElementById('weather-loc').innerText = currentTrip.city;
 
         try {
-            const wRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,sunrise,sunset&timezone=auto&start_date=${dateStr}&end_date=${dateStr}`);
+            const wRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,temperature_2m_min&timezone=auto&start_date=${dateStr}&end_date=${dateStr}`);
             const wData = await wRes.json();
             if(wData.daily && wData.daily.time.length > 0) {
                 const code = wData.daily.weathercode[0];
-                const temp = wData.daily.temperature_2m_max[0];
-                const rise = wData.daily.sunrise[0].split('T')[1];
-                const set = wData.daily.sunset[0].split('T')[1];
+                const max = wData.daily.temperature_2m_max[0];
+                const min = wData.daily.temperature_2m_min[0];
 
-                document.getElementById('weather-temp').innerText = temp;
-                document.getElementById('w-rise').innerText = rise;
-                document.getElementById('w-set').innerText = set;
+                document.getElementById('weather-temp').innerText = max;
+                document.getElementById('w-max').innerText = max;
+                document.getElementById('w-min').innerText = min;
                 setWeatherIcon(code);
             } else {
                 document.getElementById('weather-text').innerText = "無資料";
-                document.getElementById('weather-temp').innerText = "--";
             }
         } catch(e) { document.getElementById('weather-text').innerText = "離線"; }
     }
@@ -824,6 +856,7 @@
     function setWeatherIcon(code) {
         let icon = '#icon-sun', text = '晴朗';
         if(code >= 1 && code <= 3) { icon='#icon-cloud'; text='多雲'; }
+        else if(code >= 45 && code <= 48) { icon='#icon-cloud'; text='霧'; }
         else if(code >= 51 && code <= 67) { icon='#icon-rain'; text='雨天'; }
         else if(code >= 71) { icon='#icon-rain'; text='下雪'; }
         else if(code >= 95) { icon='#icon-rain'; text='雷雨'; }
@@ -887,6 +920,7 @@
         if(!currentTrip.hotels) currentTrip.hotels = [];
         if(!currentTrip.tickets) currentTrip.tickets = [];
         if(!currentTrip.charters) currentTrip.charters = [];
+        if(!currentTrip.foodList) currentTrip.foodList = []; // Add Food List
         
         document.getElementById('view-home').classList.add('hidden');
         document.getElementById('view-detail').classList.remove('hidden');
@@ -895,6 +929,7 @@
         appState.dayIdx = 0;
         switchTab('info');
         fillFlightInputs();
+        updateCountdown();
         fetchRate();
     }
     function goHome() { currentTrip = null; renderHome(); }
@@ -908,6 +943,7 @@
         const idx = tab === 'info' ? 0 : tab === 'itinerary' ? 1 : tab === 'money' ? 2 : 3;
         document.querySelectorAll('.nav-item')[idx].classList.add('active');
         if(tab==='itinerary') renderAllDetail();
+        if(tab==='shopping') { appState.listType='shop'; switchListSub('shop'); }
     }
     function switchInfoSub(sub) {
         document.querySelectorAll('.info-sub-tab').forEach(el => el.classList.add('hidden'));
@@ -917,6 +953,7 @@
         const map = {flight:0, hotel:1, ticket:2, charter:3, packing:4};
         if(btns[map[sub]]) btns[map[sub]].classList.add('active');
 
+        if(sub === 'flight') updateCountdown();
         if(sub === 'hotel') renderHotels();
         if(sub === 'ticket') renderTickets();
         if(sub === 'charter') renderCharters();
@@ -938,7 +975,19 @@
         }
     }
 
-    // --- Flight (TimeZone Aware) ---
+    // --- Flight (Countdown) ---
+    function updateCountdown() {
+        const today = new Date(); today.setHours(0,0,0,0);
+        const start = new Date(currentTrip.startDate);
+        const diff = Math.ceil((start - today) / (1000 * 60 * 60 * 24));
+        const banner = document.getElementById('countdown-area');
+        if(diff >= 0) {
+            banner.classList.remove('hidden');
+            document.getElementById('countdown-val').innerText = diff;
+        } else {
+            banner.classList.add('hidden');
+        }
+    }
     function fillFlightInputs() {
         const f = currentTrip.flights;
         ['code','airline','depTime','depTz','depAir','arrTime','arrTz','arrAir'].forEach(k => {
@@ -1004,18 +1053,16 @@
         const list = document.getElementById('hotel-list'); list.innerHTML = '';
         currentTrip.hotels.sort((a,b)=>a.date.localeCompare(b.date)).forEach(h => {
             list.innerHTML += `
-                <div class="item-list-row">
-                    <div style="display:flex; align-items:center;">
-                        <div class="item-icon-box"><svg class="icon-svg"><use href="#icon-house"></use></svg></div>
-                        <div>
-                            <div style="font-weight:bold; color:var(--text);">${h.name}</div>
-                            <div style="font-size:0.8rem; color:var(--text-light);">${h.date} (${h.days}晚) ${h.source ? '· '+h.source : ''}</div>
-                            ${h.order ? `<div style="font-size:0.75rem; color:var(--primary);">#${h.order}</div>` : ''}
-                        </div>
+                <div class="info-card-item">
+                    <div class="item-icon-box"><svg class="icon-svg"><use href="#icon-house"></use></svg></div>
+                    <div class="info-card-content">
+                        <div class="info-card-title">${h.name}</div>
+                        <div class="info-card-sub">${h.date} (${h.days}晚)</div>
+                        ${h.source ? `<div class="info-card-sub">${h.source} #${h.order}</div>` : ''}
                     </div>
                     <div>
-                        <button class="btn-edit" onclick="openHotelModal(${h.id})">編輯</button>
-                        <button class="btn-del" onclick="delItem('hotels', ${h.id})">刪除</button>
+                        <button class="btn-edit" onclick="openHotelModal(${h.id})">✎</button>
+                        <button class="btn-del" onclick="delItem('hotels', ${h.id})">✕</button>
                     </div>
                 </div>`;
         });
@@ -1054,18 +1101,16 @@
         const list = document.getElementById('ticket-list'); list.innerHTML = '';
         currentTrip.tickets.sort((a,b)=>a.date.localeCompare(b.date)).forEach(t => {
             list.innerHTML += `
-                <div class="item-list-row">
-                    <div style="display:flex; align-items:center;">
-                        <div class="item-icon-box"><svg class="icon-svg"><use href="#icon-ticket"></use></svg></div>
-                        <div>
-                            <div style="font-weight:bold; color:var(--text);">${t.name}</div>
-                            <div style="font-size:0.8rem; color:var(--text-light);">${t.date || '未定日期'}</div>
-                            ${t.order ? `<div style="font-size:0.75rem; color:var(--primary);">#${t.order}</div>` : ''}
-                        </div>
+                <div class="info-card-item">
+                    <div class="item-icon-box" style="background:#FFF8E1; color:#FBC02D;"><svg class="icon-svg"><use href="#icon-ticket"></use></svg></div>
+                    <div class="info-card-content">
+                        <div class="info-card-title">${t.name}</div>
+                        <div class="info-card-sub">${t.date || '未定日期'}</div>
+                        ${t.order ? `<div class="info-card-sub">#${t.order}</div>` : ''}
                     </div>
                     <div>
-                        <button class="btn-edit" onclick="openTicketModal(${t.id})">編輯</button>
-                        <button class="btn-del" onclick="delItem('tickets', ${t.id})">刪除</button>
+                        <button class="btn-edit" onclick="openTicketModal(${t.id})">✎</button>
+                        <button class="btn-del" onclick="delItem('tickets', ${t.id})">✕</button>
                     </div>
                 </div>`;
         });
@@ -1125,18 +1170,16 @@
         const list = document.getElementById('charter-list'); list.innerHTML = '';
         currentTrip.charters.sort((a,b)=>a.date.localeCompare(b.date)).forEach(c => {
             list.innerHTML += `
-                <div class="item-list-row">
-                    <div style="display:flex; align-items:center;">
-                        <div class="item-icon-box"><svg class="icon-svg"><use href="#icon-car"></use></svg></div>
-                        <div>
-                            <div style="font-weight:bold; color:var(--text);">${c.type} · ${c.date} ${c.time}</div>
-                            <div style="font-size:0.8rem; color:var(--text); margin-top:2px;">${c.from} ➝ ${c.to||'未知'}</div>
-                            <div style="font-size:0.75rem; color:var(--text-light);">${c.contact}</div>
-                        </div>
+                 <div class="info-card-item">
+                    <div class="item-icon-box" style="background:#E8EAF6; color:#5C6BC0;"><svg class="icon-svg"><use href="#icon-car"></use></svg></div>
+                    <div class="info-card-content">
+                        <div class="info-card-title">${c.type}</div>
+                        <div class="info-card-sub" style="color:var(--text); font-weight:bold;">${c.from} ➝ ${c.to||'?'}</div>
+                        <div class="info-card-sub">${c.date} ${c.time}</div>
                     </div>
                     <div>
-                        <button class="btn-edit" onclick="openCharterModal(${c.id})">編輯</button>
-                        <button class="btn-del" onclick="delItem('charters', ${c.id})">刪除</button>
+                        <button class="btn-edit" onclick="openCharterModal(${c.id})">✎</button>
+                        <button class="btn-del" onclick="delItem('charters', ${c.id})">✕</button>
                     </div>
                 </div>`;
         });
@@ -1228,9 +1271,8 @@
                 </div>`;
         }
 
-        // 2. 整合行程
+        // 2. 整合行程 (排除票券)
         const currentDateStr = getTargetDateStr(currentTrip.startDate, appState.dayIdx);
-
         let mixedList = [];
 
         // A. 一般行程
@@ -1238,25 +1280,13 @@
             mixedList.push({ ...i, source: 'itinerary' });
         });
 
-        // B. 門票
-        currentTrip.tickets.filter(t => t.date === currentDateStr).forEach(t => {
-            mixedList.push({
-                id: t.id,
-                time: '09:00',
-                title: t.name,
-                type: 'ticket',
-                note: t.note,
-                source: 'ticket',
-                displayTime: '票券'
-            });
-        });
-
-        // C. 包車
+        // B. 包車
         currentTrip.charters.filter(c => c.date === currentDateStr).forEach(c => {
             mixedList.push({
                 id: c.id,
                 time: c.time || '08:00',
                 title: `${c.type}: ${c.from} ➝ ${c.to}`,
+                loc: c.from,
                 type: 'charter',
                 note: c.note,
                 source: 'charter',
@@ -1269,43 +1299,46 @@
         const iconMap = { 
             spot:'icon-spot', food:'icon-food', shop:'icon-nav-shop', 
             transport:'icon-transport', hotel:'icon-house', other:'icon-star',
-            ticket:'icon-ticket', charter:'icon-car' 
+            charter:'icon-car' 
         };
         
         mixedList.forEach(item => {
-            const mapBtn = item.loc ? `<button class="btn-ghost" onclick="event.stopPropagation(); openMap(event, '${item.loc}')"><svg class="icon-svg icon-sm"><use href="#icon-pin"></use></svg></button>` : '';
             const typeClass = `type-${item.type}`;
-            
             let displayTime = item.displayTime || item.time;
-            let displayTitle = item.title;
+            
+            // 名稱邏輯：直接顯示地點名稱
+            let displayTitle = item.loc; 
+            // 補充說明邏輯：如果有額外標題(item.title)且跟地點不同，顯示在下方
             let displaySub = "";
 
-            // --- 交通類別特別顯示優化 ---
             if (item.type === 'transport') {
-                 if (item.endTime) {
-                    displayTime += `\n<span class="end-time">${item.endTime}</span>`;
-                }
-                if (item.dest) {
-                    // Arrow format for transport
+                 if (item.endTime) displayTime += `\n<span class="end-time">${item.endTime}</span>`;
+                 if (item.dest) {
                     displaySub = `<div style="font-size:0.85rem; color:var(--text); margin-top:4px; display:flex; align-items:center; gap:5px;">
                                     <span>${item.loc}</span>
                                     <span style="color:var(--primary);">➝</span>
                                     <span>${item.dest}</span>
                                   </div>`;
-                } else {
-                    // Fallback if no dest set
-                    displaySub = `<div style="font-size:0.85rem; color:var(--text); margin-top:2px;">${item.loc}</div>`;
-                }
+                    displayTitle = item.title || "移動 / 交通"; // 交通類別特殊處理
+                 } else {
+                    displayTitle = item.loc || item.title;
+                 }
             } else {
-                // Standard items
-                displaySub = item.type !== 'charter' && item.type !== 'ticket' ? `<div style="font-size:0.8rem; color:var(--text-light); margin-top:2px;">${item.loc||''}</div>` : '';
+                if(item.title && item.title !== item.loc) {
+                    displaySub = `<div style="font-size:0.85rem; color:var(--text-light); margin-top:2px;">${item.title}</div>`;
+                }
             }
             
             const openTime = item.open ? `<div style="font-size:0.75rem; color:#E67C73; margin-top:2px;">🕒 ${item.open}</div>` : '';
 
             let clickAction = `editItinerary(${item.id})`;
-            if(item.source === 'ticket') clickAction = `openTicketModal(${item.id})`;
             if(item.source === 'charter') clickAction = `openCharterModal(${item.id})`;
+
+            // Map Button
+            const mapBtn = (item.loc || item.dest) ? 
+                `<button class="btn-map-icon" onclick="event.stopPropagation(); openMap(event, '${item.type==='transport'?item.dest:item.loc}')">
+                    <svg class="icon-svg icon-sm"><use href="#icon-nav-info"></use></svg>
+                 </button>` : '';
 
             // Delete button logic
             let deleteBtnHtml = '';
@@ -1321,7 +1354,7 @@
                     <div class="it-card ${typeClass}">
                         <div class="it-icon"><svg class="icon-svg icon-sm"><use href="#${iconMap[item.type]||'icon-star'}"></use></svg></div>
                         <div style="flex:1; min-width:0;">
-                            <div style="font-weight:bold; color:var(--text); margin-bottom:2px; word-wrap:break-word;">${displayTitle}</div>
+                            <div style="font-weight:bold; color:var(--text); margin-bottom:2px; font-size:1.05rem; word-wrap:break-word;">${displayTitle}</div>
                             ${displaySub}
                             ${openTime}
                             <div style="font-size:0.85rem; color:var(--text); white-space:pre-wrap; margin-top:4px; opacity:0.8;">${item.note || ''}</div>
@@ -1339,7 +1372,6 @@
             const checkIn = new Date(h.date);
             const checkOut = new Date(h.date);
             checkOut.setDate(checkOut.getDate() + parseInt(h.days));
-            
             const currentD = new Date(currentDateStr);
             return currentD >= checkIn && currentD < checkOut;
         });
@@ -1406,7 +1438,7 @@
     }
 
     function deleteItineraryItemInModal() {
-        if(!appState.editId) return; // New item, nothing to delete
+        if(!appState.editId) return; 
         if(confirm('確定刪除此行程？')) {
             currentTrip.itinerary = currentTrip.itinerary.filter(i => i.id !== appState.editId);
             saveData();
@@ -1417,17 +1449,17 @@
 
     function saveItinerary() {
         const time = document.getElementById('i-time').value;
-        const title = document.getElementById('i-title').value;
-        if(!time || !title) return;
+        const loc = document.getElementById('i-loc').value;
+        if(!time || !loc) return alert("請填寫時間與地點");
         
         const newData = {
             id: appState.editId || Date.now(), 
             dayIdx: appState.dayIdx, 
             time,
             type: document.getElementById('i-type').value, 
-            title,
+            title: document.getElementById('i-title').value,
             open: document.getElementById('i-open').value,
-            loc: document.getElementById('i-loc').value, 
+            loc: loc, 
             note: document.getElementById('i-note').value,
             endTime: document.getElementById('i-end-time').value,
             dest: document.getElementById('i-dest').value
@@ -1442,8 +1474,16 @@
         saveData(); closeModal('itinerary'); renderItinerary();
     }
 
-    // --- Shopping (Updated) ---
-    function addShoppingItem() {
+    // --- Lists (Shopping + Food) ---
+    function switchListSub(type) {
+        appState.listType = type;
+        document.querySelectorAll('#tab-shopping .sub-nav-btn').forEach(b => b.classList.remove('active'));
+        const idx = type === 'shop' ? 0 : 1;
+        document.querySelectorAll('#tab-shopping .sub-nav-btn')[idx].classList.add('active');
+        renderLists();
+    }
+
+    function addListItem() {
         const input = document.getElementById('shop-input');
         const price = document.getElementById('shop-price');
         const loc = document.getElementById('shop-loc');
@@ -1451,17 +1491,21 @@
         if(!input.value) return;
 
         const save = (img) => {
-            currentTrip.shopping.push({ 
+            const newItem = { 
                 id:Date.now(), 
                 text:input.value, 
                 price:price.value, 
                 location: loc.value, 
                 checked:false, 
                 image:img 
-            });
+            };
+            
+            if(appState.listType === 'shop') currentTrip.shopping.push(newItem);
+            else currentTrip.foodList.push(newItem);
+            
             saveData(); 
             input.value = ''; price.value = ''; loc.value=''; fileInput.value = ''; 
-            renderShopping();
+            renderLists();
         };
 
         if(fileInput.files[0]) {
@@ -1477,14 +1521,17 @@
         } else save(null);
     }
 
-    function renderShopping() {
-        const list = document.getElementById('list-shopping'); list.innerHTML = '';
-        currentTrip.shopping.forEach(item => {
+    function renderLists() {
+        const list = document.getElementById('list-items-container'); list.innerHTML = '';
+        const data = appState.listType === 'shop' ? currentTrip.shopping : currentTrip.foodList;
+        const typeStr = appState.listType === 'shop' ? 'shopping' : 'foodList';
+
+        data.forEach(item => {
             const imgHtml = item.image ? `<img src="${item.image}" style="width:50px; height:50px; border-radius:10px; object-fit:cover; margin-right:10px;" onclick="window.open('${item.image}')">` : '';
             const locHtml = item.location ? `<span style="font-size:0.8rem; color:var(--text-light); margin-left:8px;">📍 ${item.location}</span>` : '';
             
             list.innerHTML += `
-                <div class="card check-item ${item.checked?'checked':''}" style="padding:15px; display:flex; align-items:center;" onclick="toggleCheck('shopping', ${item.id})">
+                <div class="card check-item ${item.checked?'checked':''}" style="padding:15px; display:flex; align-items:center;" onclick="toggleCheck('${typeStr}', ${item.id})">
                     <div class="check-box"></div>
                     ${imgHtml}
                     <div style="flex:1;">
@@ -1493,27 +1540,44 @@
                             ${item.price||''} ${locHtml}
                         </div>
                     </div>
-                    <button class="btn-del" onclick="event.stopPropagation(); delItem('shopping', ${item.id})">移除</button>
+                    <button class="btn-del" onclick="event.stopPropagation(); delItem('${typeStr}', ${item.id})">移除</button>
                 </div>`;
         });
     }
     
     // --- Money ---
-    function openMoneyModal() {
-        document.getElementById('m-title').value = '';
-        document.getElementById('m-cost').value = '';
+    function openMoneyModal(id=null) {
+        appState.editId = id; appState.editType = 'money';
+        
         const d = new Date(currentTrip.startDate); d.setDate(d.getDate() + appState.dayIdx);
-        document.getElementById('m-date').value = d.toISOString().split('T')[0];
+        let defaultDate = d.toISOString().split('T')[0];
 
+        if(id) {
+            const m = currentTrip.money.find(x => x.id === id);
+            document.getElementById('m-title').value = m.title;
+            document.getElementById('m-cost').value = m.cost;
+            document.getElementById('m-curr').value = m.curr;
+            document.getElementById('m-date').value = m.date;
+            moneyState.payer = m.payer;
+            moneyState.method = m.method;
+        } else {
+            document.getElementById('m-title').value = '';
+            document.getElementById('m-cost').value = '';
+            document.getElementById('m-date').value = defaultDate;
+            moneyState.payer = currentTrip.members[0];
+            moneyState.method = 'cash';
+        }
+
+        // Render Payer Buttons
         const payerContainer = document.getElementById('m-payer-wrapper');
         payerContainer.innerHTML = '';
-        currentTrip.members.forEach((m, idx) => {
+        currentTrip.members.forEach(m => {
             const btn = document.createElement('button');
             btn.className = 'btn-ghost'; 
             btn.style.border = '1px solid #EEE';
             btn.style.borderRadius = '20px';
             btn.innerText = m;
-            if(idx===0) { btn.style.background= 'var(--primary)'; btn.style.color='white'; moneyState.payer = m; }
+            if(moneyState.payer === m) { btn.style.background= 'var(--primary)'; btn.style.color='white'; }
             btn.onclick = (e) => {
                 Array.from(payerContainer.children).forEach(c=>{c.style.background='transparent'; c.style.color='var(--text-light)'});
                 e.target.style.background='var(--primary)'; e.target.style.color='white';
@@ -1521,25 +1585,50 @@
             };
             payerContainer.appendChild(btn);
         });
+
+        // Render Method Buttons
+        document.querySelectorAll('.method-btn').forEach(b => {
+             b.style.background='transparent'; b.style.color='var(--text-light)';
+             if(b.innerText.toLowerCase().includes(moneyState.method === 'cash' ? '現金' : (moneyState.method==='card'?'信用卡':'其他'))) {
+                 b.style.background = 'var(--accent)'; b.style.color = 'white';
+             }
+        });
+
         openModal('money');
     }
+
     function setMoneyMethod(m, el) {
         moneyState.method = m;
         document.querySelectorAll('.method-btn').forEach(b => {b.style.background='transparent'; b.style.color='var(--text-light)'});
         el.style.background = 'var(--accent)'; el.style.color = 'white';
     }
+
     function saveMoney() {
         const title = document.getElementById('m-title').value;
         const cost = document.getElementById('m-cost').value;
         if(!title || !cost) return;
-        currentTrip.money.push({
-            id: Date.now(), dayIdx: appState.dayIdx,
+        
+        const newData = {
+            id: appState.editId || Date.now(), 
+            dayIdx: appState.dayIdx,
             date: document.getElementById('m-date').value,
-            title, cost: parseFloat(cost), curr: document.getElementById('m-curr').value,
-            payer: moneyState.payer, method: moneyState.method || 'cash'
-        });
+            title, 
+            cost: parseFloat(cost), 
+            curr: document.getElementById('m-curr').value,
+            payer: moneyState.payer, 
+            method: moneyState.method || 'cash'
+        };
+
+        if(appState.editId) {
+            const idx = currentTrip.money.findIndex(x=>x.id===appState.editId);
+            if(idx!==-1) currentTrip.money[idx] = newData;
+        } else {
+            currentTrip.money.push(newData);
+        }
+        
         saveData(); closeModal('money'); renderMoney();
     }
+
     function renderMoney() {
         const list = document.getElementById('list-money'); list.innerHTML = '';
         const items = currentTrip.money.filter(i => i.dayIdx === appState.dayIdx);
@@ -1547,7 +1636,7 @@
         
         [...items].reverse().forEach(item => {
             list.innerHTML += `
-                <div class="item-list-row" style="background:white; padding:15px; border-radius:16px; margin-bottom:10px; box-shadow:var(--shadow-card); border:none;">
+                <div class="item-list-row" style="background:white; padding:15px; border-radius:16px; margin-bottom:10px; box-shadow:var(--shadow-card); border:none;" onclick="openMoneyModal(${item.id})">
                     <div style="flex:1;">
                         <div style="font-weight:bold; color:var(--text); font-size:1rem;">${item.title}</div>
                         <div style="font-size:0.8rem; color:var(--text-light); margin-top:4px;">
@@ -1556,7 +1645,7 @@
                     </div>
                     <div style="text-align:right;">
                         <div style="font-weight:900; color:var(--primary-dark); font-size:1.1rem;">${item.curr} ${item.cost}</div>
-                        <button class="btn-del" onclick="delItem('money', ${item.id})" style="margin-top:5px; background:transparent;">移除</button>
+                        <button class="btn-del" onclick="event.stopPropagation(); delItem('money', ${item.id})" style="margin-top:5px; background:transparent;">移除</button>
                     </div>
                 </div>`;
         });
@@ -1617,8 +1706,27 @@
 
     // --- Utils ---
     function openMap(e, loc) { e.stopPropagation(); window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(loc)}`, '_blank'); }
-    function toggleCheck(type, id) { const i = currentTrip[type].find(x => x.id === id); if(i) { i.checked = !i.checked; saveData(); type==='packing'?renderPacking():renderShopping(); } }
-    function delItem(type, id) { if(!confirm('刪除？')) return; currentTrip[type] = currentTrip[type].filter(x => x.id !== id); saveData(); if(type==='hotels') renderHotels(); else if(type==='tickets') renderTickets(); else if(type==='charters') renderCharters(); else if(type==='packing') renderPacking(); else if(type==='money') { renderMoney(); renderMoneyAnalysis(); } else if(type==='shopping') renderShopping(); }
+    function toggleCheck(type, id) { 
+        let arr = type === 'foodList' ? currentTrip.foodList : currentTrip[type];
+        const i = arr.find(x => x.id === id); 
+        if(i) { i.checked = !i.checked; saveData(); type==='packing'?renderPacking():renderLists(); } 
+    }
+    function delItem(type, id) { 
+        if(!confirm('刪除？')) return; 
+        if(type==='foodList') {
+             currentTrip.foodList = currentTrip.foodList.filter(x => x.id !== id);
+             saveData(); renderLists();
+             return;
+        }
+        currentTrip[type] = currentTrip[type].filter(x => x.id !== id); 
+        saveData(); 
+        if(type==='hotels') renderHotels(); 
+        else if(type==='tickets') renderTickets(); 
+        else if(type==='charters') renderCharters(); 
+        else if(type==='packing') renderPacking(); 
+        else if(type==='money') { renderMoney(); renderMoneyAnalysis(); } 
+        else if(type==='shopping') renderLists(); 
+    }
     function closeModal(id) { document.getElementById('modal-'+id).classList.add('hidden'); }
     function openModal(id) { document.getElementById('modal-'+id).classList.remove('hidden'); }
 </script>
