@@ -1,3 +1,69 @@
+/* --- UI 調整：行程卡片與按鈕 --- */
+
+.day-card {
+    /* ... 保持原來的可愛極簡風格 ... */
+    position: relative;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+/* 編輯/儲存 按鈕 (小按鈕樣式) */
+.primary-btn-small {
+    background-color: var(--aqua-light); /* 預設使用淺色 */
+    color: var(--aqua-blue);
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+/* 儲存模式按鈕樣式 */
+.primary-btn-small.save-mode {
+    background-color: var(--aqua-blue); /* 儲存時使用主色 */
+    color: white;
+}
+
+/* --- 核心 UX：編輯模式視覺回饋 --- */
+
+/* 讓規劃內容區域看起來像一個輸入框 */
+.itinerary-content {
+    min-height: 80px;
+    padding: 12px;
+    border: 1px dashed var(--color-border); /* 預設是虛線 */
+    border-radius: 8px;
+    margin-top: 10px;
+    line-height: 1.5;
+    background-color: var(--color-card-bg);
+    white-space: pre-wrap; /* 保留換行 */
+}
+
+/* 當卡片處於編輯模式時的樣式強調 */
+.day-card.editing-mode {
+    border: 2px solid var(--aqua-blue); /* 編輯中時，卡片外框強調 */
+    box-shadow: 0 0 15px rgba(64, 164, 200, 0.3); /* 明顯藍色光暈 */
+}
+
+/* 編輯中的內容區塊樣式 */
+.day-card.editing-mode .itinerary-content {
+    border: 1px solid var(--aqua-blue); /* 邊框變實線主色 */
+    background-color: #f7fcff; /* 淺淺的藍色背景，表示正在編輯 */
+}
+
+/* 內容編輯時，確保用戶看到光標 */
+.itinerary-content:focus {
+    outline: none; 
+}
+
+
+
 /* --- 基礎設定與配色 (Cute & Minimal) --- */
 :root {
     /* 主配色：柔和水藍與奶油白 */
