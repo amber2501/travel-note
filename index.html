@@ -1,82 +1,32 @@
-[
-  {
-    "day": 1,
-    "date_theme": "抵達與秋葉原慢遊",
-    "location_base": "秋葉原 (Keikyu EX Inn)",
-    "morning": "NRT T1抵達 (06:30) -> 京成線/JR至秋葉原 -> 飯店寄放行李",
-    "afternoon": "秋葉原輕食與輕量逛街 (調時差、扭蛋機)",
-    "evening": "晚餐與早點休息",
-    "transport_note": "京成Skyliner/Access特快轉JR至秋葉原",
-    "daily_expense_log_id": 1
-  },
-  {
-    "day": 2,
-    "date_theme": "AnimeJapan 活動日",
-    "location_base": "活動會場 (如 Tokyo Big Sight)",
-    "morning": "全天參加 AnimeJapan",
-    "afternoon": "全天參加 AnimeJapan",
-    "evening": "會場附近晚餐或回秋葉原用餐",
-    "transport_note": "依會場地點，需搭乘臨海線或京葉線",
-    "daily_expense_log_id": 2
-  },
-  {
-    "day": 3,
-    "date_theme": "潮流與觀景 (新宿/澀谷)",
-    "location_base": "新宿/澀谷",
-    "morning": "新宿：都廳免費觀景台、新宿御苑",
-    "afternoon": "澀谷：十字路口、八公犬",
-    "evening": "Shibuya Sky 觀景台 (欣賞夜景，建議提前預約)",
-    "transport_note": "JR山手線直達 (秋葉原出發)",
-    "daily_expense_log_id": 3
-  },
-  {
-    "day": 4,
-    "date_theme": "寶可夢主題日 (池袋)",
-    "location_base": "池袋 (Sunshine City)",
-    "morning": "池袋：寶可夢中心Mega Tokyo",
-    "afternoon": "Sunshine City 水族館或周邊購物",
-    "evening": "池袋拉麵激戰區晚餐",
-    "transport_note": "JR山手線至池袋",
-    "daily_expense_log_id": 4
-  },
-  {
-    "day": 5,
-    "date_theme": "傳統文化巡禮 (上野/淺草)",
-    "location_base": "上野/淺草",
-    "morning": "上野：上野公園、博物館或動物園",
-    "afternoon": "淺草：雷門、仲見世商店街、淺草寺",
-    "evening": "晴空塔周邊或淺草Hoppy通晚餐",
-    "transport_note": "JR京濱東北線或日比谷線至上野，銀座線至淺草",
-    "daily_expense_log_id": 5
-  },
-  {
-    "day": 6,
-    "date_theme": "奢華與美食 (銀座/日本橋)",
-    "location_base": "銀座/日本橋/築地",
-    "morning": "築地場外市場 (享用海鮮早餐/午餐)",
-    "afternoon": "日本橋：寶可夢中心DX、寶可夢咖啡廳 (需預約)",
-    "evening": "銀座高級百貨巡禮或晚餐",
-    "transport_note": "JR/地鐵線至新橋、銀座、日本橋",
-    "daily_expense_log_id": 6
-  },
-  {
-    "day": 7,
-    "date_theme": "海灣與自由活動 (台場)",
-    "location_base": "台場/自由活動",
-    "morning": "台場：DiverCity Tokyo Plaza (鋼彈立像)、購物",
-    "afternoon": "自由活動：回秋葉原或澀谷補貨",
-    "evening": "自選晚餐或夜景",
-    "transport_note": "JR至新橋，轉乘百合海鷗號至台場",
-    "daily_expense_log_id": 7
-  },
-  {
-    "day": 8,
-    "date_theme": "告別與啟程",
-    "location_base": "秋葉原 -> NRT T1",
-    "morning": "最後購物與午餐 (秋葉原/上野)",
-    "afternoon": "飯店出發 (17:00) -> NRT T1 (20:40班機)",
-    "evening": "N/A",
-    "transport_note": "JR至日暮里/上野轉京成Skyliner/Access特快",
-    "daily_expense_log_id": 8
-  }
-]
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>東京旅程規劃與記帳</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>✈️ 東京八天旅程</h1>
+
+    <section id="itinerary-list">
+        </section>
+
+    <section id="expense-tracker">
+        <h2>💰 每日記賬</h2>
+        <form id="expense-form">
+            <label for="expense-day">日期/Day:</label>
+            <input type="number" id="expense-day" required min="1" max="8">
+            
+            <button type="submit">💾 記錄支出</button>
+        </form>
+
+        <hr>
+        
+        <h3>Day <span id="current-day-display">1</span> 總支出: <span id="daily-total">0 JPY</span></h3>
+        <ul id="expense-list">
+            </ul>
+    </section>
+
+    <script src="app.js"></script>
+</body>
+</html>
