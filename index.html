@@ -432,6 +432,18 @@
     </div>
 
     <script type="module">
+        window.openCreateTripModal = function() {
+            // 清空輸入框，避免顯示上次的資料
+            document.getElementById('new-trip-name').value = '';
+            document.getElementById('new-trip-city').value = '';
+            document.getElementById('new-trip-date').value = '';
+            document.getElementById('new-trip-members').value = '';
+            document.getElementById('new-trip-days').value = '5';
+            
+            // 開啟視窗
+            window.openModal('create-trip');
+        };
+        
         // ---------------------------------------------------------
         // 1. Firebase Config
         // ---------------------------------------------------------
