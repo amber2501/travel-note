@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -38,7 +37,7 @@
             --shadow-card: 0 4px 15px rgba(148, 163, 184, 0.1);
             --shadow-float: 0 8px 25px rgba(127, 169, 190, 0.3);
 
-            /* 馬卡龍色系 (背景色調淡 - Update #2) */
+            /* 馬卡龍色系 (背景色調淡) */
             --c-spot-bg: #F2F9FD; --c-spot-line: #4299E1; --c-spot-icon: #3182CE;
             --c-food-bg: #FFFEF9; --c-food-line: #ED8936; --c-food-icon: #DD6B20;
             --c-shop-bg: #FFF9FB; --c-shop-line: #ED64A6; --c-shop-icon: #D53F8C;
@@ -101,7 +100,7 @@
         .sub-nav-btn { flex: 0 0 auto; padding: 8px 18px; border: 1px solid transparent; background: white; border-radius: 30px; font-size: 0.9rem; color: var(--text-light); font-weight: 700; box-shadow: 0 2px 6px rgba(0,0,0,0.04); transition: 0.2s; display: flex; align-items: center; gap: 6px; }
         .sub-nav-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(127, 169, 190, 0.3); transform: translateY(-1px); }
 
-        /* Shopping List Item Style (New Layout V2) */
+        /* Shopping List Item Style */
         .check-item { display: flex; padding: 16px; background: white; border-radius: var(--radius-M); margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); border: 1px solid #F0F0F0; transition: 0.2s; align-items: stretch; }
         .check-item:active { transform: scale(0.99); background: #FAFAFA;}
         
@@ -157,8 +156,8 @@
         .bp-line::after { content:''; position:absolute; top:-10px; left:50%; transform:translateX(-50%); width:20px; height:20px; background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%237FA9BE'%3E%3Cpath d='M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z'/%3E%3C/svg%3E") no-repeat center; background-size:contain; background-color:white; padding:0 2px;} 
         .bp-duration { font-size: 0.75rem; color: var(--text-light); font-weight: bold; margin-top: 4px; }
 
-        /* Weather (Colored - Soft Blue Update #1) */
-        .weather-card { border-radius: var(--radius-L); padding: 25px 20px; margin-bottom: 25px; background: linear-gradient(135deg, #A1C4FD 0%, #C2E9FB 100%); box-shadow: 0 10px 30px rgba(161, 196, 253, 0.4); border: none; position: relative; overflow: hidden; color: white;}
+        /* Weather (Morandi Style Update #1) */
+        .weather-card { border-radius: var(--radius-L); padding: 25px 20px; margin-bottom: 25px; background: linear-gradient(135deg, #8E9EAB 0%, #BCC6CC 100%); box-shadow: 0 10px 30px rgba(142, 158, 171, 0.4); border: none; position: relative; overflow: hidden; color: white;}
         .w-top-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.3); }
         .w-city { font-weight: 800; font-size: 1.2rem; color: white; text-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .w-desc { font-size: 0.95rem; color: rgba(255,255,255,0.9); display: flex; align-items: center; gap: 6px; margin-top: 4px; font-weight: bold;}
@@ -211,8 +210,23 @@
         .chip-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(127,169,190,0.3); }
         
         .day-scroller { display: flex; overflow-x: auto; padding: 10px 20px; gap: 10px; scrollbar-width: none; min-height: 85px; }
-        .day-chip { flex: 0 0 auto; padding: 10px 5px; border-radius: 20px; min-width: 65px; background: white; border: 1px solid #EDF2F7; color: var(--text-light); text-align: center; transition: 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
-        .day-chip.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 10px rgba(127, 169, 190, 0.4); transform: scale(1.05); }
+        
+        /* Day Chip Glassmorphism Update #4 */
+        .day-chip { 
+            flex: 0 0 auto; padding: 10px 5px; border-radius: 20px; min-width: 65px; 
+            background: rgba(255, 255, 255, 0.45); 
+            backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            color: var(--text-light); text-align: center; transition: 0.2s; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; 
+        }
+        .day-chip.active { 
+            background: rgba(127, 169, 190, 0.85); /* Primary with opacity */
+            color: white; border-color: transparent; 
+            box-shadow: 0 4px 10px rgba(127, 169, 190, 0.4); 
+            transform: scale(1.05); 
+        }
+
         .d-num { font-size: 0.7rem; font-weight: bold; opacity: 0.8; letter-spacing: 1px;}
         .d-date { font-size: 1.1rem; font-weight: 900; line-height: 1.2;}
         .d-week { font-size: 0.75rem; font-weight: bold; }
@@ -287,7 +301,6 @@
         <div style="text-align:center; padding-top:80px; padding-bottom:30px;">
             <div style="font-size:3rem; margin-bottom:10px;">☁️</div>
             <h1 style="color:var(--primary-dark); margin:0; font-size:2rem; letter-spacing:1px;">旅遊手帳</h1>
-            <!-- Update #4: Team -> Version -->
             <p style="color:var(--text-light); font-size:0.9rem; margin-top:5px;">Version 7.3</p>
         </div>
         <div class="container" style="padding-bottom:20px;">
@@ -339,9 +352,9 @@
                             <span class="card-label">航班號 / 航空</span>
                             <div class="row"><div class="col"><input placeholder="航班號" id="f-out-code" oninput="window.saveFlight('out', 'code', this.value)"></div><div class="col"><input placeholder="航空公司" id="f-out-airline" oninput="window.saveFlight('out', 'airline', this.value)"></div></div>
                             <span class="card-label">起飛</span>
-                            <div class="row"><div class="col"><input type="time" id="f-out-depTime" oninput="window.saveFlight('out', 'depTime', this.value)"></div><select class="tz-select" id="f-out-depTz" onchange="window.saveFlight('out', 'depTz', this.value)"><option value="8">UTC+8</option><option value="9">UTC+9</option></select><div class="col"><input placeholder="機場(TPE)" id="f-out-depAir" oninput="window.saveFlight('out', 'depAir', this.value)"></div></div>
+                            <div class="row"><div class="col"><input type="time" id="f-out-depTime" oninput="window.saveFlight('out', 'depTime', this.value)"></div><select class="tz-select" id="f-out-depTz" onchange="window.saveFlight('out', 'depTz', this.value)"></select><div class="col"><input placeholder="機場(TPE)" id="f-out-depAir" oninput="window.saveFlight('out', 'depAir', this.value)"></div></div>
                             <span class="card-label">降落</span>
-                            <div class="row"><div class="col"><input type="time" id="f-out-arrTime" oninput="window.saveFlight('out', 'arrTime', this.value)"></div><select class="tz-select" id="f-out-arrTz" onchange="window.saveFlight('out', 'arrTz', this.value)"><option value="8">UTC+8</option><option value="9" selected>UTC+9</option></select><div class="col"><input placeholder="機場(NRT)" id="f-out-arrAir" oninput="window.saveFlight('out', 'arrAir', this.value)"></div></div>
+                            <div class="row"><div class="col"><input type="time" id="f-out-arrTime" oninput="window.saveFlight('out', 'arrTime', this.value)"></div><select class="tz-select" id="f-out-arrTz" onchange="window.saveFlight('out', 'arrTz', this.value)"></select><div class="col"><input placeholder="機場(NRT)" id="f-out-arrAir" oninput="window.saveFlight('out', 'arrAir', this.value)"></div></div>
                         </div>
                     </div>
                     <div class="card">
@@ -350,9 +363,9 @@
                             <span class="card-label">航班號 / 航空</span>
                             <div class="row"><div class="col"><input placeholder="航班號" id="f-in-code" oninput="window.saveFlight('in', 'code', this.value)"></div><div class="col"><input placeholder="航空公司" id="f-in-airline" oninput="window.saveFlight('in', 'airline', this.value)"></div></div>
                             <span class="card-label">起飛</span>
-                            <div class="row"><div class="col"><input type="time" id="f-in-depTime" oninput="window.saveFlight('in', 'depTime', this.value)"></div><select class="tz-select" id="f-in-depTz" onchange="window.saveFlight('in', 'depTz', this.value)"><option value="9" selected>UTC+9</option><option value="8">UTC+8</option></select><div class="col"><input placeholder="機場(NRT)" id="f-in-depAir" oninput="window.saveFlight('in', 'depAir', this.value)"></div></div>
+                            <div class="row"><div class="col"><input type="time" id="f-in-depTime" oninput="window.saveFlight('in', 'depTime', this.value)"></div><select class="tz-select" id="f-in-depTz" onchange="window.saveFlight('in', 'depTz', this.value)"></select><div class="col"><input placeholder="機場(NRT)" id="f-in-depAir" oninput="window.saveFlight('in', 'depAir', this.value)"></div></div>
                             <span class="card-label">降落</span>
-                            <div class="row"><div class="col"><input type="time" id="f-in-arrTime" oninput="window.saveFlight('in', 'arrTime', this.value)"></div><select class="tz-select" id="f-in-arrTz" onchange="window.saveFlight('in', 'arrTz', this.value)"><option value="8">UTC+8</option><option value="9">UTC+9</option></select><div class="col"><input placeholder="機場(TPE)" id="f-in-arrAir" oninput="window.saveFlight('in', 'arrAir', this.value)"></div></div>
+                            <div class="row"><div class="col"><input type="time" id="f-in-arrTime" oninput="window.saveFlight('in', 'arrTime', this.value)"></div><select class="tz-select" id="f-in-arrTz" onchange="window.saveFlight('in', 'arrTz', this.value)"></select><div class="col"><input placeholder="機場(TPE)" id="f-in-arrAir" oninput="window.saveFlight('in', 'arrAir', this.value)"></div></div>
                         </div>
                     </div>
                 </div>
@@ -758,7 +771,12 @@
                     
                     const activeTabId = document.querySelector('.nav-item.active').getAttribute('onclick').match(/'([^']+)'/)[1];
                     if(activeTabId === 'itinerary') window.renderAllDetail();
-                    else if(activeTabId === 'money') { window.renderMoney(); window.renderMoneyAnalysis(); }
+                    else if(activeTabId === 'money') { 
+                        // Update #2: Ensure renderAllDetail is called for money tab to fix empty list bug
+                        window.renderAllDetail(); 
+                        window.renderMoney(); 
+                        window.renderMoneyAnalysis(); 
+                    }
                     else if(activeTabId === 'info') { 
                         window.fillFlightInputs(); 
                         window.updateCountdown(); 
@@ -790,6 +808,14 @@
             if(t==='itinerary') {
                 setTimeout(() => window.renderAllDetail(), 50); 
             }
+            if(t==='money') {
+                // Update #2: Call renderAllDetail to generate day tabs for money view
+                setTimeout(() => {
+                    window.renderAllDetail(); 
+                    window.renderMoney();
+                    window.renderMoneyAnalysis();
+                }, 50);
+            }
         };
 
         window.switchInfoSub = function(sub) {
@@ -802,7 +828,7 @@
                 document.querySelectorAll('#tab-info .sub-nav-btn')[map[sub]].classList.add('active');
             
             if(sub==='packing') { window.renderPacking(); fillMemberSelect('pack-owner'); }
-            if(sub==='flight') window.updateCountdown();
+            if(sub==='flight') { window.fillFlightInputs(); window.updateCountdown(); }
             if(sub==='hotel') window.renderHotels();
             if(sub==='ticket') window.renderTickets();
             if(sub==='charter') window.renderCharters();
@@ -940,7 +966,6 @@
                 let pillLoc = i.location ? `<span class="meta-pill meta-loc"><svg class="icon-svg"><use href="#icon-map-pin"/></svg>${i.location}</span>` : '';
                 let ownerHtml = i.owner ? `<div class="member-badge-pill">${i.owner}</div>` : '';
 
-                // Update #3: Swapped Location and Price order
                 list.innerHTML += `
                     <div class="card check-item ${i.checked?'checked':''}" onclick="window.toggleCheck('${arr}', ${i.id})">
                         <div class="check-left">
@@ -973,6 +998,7 @@
         window.shareTrip = function() { navigator.clipboard.writeText(currentTrip.id).then(()=>alert("ID已複製: "+currentTrip.id)); };
 
         // --- Info: Flights/Hotels/Tickets/Charters ---
+        // Update #3: Full timezone list
         function renderTimezoneOptions(selected) {
             let html = '';
             for(let i=-12; i<=14; i++) {
@@ -993,7 +1019,7 @@
                 document.getElementById(`f-${dir}-arrTime`).value = f[dir].arrTime || '';
                 document.getElementById(`f-${dir}-arrAir`).value = f[dir].arrAir || '';
                 
-                // Dynamic Timezone
+                // Dynamic Timezone populated here
                 document.getElementById(`f-${dir}-depTz`).innerHTML = renderTimezoneOptions(f[dir].depTz || (dir==='out'?8:9));
                 document.getElementById(`f-${dir}-arrTz`).innerHTML = renderTimezoneOptions(f[dir].arrTz || (dir==='out'?9:8));
             });
