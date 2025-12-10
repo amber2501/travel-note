@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>旅遊手帳 Ultimate 5.5 ☁️</title>
+    <title>旅遊手帳 Ultimate 5.7 ☁️</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -136,9 +136,9 @@
             padding: 16px; margin-bottom: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.03);
             border: 1px solid #F0F0F0; display: flex; justify-content: space-between; align-items: center;
-            gap: 15px; /* Ensure space between elements */
+            gap: 15px; 
         }
-        .info-card-content { flex: 1; min-width: 0; /* Fix flex truncation */ }
+        .info-card-content { flex: 1; min-width: 0; }
         .info-card-title { font-weight: bold; color: var(--text); font-size: 1rem; margin-bottom: 4px; }
         .info-card-sub { font-size: 0.85rem; color: var(--text-light); display: flex; gap: 8px; align-items: center; flex-wrap: wrap;}
 
@@ -182,7 +182,7 @@
 
         /* Weather Card */
         .weather-card {
-            border-radius: var(--radius-L); padding: 25px; margin-bottom: 25px;
+            border-radius: var(--radius-L); padding: 25px 20px; margin-bottom: 25px;
             background: white;
             box-shadow: var(--shadow-card);
             border: 1px solid rgba(255,255,255,0.8);
@@ -190,26 +190,21 @@
         }
         .weather-card::before {
             content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            background: linear-gradient(135deg, rgba(235, 248, 255, 0.5) 0%, rgba(255, 255, 255, 0) 100%);
+            background: linear-gradient(135deg, #F0F8FF 0%, #FFFFFF 100%);
             z-index: 0;
         }
-        .weather-top { display: flex; justify-content: space-between; align-items: flex-start; position: relative; z-index: 1; }
-        .weather-info { display: flex; align-items: center; gap: 15px; }
-        .weather-icon-box { color: #F6AD55; filter: drop-shadow(0 4px 6px rgba(246, 173, 85, 0.2)); transform: scale(1.3); margin-left: 5px;}
-        .weather-temp-box { text-align: right; }
-        .temp-main { font-weight: 300; font-size: 3.5rem; color: var(--text); line-height: 0.9; letter-spacing: -2px; }
-        .temp-range { font-size: 0.85rem; color: var(--text-light); font-weight: bold; margin-top: 6px; }
+        .w-top-row { display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 1; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid rgba(0,0,0,0.05); }
+        .w-loc-group { display: flex; flex-direction: column; }
+        .w-city { font-weight: 800; font-size: 1.1rem; color: var(--text); }
+        .w-desc { font-size: 0.9rem; color: var(--text-light); display: flex; align-items: center; gap: 6px; margin-top: 4px; font-weight: bold;}
+        .w-main-temp { font-size: 3rem; font-weight: 900; color: var(--text); line-height: 1; }
+        .w-main-temp span { font-size: 1.5rem; font-weight: 300; vertical-align: top; }
         
-        .weather-bottom { 
-            position: relative; z-index: 1; margin-top: 20px; 
-            display: flex; gap: 12px;
-        }
-        .weather-sun-item { 
-            font-size: 0.8rem; color: var(--text); 
-            display: flex; align-items: center; gap: 6px; font-weight: bold; 
-            background: rgba(255,255,255,0.8); padding: 6px 14px; border-radius: 20px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.02);
-        }
+        .w-grid { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+        .w-stat { background: rgba(255,255,255,0.7); border-radius: 16px; padding: 10px 5px; text-align: center; border: 1px solid #F0F4F8; }
+        .w-stat-label { font-size: 0.7rem; color: var(--text-light); margin-bottom: 4px; font-weight: bold; }
+        .w-stat-val { font-size: 0.9rem; color: var(--text); font-weight: 800; }
+        .w-stat-sub { font-size: 0.7rem; color: var(--text-light); }
 
         /* Checkbox Style */
         .check-item { display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #FAFAFA; transition: 0.2s; }
@@ -351,6 +346,8 @@
         <symbol id="icon-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></symbol>
         <symbol id="icon-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></symbol>
         <symbol id="icon-chart-bar" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></symbol>
+        <!-- New Note Icon -->
+        <symbol id="icon-note" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></symbol>
         
         <symbol id="icon-nav-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></symbol>
         <symbol id="icon-nav-money" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></symbol>
@@ -377,7 +374,7 @@
         <div style="text-align:center; padding-top:80px; padding-bottom:50px;">
             <div style="font-size:3rem; margin-bottom:10px;">☁️</div>
             <h1 style="color:var(--primary-dark); margin:0; font-size:2rem; letter-spacing:1px;">旅遊手帳</h1>
-            <p style="color:var(--text-light); font-size:0.9rem; margin-top:5px;">Travel Log 5.5</p>
+            <p style="color:var(--text-light); font-size:0.9rem; margin-top:5px;">Travel Log 5.7</p>
         </div>
         <div id="trip-list-container" class="container"></div>
         <button class="fab" onclick="openCreateTripModal()">
@@ -524,29 +521,36 @@
             </div>
             
             <div class="container">
-                <!-- Weather Card -->
+                <!-- Weather Card (Improved) -->
                 <div class="weather-card">
-                    <div class="weather-top">
-                        <div class="weather-info">
-                            <div id="weather-icon-box" class="weather-icon-box"><svg class="icon-svg"><use href="#icon-sun"></use></svg></div>
-                            <div style="display:flex; flex-direction:column;">
-                                <span id="weather-text" style="font-weight:bold; font-size:1.1rem; color:var(--text);">晴朗</span>
-                                <span id="weather-loc" style="font-size:0.8rem; color:var(--text-light); font-weight:bold;">Loading...</span>
-                            </div>
+                    <div class="w-top-row">
+                        <div class="w-loc-group">
+                             <div class="w-city" id="weather-loc">Loading...</div>
+                             <div class="w-desc">
+                                <span id="weather-icon-box" style="display:flex; align-items:center;"></span> 
+                                <span id="weather-text">--</span>
+                             </div>
                         </div>
-                        <div class="weather-temp-box">
-                            <div class="temp-main">
-                                <span id="weather-temp">--</span><span style="font-size:1.5rem; font-weight:300;">°C</span>
-                            </div>
-                            <div class="temp-range">
-                                L:<span id="w-min">--</span>° H:<span id="w-max">--</span>°
-                            </div>
+                        <div class="w-main-temp">
+                            <span id="weather-temp">--</span><span>°C</span>
                         </div>
                     </div>
-                    <!-- 日出日落 -->
-                    <div class="weather-bottom">
-                         <div class="weather-sun-item">🌅 <span id="w-rise">--:--</span></div>
-                         <div class="weather-sun-item">🌇 <span id="w-set">--:--</span></div>
+                    
+                    <div class="w-grid">
+                        <div class="w-stat">
+                            <div class="w-stat-label">最高 / 最低</div>
+                            <div class="w-stat-val"><span id="w-max">--</span>° / <span id="w-min">--</span>°</div>
+                        </div>
+                        <div class="w-stat">
+                            <div class="w-stat-label">降雨機率</div>
+                            <div class="w-stat-val" style="color:#4299E1;"><span id="w-rain">--</span>%</div>
+                        </div>
+                        <div class="w-stat">
+                            <div class="w-stat-label">日出 / 日落</div>
+                            <div class="w-stat-val" style="font-size:0.8rem; margin-top:2px;">
+                                <span id="w-rise">--:--</span> <span style="color:var(--text-light)">|</span> <span id="w-set">--:--</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -813,7 +817,7 @@
     </div>
 
 <script>
-    const DB_KEY = 'trip_v5_1_ult';
+    const DB_KEY = 'trip_v5_6_ult';
     let allTrips = [];
     let currentTrip = null;
     let appState = { dayIdx: 0, editId: null, editType: null, charterType: '接送', listType: 'shop' };
@@ -888,7 +892,7 @@
         document.getElementById('rate-display').innerText = amt === 0 ? `1 : ${currentRate.toFixed(2)}` : `$${total.toFixed(0)}`;
     }
 
-    // --- Weather (Max/Min + Sunrise/Sunset + No Decimals) ---
+    // --- Weather (Max/Min + Sunrise/Sunset + Rain + No Decimals) ---
     async function fetchWeatherForDay() {
         if(!currentTrip.city) {
             document.getElementById('weather-text').innerText = "未設定城市";
@@ -914,8 +918,8 @@
         document.getElementById('weather-loc').innerText = currentTrip.city;
 
         try {
-            // Updated API call to include sunrise and sunset
-            const wRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,sunrise,sunset&timezone=auto&start_date=${dateStr}&end_date=${dateStr}`);
+            // Updated API call to include precipitation_probability_max
+            const wRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_probability_max&timezone=auto&start_date=${dateStr}&end_date=${dateStr}`);
             const wData = await wRes.json();
             if(wData.daily && wData.daily.time.length > 0) {
                 const code = wData.daily.weathercode[0];
@@ -923,12 +927,14 @@
                 const min = Math.round(wData.daily.temperature_2m_min[0]);
                 const rise = wData.daily.sunrise[0].split('T')[1];
                 const set = wData.daily.sunset[0].split('T')[1];
+                const rain = wData.daily.precipitation_probability_max[0];
 
-                document.getElementById('weather-temp').innerText = max;
+                document.getElementById('weather-temp').innerText = max; // Main big temp
                 document.getElementById('w-max').innerText = max;
                 document.getElementById('w-min').innerText = min;
                 document.getElementById('w-rise').innerText = rise;
                 document.getElementById('w-set').innerText = set;
+                document.getElementById('w-rain').innerText = rain;
 
                 setWeatherIcon(code);
             } else {
@@ -943,6 +949,7 @@
         else if(code >= 45 && code <= 48) { icon='#icon-cloud'; text='霧'; }
         else if(code >= 51 && code <= 67) { icon='#icon-rain'; text='雨天'; }
         else if(code >= 71) { icon='#icon-rain'; text='下雪'; }
+        else if(code >= 80) { icon='#icon-rain'; text='陣雨'; }
         else if(code >= 95) { icon='#icon-rain'; text='雷雨'; }
         document.getElementById('weather-icon-box').innerHTML = `<svg class="icon-svg"><use href="${icon}"></use></svg>`;
         document.getElementById('weather-text').innerText = text;
@@ -1264,13 +1271,14 @@
         currentTrip.charters.sort((a,b)=>a.date.localeCompare(b.date)).forEach(c => {
             let details = "";
             if(c.contact) details += `<div style="font-size:0.8rem; color:var(--text-light); margin-right:8px; display:flex; align-items:center; gap:4px;"><svg class="icon-svg" style="width:14px; height:14px;"><use href="#icon-phone"></use></svg> ${c.contact}</div>`;
-            if(c.note) details += `<div style="font-size:0.8rem; color:var(--text-light); width:100%;">📝 ${c.note}</div>`;
+            if(c.note) details += `<div style="font-size:0.8rem; color:var(--text-light); width:100%; display:flex; align-items:flex-start; gap:4px;"><svg class="icon-svg icon-xs" style="margin-top:2px;"><use href="#icon-note"></use></svg> <span>${c.note}</span></div>`;
 
             list.innerHTML += `
                  <div class="info-card-item">
                     <div class="item-icon-box" style="background:#E8EAF6; color:#5C6BC0;"><svg class="icon-svg"><use href="#icon-car"></use></svg></div>
                     <div class="info-card-content">
-                        <div class="info-card-title">${c.type} <span style="font-size:0.85rem; color:var(--primary); font-weight:normal;">(${c.time})</span></div>
+                        <div class="info-card-title">${c.type}</div>
+                        <div class="info-card-sub"><svg class="icon-svg icon-xs"><use href="#icon-clock"></use></svg> ${c.date} ${c.time}</div>
                         <div class="info-card-sub" style="color:var(--text); font-weight:bold;">${c.from} ➝ ${c.to||'?'}</div>
                         <div class="info-card-sub" style="margin-top:2px;">
                              ${details}
@@ -1732,6 +1740,7 @@
     function renderMoney() {
         const list = document.getElementById('list-money'); list.innerHTML = '';
         const items = currentTrip.money.filter(i => i.dayIdx === appState.dayIdx);
+        const methodMap = { 'cash': '現金', 'card': '信用卡', 'other': '其他' };
         
         // Logic for Daily Total
         let dailyTotals = {};
@@ -1755,7 +1764,7 @@
                     <div style="flex:1;">
                         <div style="font-weight:bold; color:var(--text); font-size:0.95rem;">${item.title}</div>
                         <div class="money-meta">
-                             <svg class="icon-svg icon-xs"><use href="#icon-user"></use></svg> ${item.payer} · ${item.method}
+                             <svg class="icon-svg icon-xs"><use href="#icon-user"></use></svg> ${item.payer} · ${methodMap[item.method] || item.method}
                         </div>
                     </div>
                     <div style="text-align:right;">
