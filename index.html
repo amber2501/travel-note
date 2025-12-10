@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>旅遊手帳 Team 7.2 ☁️</title>
+    <title>旅遊手帳 Team 7.3 (Final) ☁️</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -221,7 +221,7 @@
         <div style="text-align:center; padding-top:80px; padding-bottom:30px;">
             <div style="font-size:3rem; margin-bottom:10px;">☁️</div>
             <h1 style="color:var(--primary-dark); margin:0; font-size:2rem; letter-spacing:1px;">旅遊手帳</h1>
-            <p style="color:var(--text-light); font-size:0.9rem; margin-top:5px;">Team 7.2</p>
+            <p style="color:var(--text-light); font-size:0.9rem; margin-top:5px;">Team 7.3</p>
         </div>
         <div class="container" style="padding-bottom:20px;">
             <div class="card" style="padding:15px; display:flex; gap:10px;">
@@ -285,7 +285,7 @@
                             <span class="card-label">起飛</span>
                             <div class="row" style="align-items:center;"><input type="time" class="col" id="f-in-depTime" oninput="window.saveFlight('in', 'depTime', this.value)"><select class="tz-select" id="f-in-depTz" onchange="window.saveFlight('in', 'depTz', this.value)"><option value="9" selected>UTC+9</option><option value="8">UTC+8</option></select><input class="col" placeholder="NRT" id="f-in-depAir" oninput="window.saveFlight('in', 'depAir', this.value)"></div>
                             <span class="card-label">降落</span>
-                            <div class="row" style="align-items:center;"><input type="time" class="col" id="f-in-arrTime" oninput="window.saveFlight('in', 'arrTime', this.value)"><select class="tz-select" id="f-in-arrTz" onchange="window.saveFlight('in', 'arrTz', this.value)"><option value="8">UTC+8</option><option value="9">UTC+9</option></select><input class="col" placeholder="TPE" id="f-in-arrAir" oninput="window.saveFlight('in', 'arrAir', this.value)"></div>
+                            <div class="row" style="align-items:center;"><input type="time" class="col" id="f-in-arrTime" oninput="window.saveFlight('in', 'arrTime', this.value)"><select class="tz-select" id="f-in-arrTz" onchange="window.saveFlight('in', 'arrTz', this.value)"><option value="8">UTC+8</option><option value="9">UTC+9</option></select><input class="col" placeholder="機場代碼" id="f-in-arrAir" oninput="window.saveFlight('in', 'arrAir', this.value)"></div>
                         </div>
                     </div>
                 </div>
@@ -414,10 +414,10 @@
         <div class="modal-content">
             <h3 style="text-align:center; color:var(--primary);">📝 寫日誌</h3>
             <div class="row">
-                <input type="date" id="j-date" class="col">
-                <select id="j-writer" class="col"></select>
+                <div class="col"><span class="card-label">日期</span><input type="date" id="j-date"></div>
+                <div class="col"><span class="card-label">撰寫人</span><select id="j-writer" style="width:100%; padding:12px; border-radius:12px; border:none; background:#EDF2F7;"></select></div>
             </div>
-            <textarea id="j-content" placeholder="今天發生了什麼有趣的事..." style="height:150px;"></textarea>
+            <span class="card-label">內容</span><textarea id="j-content" placeholder="今天發生了什麼有趣的事..." style="height:150px;"></textarea>
             <div style="display:flex; gap:10px; margin-top:10px;">
                 <button class="btn col" onclick="window.closeModal('journal')">取消</button>
                 <button class="btn btn-primary col" onclick="window.saveJournal()">儲存</button>
@@ -501,6 +501,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, doc, getDoc, setDoc, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+        // 👉 請務必確認這裡填入的是您自己的 Config
         const firebaseConfig = {
              apiKey: "AIzaSyCU3D_Grf3fN3uI3qt5hwWugieBke_Nq94",
              authDomain: "travel-4638f.firebaseapp.com",
@@ -525,6 +526,7 @@
         let appState = { dayIdx: 0, editId: null, editType: null, listType: 'shop', charterType:'接送' };
         let moneyState = { payer: '', method: 'cash' };
         let currentRate = 0.22;
+        let currentInfoTab = 'flight'; // 用來記住行前分頁
 
         function fillMemberSelect(selectId) {
             const el = document.getElementById(selectId);
@@ -615,9 +617,14 @@
                     
                     document.querySelector('.header-title').innerText = currentTrip.name;
                     
+                    // Auto refresh active tab
                     if(!document.getElementById('tab-itinerary').classList.contains('hidden')) window.renderAllDetail();
                     if(!document.getElementById('tab-money').classList.contains('hidden')) { window.renderMoney(); window.renderMoneyAnalysis(); }
-                    if(!document.getElementById('tab-info').classList.contains('hidden')) { window.fillFlightInputs(); window.updateCountdown(); window.switchInfoSub('flight');}
+                    if(!document.getElementById('tab-info').classList.contains('hidden')) { 
+                        window.fillFlightInputs(); 
+                        window.updateCountdown(); 
+                        window.switchInfoSub(currentInfoTab); // Stay on current sub-tab
+                    }
                     if(!document.getElementById('tab-shopping').classList.contains('hidden')) window.renderLists();
                     if(!document.getElementById('tab-journal').classList.contains('hidden')) window.renderJournal();
                 }
@@ -645,12 +652,15 @@
         };
 
         window.switchInfoSub = function(sub) {
+            currentInfoTab = sub;
             document.querySelectorAll('.info-sub-tab').forEach(e=>e.classList.add('hidden'));
             document.getElementById('info-'+sub).classList.remove('hidden');
             document.querySelectorAll('#tab-info .sub-nav-btn').forEach(e=>e.classList.remove('active'));
             const map = {flight:0, hotel:1, ticket:2, charter:3, packing:4};
-            document.querySelectorAll('#tab-info .sub-nav-btn')[map[sub]].classList.add('active');
-            if(sub==='packing') { window.renderPacking(); }
+            if(document.querySelectorAll('#tab-info .sub-nav-btn')[map[sub]])
+                document.querySelectorAll('#tab-info .sub-nav-btn')[map[sub]].classList.add('active');
+            
+            if(sub==='packing') { window.renderPacking(); fillMemberSelect('pack-owner'); }
             if(sub==='flight') window.updateCountdown();
             if(sub==='hotel') window.renderHotels();
             if(sub==='ticket') window.renderTickets();
@@ -683,7 +693,6 @@
         window.addPackItem = function() {
             const val = document.getElementById('pack-input').value;
             if(!val) return;
-            // Initialize checks for all members
             let checks = {};
             currentTrip.members.forEach(m => checks[m] = false);
             currentTrip.packing.push({ id:Date.now(), text:val, checks: checks });
@@ -707,15 +716,7 @@
                     membersHtml += `<div class="member-check ${isChecked?'done':''}" onclick="window.toggleMemberCheck(${i.id}, '${m}')">${isChecked?'✓':''} ${m}</div>`;
                 });
                 membersHtml += '</div>';
-                
-                list.innerHTML += `
-                    <div class="card" style="padding:15px; margin-bottom:10px;">
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <span style="font-weight:bold; font-size:1.1rem;">${i.text}</span>
-                            <button class="btn-ghost" onclick="window.delItem('packing', ${i.id})"><svg class="icon-svg icon-sm"><use href="#icon-trash"/></svg></button>
-                        </div>
-                        ${membersHtml}
-                    </div>`;
+                list.innerHTML += `<div class="card" style="padding:15px; margin-bottom:10px;"><div style="display:flex; justify-content:space-between; align-items:center;"><span style="font-weight:bold; font-size:1.1rem;">${i.text}</span><button class="btn-ghost" onclick="window.delItem('packing', ${i.id})"><svg class="icon-svg icon-sm"><use href="#icon-trash"/></svg></button></div>${membersHtml}</div>`;
             });
         };
 
@@ -796,11 +797,12 @@
             if(diff > 0) {
                 banner.classList.remove('hidden');
                 num.innerText = diff;
+                num.style.fontSize = "2.5rem";
                 txt.innerText = "距離出發還剩下 天";
             } else if (diff <= 0 && diff >= -currentTrip.days) {
                 banner.classList.remove('hidden');
                 num.innerText = "旅程進行中";
-                num.style.fontSize = "2rem";
+                num.style.fontSize = "1.5rem";
                 txt.innerText = "Have Fun!";
             } else {
                 banner.classList.add('hidden');
