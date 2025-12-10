@@ -102,13 +102,13 @@
         .check-box { width: 24px; height: 24px; border: 2px solid var(--primary); border-radius: 8px; margin-right: 15px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: white; transition: 0.2s; }
         .checked .check-box { background: var(--primary); }
         .checked .check-box::after { content: '✓'; color: white; font-size: 16px; font-weight: bold; }
-        .check-content { flex: 1; min-width: 0; margin-right: 15px; display: flex; flex-direction: column; gap: 6px; } /* Column for better spacing */
-        .check-text { font-weight: bold; font-size: 1.2rem; color: var(--text); transition: 0.2s;} /* Bigger Font */
+        .check-content { flex: 1; min-width: 0; margin-right: 15px; display: flex; flex-direction: column; gap: 6px; } 
+        .check-text { font-weight: bold; font-size: 1.2rem; color: var(--text); transition: 0.2s;} /* Big Font */
         .check-meta { font-size: 0.85rem; color: var(--accent); }
         .checked .check-text { text-decoration: line-through; color: var(--text-done); }
         .checked .check-meta { opacity: 0.5; }
-        /* Member badge moved to new line/left aligned */
-        .member-badge { align-self: flex-start; font-size: 0.75rem; background: var(--primary-light); color: var(--primary-dark); padding: 4px 10px; border-radius: 12px; font-weight: bold; }
+        /* Member badge moved to Left/Below text */
+        .member-badge { align-self: flex-start; font-size: 0.75rem; background: var(--primary-light); color: var(--primary-dark); padding: 4px 10px; border-radius: 12px; font-weight: bold; margin-bottom: 4px; display:inline-block;}
 
         /* Items (Common) */
         .info-card-item { background: #FFFFFF; border-radius: var(--radius-M); padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); border: 1px solid #F0F0F0; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
@@ -728,10 +728,10 @@
                     if(!currentTrip.journals) currentTrip.journals = [];
                     if(!currentTrip.foodList) currentTrip.foodList = [];
                     if(!currentTrip.flights) currentTrip.flights = { out:{}, in:{} };
+                    if(!currentTrip.itinerary) currentTrip.itinerary = [];
                     
                     document.querySelector('.header-title').innerText = currentTrip.name;
                     
-                    // Force refresh active tab content
                     const activeTabId = document.querySelector('.nav-item.active').getAttribute('onclick').match(/'([^']+)'/)[1];
                     if(activeTabId === 'itinerary') window.renderAllDetail();
                     else if(activeTabId === 'money') { window.renderMoney(); window.renderMoneyAnalysis(); }
@@ -764,8 +764,7 @@
             if(t==='journal') window.renderJournal();
             if(t==='shopping') { fillMemberSelect('shop-owner'); window.renderLists(); }
             if(t==='itinerary') {
-                // FORCE RENDER for Mobile
-                setTimeout(() => window.renderAllDetail(), 10);
+                window.renderAllDetail(); // Ensure this runs immediately
             }
         };
 
@@ -913,7 +912,7 @@
             const list = document.getElementById('list-items-container'); list.innerHTML = '';
             const arr = appState.listType==='shop'?'shopping':'foodList';
             (currentTrip[arr]||[]).forEach(i => {
-                const ownerLabel = i.owner ? `<span class="member-badge">${i.owner}</span>` : '';
+                const ownerLabel = i.owner ? `<div class="member-badge">${i.owner}</div>` : '';
                 list.innerHTML += `
                     <div class="card check-item ${i.checked?'checked':''}" style="padding:15px; display:block;" onclick="window.toggleCheck('${arr}', ${i.id})">
                         <div style="display:flex; align-items:center;">
@@ -921,7 +920,7 @@
                             <div class="check-content">
                                 <span class="check-text">${i.text}</span>
                                 ${ownerLabel}
-                                <div style="font-size:0.8rem; color:var(--accent);">${i.price||''} ${i.location||''}</div>
+                                <div style="font-size:0.85rem; color:var(--accent);">${i.price||''} ${i.location||''}</div>
                             </div>
                             <button class="btn-del" onclick="event.stopPropagation(); window.delItem('${arr}', ${i.id})">移除</button>
                         </div>
@@ -1198,6 +1197,167 @@
             document.getElementById('weather-icon-box').innerHTML = `<svg class="icon-svg"><use href="${icon}"></use></svg>`;
             document.getElementById('weather-text').innerText = t;
         }
+
+        // --- Itinerary ---
+        window.getTargetDateStr = function(startStr, dayOffset) {
+            if(!startStr) return new Date().toISOString().split('T')[0]; // Safe Fallback
+            const parts = startStr.split('-');
+            if(parts.length !== 3) return new Date().toISOString().split('T')[0];
+            const d = new Date(parts[0], parts[1]-1, parts[2]);
+            d.setDate(d.getDate() + dayOffset);
+            return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        };
+
+        window.renderAllDetail = function() {
+            if (!currentTrip) return;
+            const dc = document.getElementById('day-tabs-itinerary'); 
+            const mc = document.getElementById('day-tabs-money'); 
+            if(dc) dc.innerHTML = ''; 
+            if(mc) mc.innerHTML = '';
+            
+            // Safe fallback for days
+            const daysCount = currentTrip.days || 1; 
+
+            for(let i=0; i<daysCount; i++) {
+                const dateStr = window.getTargetDateStr(currentTrip.startDate, i);
+                const d = new Date(dateStr);
+                const html = `<span class="day-idx">DAY ${i+1}</span><span class="date">${d.getMonth()+1}/${d.getDate()}</span>`;
+                
+                const div = document.createElement('div'); 
+                div.className=`day-chip ${i===appState.dayIdx?'active':''}`; 
+                div.innerHTML=html; 
+                div.onclick=()=>{
+                    appState.dayIdx=i; 
+                    window.renderAllDetail();
+                };
+                
+                if(dc) dc.appendChild(div);
+                
+                // For Money Tab
+                if(mc) {
+                    const divM = div.cloneNode(true); 
+                    divM.onclick=()=>{
+                        appState.dayIdx=i; 
+                        window.renderAllDetail(); 
+                        window.renderMoney();
+                    };
+                    mc.appendChild(divM);
+                }
+            }
+            window.renderItinerary(); 
+            window.fetchWeatherForDay();
+        };
+
+        window.renderItinerary = function() {
+            const list = document.getElementById('list-itinerary'); 
+            const flightC = document.getElementById('flight-card-container'); 
+            const nightStayC = document.getElementById('night-stay-container'); 
+            
+            if(list) list.innerHTML = '';
+            if(flightC) flightC.innerHTML = '';
+            if(nightStayC) nightStayC.innerHTML = '';
+            
+            if(!currentTrip) return;
+            if(!currentTrip.itinerary) currentTrip.itinerary = [];
+
+            let f = null, title = '';
+            // Flight Logic
+            if (currentTrip.flights) {
+                if (appState.dayIdx === 0 && currentTrip.flights.out && currentTrip.flights.out.code) { 
+                    f = currentTrip.flights.out; title = '去程 OUTBOUND'; 
+                } else if (appState.dayIdx === (currentTrip.days - 1) && currentTrip.flights.in && currentTrip.flights.in.code) { 
+                    f = currentTrip.flights.in; title = '回程 INBOUND'; 
+                }
+            }
+            
+            if (f && flightC) flightC.innerHTML = `<div class="bp-card"><div class="bp-header">${title}</div><div class="bp-body"><div class="bp-group"><span class="bp-code">${f.depAir||'DEP'}</span><span class="bp-time">${f.depTime||'--:--'}</span></div><div class="bp-center"><div style="font-size:0.8rem;">${f.airline}</div><div class="bp-line"></div><div style="color:var(--primary); font-weight:bold;">${f.code}</div><div class="bp-duration">${calcDuration(f.depTime,f.depTz,f.arrTime,f.arrTz)}</div></div><div class="bp-group"><span class="bp-code">${f.arrAir||'ARR'}</span><span class="bp-time">${f.arrTime||'--:--'}</span></div></div></div>`;
+
+            const dateStr = window.getTargetDateStr(currentTrip.startDate, appState.dayIdx);
+            let mixed = (currentTrip.itinerary||[]).filter(x=>x.dayIdx===appState.dayIdx).map(x=>({...x, src:'it'}));
+            (currentTrip.charters||[]).filter(x=>x.date===dateStr).forEach(x=>mixed.push({...x, src:'charter', loc:x.from, title:x.type}));
+            mixed.sort((a,b) => (a.time||'').localeCompare(b.time||''));
+
+            const icons = { spot:'icon-spot', food:'icon-food', shop:'icon-nav-shop', transport:'icon-transport', other:'icon-star', charter:'icon-car' };
+
+            mixed.forEach(item => {
+                let timeHTML = item.time;
+                let title = item.loc || item.title;
+                let sub = '';
+                
+                if(item.type === 'transport') {
+                    timeHTML = `<div class="trans-time-group"><div class="trans-t-val">${item.time}</div><div class="trans-arrow">↓</div><div class="trans-t-val">${item.endTime || '--:--'}</div></div>`;
+                    if(item.dest) { 
+                        sub = `<div style="font-size:0.85rem; color:var(--text); margin-top:4px; display:flex; align-items:center; gap:5px;"><span>${item.loc}</span><span style="color:var(--primary);">➝</span><span>${item.dest}</span></div>`; 
+                        title = item.title || "移動"; 
+                    }
+                } else { 
+                    if(item.title && item.title!==item.loc) sub = `<div style="font-size:0.85rem; color:#999; margin-top:2px;">${item.title}</div>`; 
+                }
+                
+                if(item.open) {
+                     sub += `<div class="open-badge"><svg class="icon-svg"><use href="#icon-clock"></use></svg>${item.open}</div>`;
+                }
+
+                const clickAction = item.src==='charter' ? `window.openCharterModal(${item.id})` : `window.editItinerary(${item.id})`;
+                const mapBtn = (item.loc || item.dest) ? `<button class="btn-map-icon" onclick="event.stopPropagation(); window.openMap(event, '${item.type==='transport'?item.dest:item.loc}')"><svg class="icon-svg icon-sm"><use href="#icon-map-pin"></use></svg></button>` : '';
+                
+                if(list) list.innerHTML += `<div class="timeline-item" onclick="${clickAction}"><div class="time-bubble">${timeHTML}</div><div class="it-card type-${item.type}"><div class="it-icon"><svg class="icon-svg icon-sm"><use href="#${icons[item.type]||'icon-star'}"></use></svg></div><div style="flex:1; min-width:0;"><div style="font-weight:bold; font-size:1.05rem;">${title}</div>${sub}<div style="font-size:0.85rem; color:var(--text); opacity:0.8; margin-top:4px;">${item.note||''}</div></div><div class="it-actions">${mapBtn}</div></div></div>`;
+            });
+
+            // Night Stay
+            if(nightStayC) {
+                const stay = (currentTrip.hotels||[]).find(h => {
+                    const checkIn = new Date(h.date);
+                    const checkOut = new Date(h.date);
+                    checkOut.setDate(checkOut.getDate() + parseInt(h.days));
+                    const currentD = new Date(dateStr);
+                    return currentD >= checkIn && currentD < checkOut;
+                });
+                if(stay) {
+                    nightStayC.innerHTML = `<div class="night-stay-box"><svg class="icon-svg"><use href="#icon-moon"></use></svg><div><div style="font-size:0.8rem; opacity:0.8;">Tonight's Stay</div><div style="font-weight:bold; font-size:1.1rem;">${stay.name}</div><div style="font-size:0.8rem;">${stay.address}</div></div></div>`;
+                }
+            }
+        };
+
+        window.openNewItinerary = function() {
+            appState.editId = null;
+            // 清空
+            ['i-time','i-title','i-loc','i-note','i-open','i-end-time','i-dest'].forEach(id=>document.getElementById(id).value='');
+            const typeSelect = document.getElementById('i-type');
+            typeSelect.value = 'spot';
+            typeSelect.dispatchEvent(new Event('change')); // Trigger visibility logic
+            window.openModal('itinerary');
+        };
+        window.editItinerary = function(id) {
+            const item = currentTrip.itinerary.find(i=>i.id===id);
+            if(!item) return;
+            appState.editId = id;
+            document.getElementById('i-time').value=item.time;
+            const typeSelect = document.getElementById('i-type');
+            typeSelect.value=item.type;
+            typeSelect.dispatchEvent(new Event('change')); // Trigger visibility logic
+            
+            document.getElementById('i-title').value=item.title;
+            document.getElementById('i-loc').value=item.loc;
+            document.getElementById('i-note').value=item.note;
+            document.getElementById('i-open').value=item.open;
+            document.getElementById('i-end-time').value=item.endTime;
+            document.getElementById('i-dest').value=item.dest;
+            window.openModal('itinerary');
+        };
+        window.saveItinerary = function() {
+            const time = document.getElementById('i-time').value;
+            const loc = document.getElementById('i-loc').value;
+            if(!time || !loc) return alert('請填寫時間與地點');
+            const newItem = { id: appState.editId || Date.now(), dayIdx: appState.dayIdx, time, type: document.getElementById('i-type').value, title: document.getElementById('i-title').value, loc, note: document.getElementById('i-note').value, open: document.getElementById('i-open').value, endTime: document.getElementById('i-end-time').value, dest: document.getElementById('i-dest').value };
+            if(appState.editId) { const idx = currentTrip.itinerary.findIndex(x=>x.id===appState.editId); if(idx!==-1) currentTrip.itinerary[idx] = newItem; } 
+            else currentTrip.itinerary.push(newItem);
+            window.saveData(); window.closeModal('itinerary');
+        };
+        window.deleteItineraryItemInModal = function() {
+            if(!appState.editId) return;
+            if(confirm('確定刪除？')) { currentTrip.itinerary = currentTrip.itinerary.filter(x=>x.id!==appState.editId); window.saveData(); window.closeModal('itinerary'); }
+        };
 
         document.getElementById('i-type').addEventListener('change', function() {
             const val = this.value;
