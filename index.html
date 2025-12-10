@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>旅遊手帳 Team 7.3</title>
+    <title>旅遊規劃手帳</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -102,12 +102,13 @@
         .check-box { width: 24px; height: 24px; border: 2px solid var(--primary); border-radius: 8px; margin-right: 15px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: white; transition: 0.2s; }
         .checked .check-box { background: var(--primary); }
         .checked .check-box::after { content: '✓'; color: white; font-size: 16px; font-weight: bold; }
-        .check-content { flex: 1; min-width: 0; margin-right: 15px; } /* Added margin right */
-        .check-text { font-weight: bold; font-size: 1.1rem; color: var(--text); transition: 0.2s;}
-        .check-meta { font-size: 0.85rem; color: var(--accent); margin-top: 4px; }
+        .check-content { flex: 1; min-width: 0; margin-right: 15px; display: flex; flex-direction: column; gap: 6px; } /* Column for better spacing */
+        .check-text { font-weight: bold; font-size: 1.2rem; color: var(--text); transition: 0.2s;} /* Bigger Font */
+        .check-meta { font-size: 0.85rem; color: var(--accent); }
         .checked .check-text { text-decoration: line-through; color: var(--text-done); }
         .checked .check-meta { opacity: 0.5; }
-        .member-badge { font-size: 0.75rem; background: var(--primary-light); color: var(--primary-dark); padding: 4px 8px; border-radius: 10px; font-weight: bold; white-space: nowrap; margin-left: 8px;}
+        /* Member badge moved to new line/left aligned */
+        .member-badge { align-self: flex-start; font-size: 0.75rem; background: var(--primary-light); color: var(--primary-dark); padding: 4px 10px; border-radius: 12px; font-weight: bold; }
 
         /* Items (Common) */
         .info-card-item { background: #FFFFFF; border-radius: var(--radius-M); padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); border: 1px solid #F0F0F0; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
@@ -116,7 +117,6 @@
         .info-card-sub .icon-svg { width: 16px; height: 16px; }
         .item-icon-box { width: 42px; height: 42px; border-radius: 12px; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         
-        /* Charter Note Icon Fix */
         .note-row { display: flex; align-items: center; gap: 5px; color: var(--text-light); font-size: 0.8rem; margin-top: 4px; }
         .note-row svg { width: 14px; height: 14px; flex-shrink: 0; }
 
@@ -191,7 +191,7 @@
         .chip-btn { padding: 0 16px; height: 40px; border-radius: 20px; background: #F1F5F9; color: var(--text-light); border: 1px solid transparent; font-weight: bold; font-size: 0.85rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center;}
         .chip-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(127,169,190,0.3); }
         
-        .day-scroller { display: flex; overflow-x: auto; padding: 10px 20px; gap: 10px; scrollbar-width: none; }
+        .day-scroller { display: flex; overflow-x: auto; padding: 10px 20px; gap: 10px; scrollbar-width: none; min-height: 60px; }
         .day-chip { flex: 0 0 auto; padding: 10px 18px; border-radius: 20px; min-width: 70px; background: white; border: 1px solid #EDF2F7; color: var(--text-light); text-align: center; font-size: 0.9rem; font-weight: bold; transition: 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; }
         .day-chip.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 10px rgba(127, 169, 190, 0.4); transform: scale(1.05); }
 
@@ -209,7 +209,7 @@
         .money-tag { background: #EDF2F7; padding: 2px 8px; border-radius: 6px; font-weight: bold; color: var(--text-light); }
         .money-amount { font-weight: 900; font-size: 1.1rem; color: var(--primary-dark); }
 
-        /* Journal Redesign (Sticky Note Style) */
+        /* Journal Redesign */
         .journal-card { background: white; border-radius: 20px; padding: 20px; margin-bottom: 20px; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.03); overflow: hidden; }
         .journal-header { display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 12px; border-bottom: 2px dashed #f0f0f0; margin-bottom: 12px; }
         .j-date-box { display: flex; align-items: baseline; gap: 6px; color: var(--primary); }
@@ -674,7 +674,7 @@
             const id = Date.now().toString();
             const newTrip = {
                 id, name, city, startDate: date,
-                days: parseInt(document.getElementById('new-trip-days').value),
+                days: parseInt(document.getElementById('new-trip-days').value) || 1,
                 members: document.getElementById('new-trip-members').value.split(/[,，\s]+/).filter(Boolean),
                 itinerary: [], money: [], shopping: [], foodList: [], packing: [], journals: [],
                 flights: { out:{depTz:8, arrTz:9}, in:{depTz:9, arrTz:8} }, hotels: [], tickets: [], charters: []
@@ -729,17 +729,19 @@
                     if(!currentTrip.foodList) currentTrip.foodList = [];
                     if(!currentTrip.flights) currentTrip.flights = { out:{}, in:{} };
                     
-                    document.getElementById('header-trip-name').innerText = currentTrip.name;
+                    document.querySelector('.header-title').innerText = currentTrip.name;
                     
-                    if(!document.getElementById('tab-itinerary').classList.contains('hidden')) window.renderAllDetail();
-                    if(!document.getElementById('tab-money').classList.contains('hidden')) { window.renderMoney(); window.renderMoneyAnalysis(); }
-                    if(!document.getElementById('tab-info').classList.contains('hidden')) { 
+                    // Force refresh active tab content
+                    const activeTabId = document.querySelector('.nav-item.active').getAttribute('onclick').match(/'([^']+)'/)[1];
+                    if(activeTabId === 'itinerary') window.renderAllDetail();
+                    else if(activeTabId === 'money') { window.renderMoney(); window.renderMoneyAnalysis(); }
+                    else if(activeTabId === 'info') { 
                         window.fillFlightInputs(); 
                         window.updateCountdown(); 
                         window.switchInfoSub(currentInfoTab); 
                     }
-                    if(!document.getElementById('tab-shopping').classList.contains('hidden')) window.renderLists();
-                    if(!document.getElementById('tab-journal').classList.contains('hidden')) window.renderJournal();
+                    else if(activeTabId === 'shopping') window.renderLists();
+                    else if(activeTabId === 'journal') window.renderJournal();
                 }
             });
             appState.dayIdx = 0;
@@ -761,7 +763,10 @@
             
             if(t==='journal') window.renderJournal();
             if(t==='shopping') { fillMemberSelect('shop-owner'); window.renderLists(); }
-            if(t==='itinerary') window.renderAllDetail();
+            if(t==='itinerary') {
+                // FORCE RENDER for Mobile
+                setTimeout(() => window.renderAllDetail(), 10);
+            }
         };
 
         window.switchInfoSub = function(sub) {
@@ -908,13 +913,14 @@
             const list = document.getElementById('list-items-container'); list.innerHTML = '';
             const arr = appState.listType==='shop'?'shopping':'foodList';
             (currentTrip[arr]||[]).forEach(i => {
-                const ownerLabel = i.owner ? `<span class="member-badge" style="float:right;">${i.owner}</span>` : '';
+                const ownerLabel = i.owner ? `<span class="member-badge">${i.owner}</span>` : '';
                 list.innerHTML += `
                     <div class="card check-item ${i.checked?'checked':''}" style="padding:15px; display:block;" onclick="window.toggleCheck('${arr}', ${i.id})">
                         <div style="display:flex; align-items:center;">
                             <div class="check-box"></div>
-                            <div style="flex:1;">
-                                <div style="font-weight:bold;">${i.text} ${ownerLabel}</div>
+                            <div class="check-content">
+                                <span class="check-text">${i.text}</span>
+                                ${ownerLabel}
                                 <div style="font-size:0.8rem; color:var(--accent);">${i.price||''} ${i.location||''}</div>
                             </div>
                             <button class="btn-del" onclick="event.stopPropagation(); window.delItem('${arr}', ${i.id})">移除</button>
