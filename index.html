@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>旅遊手帳 Ultimate 5.8 ☁️</title>
+    <title>旅遊手帳 Ultimate 5.9 ☁️</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -129,7 +130,7 @@
         .card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 15px; color: var(--primary-dark); font-weight: 800; font-size: 1.1rem; }
         .card-label { font-size: 0.8rem; color: var(--text-light); font-weight: 700; margin-bottom: 6px; display: block; margin-left: 4px;}
 
-        /* Beautified Info Cards (Fixed Layout) */
+        /* Info Cards */
         .info-card-item {
             background: #FFFFFF; border-radius: var(--radius-M);
             padding: 16px; margin-bottom: 12px;
@@ -179,7 +180,7 @@
         .countdown-num { font-size: 2.5rem; font-weight: 900; line-height: 1; text-shadow: 0 4px 10px rgba(0,0,0,0.1); position: relative; z-index: 2; margin-bottom: 2px;}
         .countdown-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-top: 2px; opacity: 0.9; position: relative; z-index: 2;}
 
-        /* Weather Card (Improved & Clearer) */
+        /* Weather Card */
         .weather-card {
             border-radius: var(--radius-L); padding: 25px 20px; margin-bottom: 25px;
             background: white;
@@ -345,7 +346,6 @@
         <symbol id="icon-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></symbol>
         <symbol id="icon-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></symbol>
         <symbol id="icon-chart-bar" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></symbol>
-        <!-- New Note Icon -->
         <symbol id="icon-note" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></symbol>
         
         <symbol id="icon-nav-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></symbol>
@@ -373,7 +373,7 @@
         <div style="text-align:center; padding-top:80px; padding-bottom:50px;">
             <div style="font-size:3rem; margin-bottom:10px;">☁️</div>
             <h1 style="color:var(--primary-dark); margin:0; font-size:2rem; letter-spacing:1px;">旅遊手帳</h1>
-            <p style="color:var(--text-light); font-size:0.9rem; margin-top:5px;">Travel Log 5.8</p>
+            <p style="color:var(--text-light); font-size:0.9rem; margin-top:5px;">Travel Log 5.9</p>
         </div>
         <div id="trip-list-container" class="container"></div>
         <button class="fab" onclick="openCreateTripModal()">
@@ -816,7 +816,7 @@
     </div>
 
 <script>
-    const DB_KEY = 'trip_v5_6_ult';
+    const DB_KEY = 'trip_v5_9_ult';
     let allTrips = [];
     let currentTrip = null;
     let appState = { dayIdx: 0, editId: null, editType: null, charterType: '接送', listType: 'shop' };
@@ -917,7 +917,6 @@
         document.getElementById('weather-loc').innerText = currentTrip.city;
 
         try {
-            // Updated API call to include precipitation_probability_max
             const wRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weathercode,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_probability_max&timezone=auto&start_date=${dateStr}&end_date=${dateStr}`);
             const wData = await wRes.json();
             if(wData.daily && wData.daily.time.length > 0) {
@@ -928,7 +927,7 @@
                 const set = wData.daily.sunset[0].split('T')[1];
                 const rain = wData.daily.precipitation_probability_max[0];
 
-                document.getElementById('weather-temp').innerText = max; // Main big temp
+                document.getElementById('weather-temp').innerText = max;
                 document.getElementById('w-max').innerText = max;
                 document.getElementById('w-min').innerText = min;
                 document.getElementById('w-rise').innerText = rise;
@@ -992,7 +991,7 @@
 
         allTrips.push({
             id: Date.now(), name, city, startDate: date, days, members,
-            itinerary: [], money: [], shopping: [], packing: [],
+            itinerary: [], money: [], shopping: [], packing: [], foodList: [], // Added foodList here
             flights: { out:{depTz:8, arrTz:9}, in:{depTz:9, arrTz:8} }, hotels: [], tickets: [], charters: []
         });
         saveData(); closeModal('create-trip'); renderHome();
@@ -1451,9 +1450,8 @@
                     <svg class="icon-svg icon-sm"><use href="#icon-map-pin"></use></svg>
                  </button>` : '';
 
-            let deleteBtnHtml = '';
-            // DELETED: if(item.source === 'itinerary') logic removed per request.
-
+            // 移除列表頁面的刪除按鈕
+            
             list.innerHTML += `
                 <div class="timeline-item" onclick="${clickAction}">
                     <div class="time-bubble">${displayTime}</div>
@@ -1467,7 +1465,6 @@
                         </div>
                         <div class="it-actions">
                             ${mapBtn}
-                            <!-- No delete button here -->
                         </div>
                     </div>
                 </div>`;
@@ -1532,13 +1529,7 @@
         openModal('itinerary');
     }
 
-    function deleteItineraryItem(id) {
-        if(confirm('確定要刪除這個行程嗎？')) {
-            currentTrip.itinerary = currentTrip.itinerary.filter(i => i.id !== id);
-            saveData();
-            renderItinerary();
-        }
-    }
+    // 已移除 list 頁面的 deleteItineraryItem 函式，因為按鈕已刪除
 
     function deleteItineraryItemInModal() {
         if(!appState.editId) return; 
@@ -1692,7 +1683,6 @@
         // Render Method Buttons (Chips)
         document.querySelectorAll('.method-btn').forEach(b => {
              b.classList.remove('active');
-             // Map innerText to method key
              const map = {'現金':'cash', '信用卡':'card', '其他':'other'};
              if(map[b.innerText] === moneyState.method) b.classList.add('active');
         });
@@ -1713,7 +1703,7 @@
         
         const newData = {
             id: appState.editId || Date.now(), 
-            dayIdx: appState.dayIdx, 
+            dayIdx: appState.dayIdx,
             date: document.getElementById('m-date').value,
             title, 
             cost: parseFloat(cost), 
