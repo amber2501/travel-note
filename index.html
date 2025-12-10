@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -76,7 +77,7 @@
 
         .sticky-header { position: sticky; top: 0; z-index: 100; background: rgba(247, 249, 252, 0.95); backdrop-filter: blur(12px); padding-top: env(safe-area-inset-top); border-bottom: 1px solid rgba(0,0,0,0.03); }
         .header-top { padding: 12px 20px; display: flex; align-items: center; justify-content: space-between; height: 60px;}
-        .header-title { font-size: 1.3rem; color: var(--text); font-weight: 900; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 60%; text-align: center;}
+        .header-title { font-size: 1.2rem; color: var(--text); font-weight: 900; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 65%; text-align: center;}
         .container { padding: 20px; padding-bottom: 100px; max-width: 600px; margin: 0 auto; }
         
         .card { background: var(--card-bg); border-radius: var(--radius-L); padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow-card); position: relative; border: 1px solid rgba(255,255,255,0.8); }
@@ -96,24 +97,26 @@
         .sub-nav-btn { flex: 0 0 auto; padding: 8px 18px; border: 1px solid transparent; background: white; border-radius: 30px; font-size: 0.9rem; color: var(--text-light); font-weight: 700; box-shadow: 0 2px 6px rgba(0,0,0,0.04); transition: 0.2s; display: flex; align-items: center; gap: 6px; }
         .sub-nav-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(127, 169, 190, 0.3); transform: translateY(-1px); }
 
-        /* Shopping List Item Style (Redesigned Flow) */
-        .check-item { display: flex; align-items: center; padding: 14px 16px; background: white; border-radius: var(--radius-M); margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); border: 1px solid #F0F0F0; transition: 0.2s; justify-content: space-between; }
-        .check-item:active { transform: scale(0.99); }
+        /* Shopping List Item Style (New Flow) */
+        .check-item { display: flex; flex-direction: column; padding: 16px; background: white; border-radius: var(--radius-M); margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); border: 1px solid #F0F0F0; transition: 0.2s; }
+        .check-item:active { transform: scale(0.99); background: #FAFAFA;}
         
-        .check-left { display: flex; align-items: center; flex: 1; min-width: 0; gap: 12px; }
-        .check-box { width: 22px; height: 22px; border: 2px solid var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: white; transition: 0.2s; }
+        .check-top { display: flex; align-items: center; width: 100%; margin-bottom: 8px; }
+        .check-box { width: 24px; height: 24px; border: 2px solid var(--primary); border-radius: 8px; margin-right: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: white; transition: 0.2s; }
         .checked .check-box { background: var(--primary); }
-        .checked .check-box::after { content: '✓'; color: white; font-size: 14px; font-weight: bold; }
+        .checked .check-box::after { content: '✓'; color: white; font-size: 16px; font-weight: bold; }
+        .check-text { font-weight: bold; font-size: 1.15rem; color: var(--text); flex: 1; transition: 0.2s; line-height: 1.3; }
         
-        .check-info { display: flex; flex-direction: column; flex: 1; min-width: 0; }
-        .check-text { font-weight: bold; font-size: 1.1rem; color: var(--text); transition: 0.2s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .check-meta { font-size: 0.85rem; color: var(--accent); margin-top: 2px;}
-        .checked .check-text { text-decoration: line-through; color: var(--text-done); }
-        .checked .check-meta { opacity: 0.5; }
+        .check-bottom { display: flex; align-items: center; justify-content: space-between; width: 100%; padding-left: 36px; } /* Indent to align with text */
+        .check-meta-group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+        .member-badge { font-size: 0.75rem; background: var(--primary-light); color: var(--primary-dark); padding: 4px 10px; border-radius: 8px; font-weight: bold; display: inline-block; }
+        .meta-info { font-size: 0.8rem; color: var(--text-light); display: flex; gap: 6px; }
+        
+        .btn-list-del { width: 32px; height: 32px; color: #E53E3E; background: #FFF5F5; border-radius: 8px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;}
+        .btn-list-del:active { transform: scale(0.9); }
 
-        .check-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; margin-left: 10px; }
-        .member-badge { font-size: 0.75rem; background: var(--primary-light); color: var(--primary-dark); padding: 4px 10px; border-radius: 12px; font-weight: bold; white-space: nowrap; }
-        .btn-list-del { color: #E53E3E; background: #FFF5F5; padding: 8px; border-radius: 10px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .checked .check-text { text-decoration: line-through; color: var(--text-done); }
+        .checked .member-badge { opacity: 0.5; }
 
         /* Items (Common) */
         .info-card-item { background: #FFFFFF; border-radius: var(--radius-M); padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); border: 1px solid #F0F0F0; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
@@ -196,9 +199,13 @@
         .chip-btn { padding: 0 16px; height: 40px; border-radius: 20px; background: #F1F5F9; color: var(--text-light); border: 1px solid transparent; font-weight: bold; font-size: 0.85rem; cursor: pointer; transition: 0.2s; display: flex; align-items: center;}
         .chip-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(127,169,190,0.3); }
         
-        .day-scroller { display: flex; overflow-x: auto; padding: 10px 20px; gap: 10px; scrollbar-width: none; min-height: 60px; }
-        .day-chip { flex: 0 0 auto; padding: 10px 18px; border-radius: 20px; min-width: 70px; background: white; border: 1px solid #EDF2F7; color: var(--text-light); text-align: center; font-size: 0.9rem; font-weight: bold; transition: 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; }
+        /* Day Scroller (New Layout: Day / Date / Week) */
+        .day-scroller { display: flex; overflow-x: auto; padding: 10px 20px; gap: 10px; scrollbar-width: none; min-height: 85px; }
+        .day-chip { flex: 0 0 auto; padding: 10px 5px; border-radius: 20px; min-width: 65px; background: white; border: 1px solid #EDF2F7; color: var(--text-light); text-align: center; transition: 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; }
         .day-chip.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 10px rgba(127, 169, 190, 0.4); transform: scale(1.05); }
+        .d-num { font-size: 0.7rem; font-weight: bold; opacity: 0.8; letter-spacing: 1px;}
+        .d-date { font-size: 1.1rem; font-weight: 900; line-height: 1.2;}
+        .d-week { font-size: 0.75rem; font-weight: bold; }
 
         /* Packing Member Grid */
         .packing-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px; margin-top: 10px; }
@@ -297,7 +304,7 @@
             <div class="sticky-header">
                 <div class="header-top">
                     <button class="back-btn btn-ghost" onclick="window.goHome()">◀ 列表</button>
-                    <div class="header-title">行前規劃</div>
+                    <div class="header-title" id="header-trip-name"></div>
                     <button class="btn-ghost" onclick="window.shareTrip()"><svg class="icon-svg"><use href="#icon-share"/></svg></button>
                 </div>
                 <div class="sub-nav">
@@ -356,7 +363,7 @@
         <!-- B. Itinerary -->
         <div id="tab-itinerary" class="tab-content hidden">
             <div class="sticky-header">
-                <div class="header-top"><button class="back-btn btn-ghost" onclick="window.goHome()">◀</button><div class="header-title" id="header-trip-name"></div><div style="width:30px;"></div></div>
+                <div class="header-top"><button class="back-btn btn-ghost" onclick="window.goHome()">◀</button><div class="header-title" id="header-trip-name-itinerary"></div><div style="width:30px;"></div></div>
                 <div class="day-scroller" id="day-tabs-itinerary"></div>
             </div>
             <div class="container">
@@ -735,7 +742,8 @@
                     if(!currentTrip.flights) currentTrip.flights = { out:{}, in:{} };
                     if(!currentTrip.itinerary) currentTrip.itinerary = [];
                     
-                    document.querySelector('.header-title').innerText = currentTrip.name;
+                    document.getElementById('header-trip-name').innerText = currentTrip.name;
+                    document.getElementById('header-trip-name-itinerary').innerText = currentTrip.name;
                     
                     const activeTabId = document.querySelector('.nav-item.active').getAttribute('onclick').match(/'([^']+)'/)[1];
                     if(activeTabId === 'itinerary') window.renderAllDetail();
@@ -769,7 +777,7 @@
             if(t==='journal') window.renderJournal();
             if(t==='shopping') { fillMemberSelect('shop-owner'); window.renderLists(); }
             if(t==='itinerary') {
-                setTimeout(() => window.renderAllDetail(), 50); // Small delay to ensure container visible
+                setTimeout(() => window.renderAllDetail(), 50); 
             }
         };
 
@@ -919,19 +927,17 @@
             (currentTrip[arr]||[]).forEach(i => {
                 const ownerLabel = i.owner ? `<div class="member-badge">${i.owner}</div>` : '';
                 list.innerHTML += `
-                    <div class="card check-item ${i.checked?'checked':''}" style="padding:15px; display:block;" onclick="window.toggleCheck('${arr}', ${i.id})">
-                        <div style="display:flex; align-items:center;">
-                            <div class="check-left">
-                                <div class="check-box"></div>
-                                <div class="check-info">
-                                    <span class="check-text">${i.text}</span>
-                                    ${ownerLabel}
-                                    <div style="font-size:0.85rem; color:var(--accent);">${i.price||''} ${i.location||''}</div>
-                                </div>
+                    <div class="card check-item ${i.checked?'checked':''}" onclick="window.toggleCheck('${arr}', ${i.id})">
+                        <div class="check-top">
+                            <div class="check-box"></div>
+                            <span class="check-text">${i.text}</span>
+                        </div>
+                        <div class="check-bottom">
+                            <div class="check-meta-group">
+                                ${ownerLabel}
+                                <div class="meta-info">${i.price||''} ${i.location||''}</div>
                             </div>
-                            <div class="check-right">
-                                <button class="btn-list-del" onclick="event.stopPropagation(); window.delItem('${arr}', ${i.id})"><svg class="icon-svg icon-sm"><use href="#icon-trash"></use></svg></button>
-                            </div>
+                            <button class="btn-list-del" onclick="event.stopPropagation(); window.delItem('${arr}', ${i.id})"><svg class="icon-svg icon-sm"><use href="#icon-trash"></use></svg></button>
                         </div>
                     </div>`;
             });
@@ -1226,13 +1232,16 @@
             
             // Safe fallback for days
             const daysCount = currentTrip.days || 1; 
-            const weekDays = ["週日", "週一", "週二", "週三", "週四", "週五", "週六"];
+            const dayNames = ["週日", "週一", "週二", "週三", "週四", "週五", "週六"];
 
             for(let i=0; i<daysCount; i++) {
                 const dateStr = window.getTargetDateStr(currentTrip.startDate, i);
                 const d = new Date(dateStr);
-                const dayName = weekDays[d.getDay()];
-                const html = `<span class="day-idx">${dayName}</span><span class="date">${d.getMonth()+1}/${d.getDate()}</span>`;
+                const html = `
+                    <div class="d-num">DAY ${i+1}</div>
+                    <div class="d-date">${d.getMonth()+1}/${d.getDate()}</div>
+                    <div class="d-week">${dayNames[d.getDay()]}</div>
+                `;
                 
                 const div = document.createElement('div'); 
                 div.className=`day-chip ${i===appState.dayIdx?'active':''}`; 
