@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>旅遊手帳 Ultimate 5.4 ☁️</title>
+    <title>旅遊手帳 Ultimate 5.5 ☁️</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -30,23 +31,16 @@
             --radius-L: 24px;
             --radius-M: 16px;
             --radius-S: 12px;
-            --shadow-card: 0 4px 20px rgba(148, 163, 184, 0.15);
+            --shadow-card: 0 4px 20px rgba(148, 163, 184, 0.1);
             --shadow-float: 0 8px 30px rgba(127, 169, 190, 0.4);
 
-            /* --- 行程類別顏色 (新配色: 柔和且明確) --- */
-            /* 景點：清澈藍 */
+            /* 行程類別顏色 */
             --c-spot-bg: #EBF8FF; --c-spot-line: #4299E1; --c-spot-icon: #3182CE;
-            /* 美食：溫暖橘 */
             --c-food-bg: #FFFAF0; --c-food-line: #ED8936; --c-food-icon: #DD6B20;
-            /* 購物：柔粉紅 */
             --c-shop-bg: #FFF5F7; --c-shop-line: #ED64A6; --c-shop-icon: #D53F8C;
-            /* 交通：薄荷綠 */
             --c-trans-bg:#F0FFF4; --c-trans-line:#48BB78; --c-trans-icon: #38A169;
-            /* 其他：質感灰 */
             --c-other-bg:#F7FAFC; --c-other-line:#718096; --c-other-icon: #4A5568;
-            /* 門票：活力黃 */
             --c-ticket-bg: #FFFFF0; --c-ticket-line: #ECC94B;
-            /* 包車：薰衣草 */
             --c-chart-bg:  #F3F0FF; --c-chart-line:  #9F7AEA;
         }
 
@@ -66,6 +60,7 @@
         /* --- SVG 圖示系統 --- */
         .icon-svg { width: 24px; height: 24px; stroke: currentColor; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; transition: 0.3s; }
         .icon-sm { width: 18px; height: 18px; stroke-width: 2; }
+        .icon-xs { width: 14px; height: 14px; stroke-width: 2; }
         
         /* --- UI 元件 --- */
         .btn {
@@ -135,14 +130,15 @@
         .card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 15px; color: var(--primary-dark); font-weight: 800; font-size: 1.1rem; }
         .card-label { font-size: 0.8rem; color: var(--text-light); font-weight: 700; margin-bottom: 6px; display: block; margin-left: 4px;}
 
-        /* Beautified Info Cards */
+        /* Beautified Info Cards (Fixed Layout) */
         .info-card-item {
             background: #FFFFFF; border-radius: var(--radius-M);
             padding: 16px; margin-bottom: 12px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.03);
             border: 1px solid #F0F0F0; display: flex; justify-content: space-between; align-items: center;
+            gap: 15px; /* Ensure space between elements */
         }
-        .info-card-content { flex: 1; }
+        .info-card-content { flex: 1; min-width: 0; /* Fix flex truncation */ }
         .info-card-title { font-weight: bold; color: var(--text); font-size: 1rem; margin-bottom: 4px; }
         .info-card-sub { font-size: 0.85rem; color: var(--text-light); display: flex; gap: 8px; align-items: center; flex-wrap: wrap;}
 
@@ -184,7 +180,7 @@
         .countdown-num { font-size: 2.5rem; font-weight: 900; line-height: 1; text-shadow: 0 4px 10px rgba(0,0,0,0.1); position: relative; z-index: 2; margin-bottom: 2px;}
         .countdown-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-top: 2px; opacity: 0.9; position: relative; z-index: 2;}
 
-        /* Weather Card (Optimized) */
+        /* Weather Card */
         .weather-card {
             border-radius: var(--radius-L); padding: 25px; margin-bottom: 25px;
             background: white;
@@ -215,14 +211,14 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.03); border: 1px solid rgba(0,0,0,0.02);
         }
 
-        /* Checkbox Style (共用) */
+        /* Checkbox Style */
         .check-item { display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #FAFAFA; transition: 0.2s; }
         .check-box { width: 22px; height: 22px; border: 2px solid var(--primary); border-radius: 6px; margin-right: 12px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; transition: 0.2s; background:white;}
         .checked .check-box { background: var(--primary); }
         .checked .check-box::after { content: '✓'; color: white; font-size: 14px; font-weight: bold; }
         .checked span, .checked .shop-text-content { text-decoration: line-through; color: var(--text-done); opacity: 0.7; }
 
-        /* Timeline (Redesigned) */
+        /* Timeline */
         .day-scroller { display: flex; overflow-x: auto; padding: 10px 20px; gap: 10px; scrollbar-width: none; }
         .day-chip { 
             flex: 0 0 auto; padding: 10px 18px; border-radius: 20px; min-width: 70px;
@@ -258,22 +254,17 @@
         }
         .it-card:active { transform: scale(0.98); }
         
-        /* 類別顏色美化 (New Style) */
+        /* 類別顏色美化 */
         .type-spot { background-color: var(--c-spot-bg); border-left: 4px solid var(--c-spot-line); }
         .type-spot .it-icon { background: white; color: var(--c-spot-icon); }
-        
         .type-food { background-color: var(--c-food-bg); border-left: 4px solid var(--c-food-line); }
         .type-food .it-icon { background: white; color: var(--c-food-icon); }
-        
         .type-shop { background-color: var(--c-shop-bg); border-left: 4px solid var(--c-shop-line); }
         .type-shop .it-icon { background: white; color: var(--c-shop-icon); }
-        
         .type-transport { background-color: var(--c-trans-bg); border-left: 4px solid var(--c-trans-line); }
         .type-transport .it-icon { background: white; color: var(--c-trans-icon); }
-        
         .type-other { background-color: var(--c-other-bg); border-left: 4px solid var(--c-other-line); }
         .type-other .it-icon { background: white; color: var(--c-other-icon); }
-        
         .type-ticket { background-color: var(--c-ticket-bg); border-left: 4px solid var(--c-ticket-line); }
         .type-charter { background-color: var(--c-chart-bg); border-left: 4px solid var(--c-chart-line); }
 
@@ -286,7 +277,7 @@
 
         .it-actions { display: flex; flex-direction: column; gap: 8px; margin-left: auto; justify-content: flex-start; align-items: center;}
         
-        /* New Nav Icon (Map Pin) */
+        /* Map Pin Icon */
         .btn-map-icon { 
             width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; 
             border-radius: 50%; background: white; color: #4299E1; border: 1px solid #E2E8F0; padding: 0;
@@ -300,6 +291,14 @@
             display: flex; align-items: center; gap: 15px;
             box-shadow: 0 10px 20px rgba(45, 55, 72, 0.3);
         }
+
+        /* Money List Compact Style */
+        .money-item-compact {
+            background: white; border-radius: 12px; padding: 12px 16px; margin-bottom: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04); border: 1px solid #F0F4F8;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .money-meta { font-size: 0.75rem; color: var(--text-light); display: flex; align-items: center; gap: 6px; margin-top: 3px; }
 
         /* Bottom Nav & FAB */
         .bottom-nav {
@@ -329,8 +328,13 @@
         @keyframes modalUp { from { opacity: 0; transform: translateY(20px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
 
         .chip-group { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
-        .chip-btn { padding: 8px 16px; border-radius: 20px; background: #F2F4F6; color: var(--text-light); border: none; font-weight: bold; font-size: 0.85rem; }
+        .chip-btn { padding: 8px 16px; border-radius: 20px; background: #F2F4F6; color: var(--text-light); border: none; font-weight: bold; font-size: 0.85rem; cursor: pointer;}
         .chip-btn.active { background: var(--primary); color: white; }
+
+        /* Lists */
+        .item-list-row { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #F5F5F5; }
+        .item-list-row:last-child { border-bottom: none; }
+        .item-icon-box { width: 44px; height: 44px; border-radius: 12px; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; margin-right: 0; flex-shrink: 0; }
     </style>
 </head>
 <body>
@@ -340,13 +344,13 @@
         <symbol id="icon-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"></path></symbol>
         <symbol id="icon-trash" viewBox="0 0 24 24"><path d="M3 6h18M19 6v14c0 1.1-.9 2-2 2H7c-1.1 0-2-.9-2-2V6M8 6V4c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2v2"></path></symbol>
         <symbol id="icon-pin" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></symbol>
-        <!-- New Phone Icon -->
         <symbol id="icon-phone" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></symbol>
-        
         <symbol id="icon-camera" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></symbol>
         <symbol id="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></symbol>
-        <!-- New Map Pin Icon for Navigation -->
         <symbol id="icon-map-pin" viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></symbol>
+        <symbol id="icon-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></symbol>
+        <symbol id="icon-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></symbol>
+        <symbol id="icon-chart-bar" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></symbol>
         
         <symbol id="icon-nav-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></symbol>
         <symbol id="icon-nav-money" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></symbol>
@@ -373,7 +377,7 @@
         <div style="text-align:center; padding-top:80px; padding-bottom:50px;">
             <div style="font-size:3rem; margin-bottom:10px;">☁️</div>
             <h1 style="color:var(--primary-dark); margin:0; font-size:2rem; letter-spacing:1px;">旅遊手帳</h1>
-            <p style="color:var(--text-light); font-size:0.9rem; margin-top:5px;">Travel Log 5.4</p>
+            <p style="color:var(--text-light); font-size:0.9rem; margin-top:5px;">Travel Log 5.5</p>
         </div>
         <div id="trip-list-container" class="container"></div>
         <button class="fab" onclick="openCreateTripModal()">
@@ -418,7 +422,7 @@
             <div class="container">
                 <!-- 1. 機票 -->
                 <div id="info-flight" class="info-sub-tab">
-                    <!-- 倒數計時區 (優化版 - 中文/縮小) -->
+                    <!-- 倒數計時區 -->
                     <div id="countdown-area" class="countdown-banner hidden">
                         <div class="countdown-num" id="countdown-val">0</div>
                         <div class="countdown-label">倒數天數</div>
@@ -520,7 +524,7 @@
             </div>
             
             <div class="container">
-                <!-- Weather Card (美化 + 無小數點 + 日出日落) -->
+                <!-- Weather Card -->
                 <div class="weather-card">
                     <div class="weather-top">
                         <div class="weather-info">
@@ -670,7 +674,7 @@
         </div>
     </div>
 
-    <!-- 行程編輯 (地點導向 - 標籤優化) -->
+    <!-- 行程編輯 -->
     <div id="modal-itinerary" class="modal hidden">
         <div class="modal-content">
             <h3 style="text-align:center; color:var(--primary);" id="modal-title-itinerary">行程細項</h3>
@@ -709,7 +713,6 @@
 
             <textarea id="i-note" placeholder="備註..." style="height:80px;"></textarea>
             
-            <!-- 按鈕區：增加刪除鍵 -->
             <div style="display:flex; gap:10px; margin-top:15px;">
                 <button class="btn" onclick="deleteItineraryItemInModal()" style="background:#FFF0F0; color:var(--accent); min-width:50px; padding:0 12px;">
                     <svg class="icon-svg icon-sm"><use href="#icon-trash"></use></svg>
@@ -797,10 +800,10 @@
             <span class="card-label">誰先付的</span>
             <div id="m-payer-wrapper" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;"></div>
             <span class="card-label">支付方式</span>
-            <div style="display:flex; gap:8px;">
-                <button class="btn-ghost method-btn" onclick="setMoneyMethod('cash', this)">現金</button>
-                <button class="btn-ghost method-btn" onclick="setMoneyMethod('card', this)">信用卡</button>
-                <button class="btn-ghost method-btn" onclick="setMoneyMethod('other', this)">其他</button>
+            <div class="chip-group">
+                <button class="chip-btn method-btn" onclick="setMoneyMethod('cash', this)">現金</button>
+                <button class="chip-btn method-btn" onclick="setMoneyMethod('card', this)">信用卡</button>
+                <button class="chip-btn method-btn" onclick="setMoneyMethod('other', this)">其他</button>
             </div>
             <div style="display:flex; gap:10px; margin-top:20px;">
                 <button class="btn col" onclick="closeModal('money')" style="background:#F2F4F6; color:#999;">取消</button>
@@ -821,15 +824,12 @@
         const saved = localStorage.getItem(DB_KEY);
         if (saved) { try { allTrips = JSON.parse(saved); } catch(e) {} }
         
-        // Transport Logic in Modal (Updated with Labels)
+        // Transport Logic in Modal
         document.getElementById('i-type').addEventListener('change', function() {
             const val = this.value;
             const openInput = document.getElementById('i-open');
-            
-            // Elements for Transport Labels
             const endTimeWrapper = document.getElementById('wrapper-end-time');
             const startTimeLabel = document.getElementById('label-time-start');
-            
             const destWrapper = document.getElementById('wrapper-dest');
             const locInput = document.getElementById('i-loc');
             const destInput = document.getElementById('i-dest');
@@ -837,19 +837,15 @@
             openInput.classList.add('hidden');
             endTimeWrapper.classList.add('hidden');
             destWrapper.classList.add('hidden');
-            
-            // Default label
             startTimeLabel.innerText = "開始時間";
 
             if(val === 'food' || val === 'spot' || val === 'shop') {
                 openInput.classList.remove('hidden');
                 locInput.placeholder = "地點名稱 (Google Maps)";
             } else if (val === 'transport') {
-                // Change labels for Transport
                 startTimeLabel.innerText = "出發時間";
                 endTimeWrapper.classList.remove('hidden');
                 destWrapper.classList.remove('hidden');
-                
                 locInput.placeholder = "出發地 (Starting Point)";
                 destInput.placeholder = "抵達地 (Destination)";
             } else {
@@ -1063,7 +1059,7 @@
         }
     }
 
-    // --- Flight (Countdown - Logic Updated) ---
+    // --- Flight ---
     function updateCountdown() {
         const today = new Date(); today.setHours(0,0,0,0);
         const start = new Date(currentTrip.startDate);
@@ -1074,8 +1070,8 @@
             banner.classList.remove('hidden');
             if(diff === 0) { 
                 document.getElementById('countdown-val').innerText = "出發去玩囉！";
-                document.getElementById('countdown-val').style.fontSize = "2rem"; // Slightly smaller for long text
-                document.querySelector('.countdown-label').classList.add('hidden'); // Hide label on day 0
+                document.getElementById('countdown-val').style.fontSize = "2rem"; 
+                document.querySelector('.countdown-label').classList.add('hidden');
             } else {
                 document.getElementById('countdown-val').innerText = diff;
                 document.getElementById('countdown-val').style.fontSize = "2.5rem";
@@ -1157,7 +1153,7 @@
                         <div class="info-card-sub">${h.date} (${h.days}晚)</div>
                         ${h.source ? `<div class="info-card-sub">${h.source} #${h.order}</div>` : ''}
                     </div>
-                    <div>
+                    <div style="flex-shrink:0;">
                         <button class="btn-edit" onclick="openHotelModal(${h.id})">✎</button>
                         <button class="btn-del" onclick="delItem('hotels', ${h.id})">✕</button>
                     </div>
@@ -1205,7 +1201,7 @@
                         <div class="info-card-sub">${t.date || '未定日期'}</div>
                         ${t.order ? `<div class="info-card-sub">#${t.order}</div>` : ''}
                     </div>
-                    <div>
+                    <div style="flex-shrink:0;">
                         <button class="btn-edit" onclick="openTicketModal(${t.id})">✎</button>
                         <button class="btn-del" onclick="delItem('tickets', ${t.id})">✕</button>
                     </div>
@@ -1267,7 +1263,6 @@
         const list = document.getElementById('charter-list'); list.innerHTML = '';
         currentTrip.charters.sort((a,b)=>a.date.localeCompare(b.date)).forEach(c => {
             let details = "";
-            // Updated Icon for contact
             if(c.contact) details += `<div style="font-size:0.8rem; color:var(--text-light); margin-right:8px; display:flex; align-items:center; gap:4px;"><svg class="icon-svg" style="width:14px; height:14px;"><use href="#icon-phone"></use></svg> ${c.contact}</div>`;
             if(c.note) details += `<div style="font-size:0.8rem; color:var(--text-light); width:100%;">📝 ${c.note}</div>`;
 
@@ -1281,7 +1276,7 @@
                              ${details}
                         </div>
                     </div>
-                    <div>
+                    <div style="flex-shrink:0;">
                         <button class="btn-edit" onclick="openCharterModal(${c.id})">✎</button>
                         <button class="btn-del" onclick="delItem('charters', ${c.id})">✕</button>
                     </div>
@@ -1439,18 +1434,16 @@
                 }
             }
             
-            const openTime = item.open ? `<div style="font-size:0.75rem; color:#E67C73; margin-top:2px;">🕒 ${item.open}</div>` : '';
+            const openTime = item.open ? `<div style="font-size:0.75rem; color:#E67C73; margin-top:2px; display:flex; align-items:center; gap:4px;"><svg class="icon-svg icon-xs"><use href="#icon-clock"></use></svg> ${item.open}</div>` : '';
 
             let clickAction = `editItinerary(${item.id})`;
             if(item.source === 'charter') clickAction = `openCharterModal(${item.id})`;
 
-            // Modified Navigation Button (New Map Pin Design)
             const mapBtn = (item.loc || item.dest) ? 
                 `<button class="btn-map-icon" onclick="event.stopPropagation(); openMap(event, '${item.type==='transport'?item.dest:item.loc}')">
                     <svg class="icon-svg icon-sm"><use href="#icon-map-pin"></use></svg>
                  </button>` : '';
 
-            // Delete button
             let deleteBtnHtml = '';
             if(item.source === 'itinerary') {
                 deleteBtnHtml = `<button class="btn-ghost" onclick="event.stopPropagation(); deleteItineraryItem(${item.id})" style="color:#e57373;">
@@ -1504,11 +1497,9 @@
         document.getElementById('modal-title-itinerary').innerText = "✨ 新增行程";
         ['i-time','i-title','i-loc','i-note','i-open','i-end-time','i-dest'].forEach(id=>document.getElementById(id).value='');
         
-        // Reset default type
         const typeSelect = document.getElementById('i-type');
         typeSelect.value = 'spot';
         
-        // Trigger event manually to reset visibility
         const event = new Event('change');
         typeSelect.dispatchEvent(event);
 
@@ -1525,7 +1516,6 @@
         const typeSelect = document.getElementById('i-type');
         typeSelect.value = item.type;
         
-        // Trigger change to update inputs
         const event = new Event('change');
         typeSelect.dispatchEvent(event);
 
@@ -1696,12 +1686,12 @@
             payerContainer.appendChild(btn);
         });
 
-        // Render Method Buttons
+        // Render Method Buttons (Chips)
         document.querySelectorAll('.method-btn').forEach(b => {
-             b.style.background='transparent'; b.style.color='var(--text-light)';
-             if(b.innerText.toLowerCase().includes(moneyState.method === 'cash' ? '現金' : (moneyState.method==='card'?'信用卡':'其他'))) {
-                 b.style.background = 'var(--accent)'; b.style.color = 'white';
-             }
+             b.classList.remove('active');
+             // Map innerText to method key
+             const map = {'現金':'cash', '信用卡':'card', '其他':'other'};
+             if(map[b.innerText] === moneyState.method) b.classList.add('active');
         });
 
         openModal('money');
@@ -1709,8 +1699,8 @@
 
     function setMoneyMethod(m, el) {
         moneyState.method = m;
-        document.querySelectorAll('.method-btn').forEach(b => {b.style.background='transparent'; b.style.color='var(--text-light)'});
-        el.style.background = 'var(--accent)'; el.style.color = 'white';
+        document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('active'));
+        el.classList.add('active');
     }
 
     function saveMoney() {
@@ -1743,7 +1733,7 @@
         const list = document.getElementById('list-money'); list.innerHTML = '';
         const items = currentTrip.money.filter(i => i.dayIdx === appState.dayIdx);
         
-        // Logic for Daily Total (Separated by Currency)
+        // Logic for Daily Total
         let dailyTotals = {};
         items.forEach(i => {
             if(!dailyTotals[i.curr]) dailyTotals[i.curr] = 0;
@@ -1761,28 +1751,29 @@
         
         [...items].reverse().forEach(item => {
             list.innerHTML += `
-                <div class="item-list-row" style="background:white; padding:15px; border-radius:16px; margin-bottom:10px; box-shadow:var(--shadow-card); border:none;" onclick="openMoneyModal(${item.id})">
+                <div class="money-item-compact" onclick="openMoneyModal(${item.id})">
                     <div style="flex:1;">
-                        <div style="font-weight:bold; color:var(--text); font-size:1rem;">${item.title}</div>
-                        <div style="font-size:0.8rem; color:var(--text-light); margin-top:4px;">
-                            ${item.payer} · ${item.method}
+                        <div style="font-weight:bold; color:var(--text); font-size:0.95rem;">${item.title}</div>
+                        <div class="money-meta">
+                             <svg class="icon-svg icon-xs"><use href="#icon-user"></use></svg> ${item.payer} · ${item.method}
                         </div>
                     </div>
                     <div style="text-align:right;">
-                        <div style="font-weight:900; color:var(--primary-dark); font-size:1.1rem;">${item.curr} ${item.cost}</div>
-                        <button class="btn-del" onclick="event.stopPropagation(); delItem('money', ${item.id})" style="margin-top:5px; background:transparent;">移除</button>
+                        <div style="font-weight:900; color:var(--primary-dark); font-size:1rem;">${item.curr} ${item.cost}</div>
+                        <button class="btn-ghost" onclick="event.stopPropagation(); delItem('money', ${item.id})" style="padding:4px; margin-top:2px; color:#e57373;">
+                           <svg class="icon-svg icon-xs"><use href="#icon-trash"></use></svg>
+                        </button>
                     </div>
                 </div>`;
         });
     }
     
-    // --- Money Analysis (Multi-Currency Updated - Header Fixed) ---
+    // --- Money Analysis ---
     function renderMoneyAnalysis() {
         const container = document.getElementById('analysis-content'); container.innerHTML = '';
         
-        // stats[member] = { 'NT$': 100, '¥': 5000 ... }
         let stats = {}; 
-        let grandTotals = {}; // { 'NT$': 1000, '¥': 20000 }
+        let grandTotals = {}; 
         
         currentTrip.members.forEach(m => { stats[m] = {}; });
 
@@ -1791,20 +1782,16 @@
             const curr = m.curr || 'NT$';
             const cost = parseFloat(m.cost);
             
-            // Member Stats
             if (!stats[p]) stats[p] = {};
             if (!stats[p][curr]) stats[p][curr] = 0;
             stats[p][curr] += cost;
 
-            // Grand Total
             if (!grandTotals[curr]) grandTotals[curr] = 0;
             grandTotals[curr] += cost;
         });
 
-        // Header Text Updated
-        container.innerHTML += `<div style="font-weight:bold; margin-bottom:15px; color:var(--primary);">📊 成員支出詳細</div>`;
+        container.innerHTML += `<div style="font-weight:bold; margin-bottom:15px; color:var(--primary); display:flex; align-items:center; gap:8px;"><svg class="icon-svg icon-sm"><use href="#icon-chart-bar"></use></svg> 支出統計</div>`;
         
-        // Render each member card
         Object.keys(stats).forEach(member => {
             const currencyMap = stats[member];
             let currencyHtml = '';
@@ -1824,14 +1811,14 @@
 
             container.innerHTML += `
                 <div class="card" style="padding:15px; margin-bottom:15px;">
-                    <div style="margin-bottom:10px; border-bottom:1px solid #F0F0F0; padding-bottom:10px;">
-                        <div style="font-weight:900; font-size:1.1rem; color:var(--primary-dark);">👤 ${member}</div>
+                    <div style="margin-bottom:10px; border-bottom:1px solid #F0F0F0; padding-bottom:10px; display:flex; align-items:center; gap:8px;">
+                         <svg class="icon-svg icon-sm" style="color:var(--primary-dark);"><use href="#icon-user"></use></svg>
+                        <div style="font-weight:900; font-size:1.1rem; color:var(--primary-dark);">${member}</div>
                     </div>
                     <div>${currencyHtml}</div>
                 </div>`;
         });
         
-        // Render Grand Total
         let totalHtml = '';
         if (Object.keys(grandTotals).length === 0) {
              totalHtml = '<div style="font-size:1.5rem; color:#CCC;">$0</div>';
