@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>旅遊手帳 Ultimate 5.7 ☁️</title>
+    <title>旅遊手帳 Ultimate 5.8 ☁️</title>
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -180,7 +179,7 @@
         .countdown-num { font-size: 2.5rem; font-weight: 900; line-height: 1; text-shadow: 0 4px 10px rgba(0,0,0,0.1); position: relative; z-index: 2; margin-bottom: 2px;}
         .countdown-label { font-size: 0.8rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-top: 2px; opacity: 0.9; position: relative; z-index: 2;}
 
-        /* Weather Card */
+        /* Weather Card (Improved & Clearer) */
         .weather-card {
             border-radius: var(--radius-L); padding: 25px 20px; margin-bottom: 25px;
             background: white;
@@ -374,7 +373,7 @@
         <div style="text-align:center; padding-top:80px; padding-bottom:50px;">
             <div style="font-size:3rem; margin-bottom:10px;">☁️</div>
             <h1 style="color:var(--primary-dark); margin:0; font-size:2rem; letter-spacing:1px;">旅遊手帳</h1>
-            <p style="color:var(--text-light); font-size:0.9rem; margin-top:5px;">Travel Log 5.7</p>
+            <p style="color:var(--text-light); font-size:0.9rem; margin-top:5px;">Travel Log 5.8</p>
         </div>
         <div id="trip-list-container" class="container"></div>
         <button class="fab" onclick="openCreateTripModal()">
@@ -1453,11 +1452,7 @@
                  </button>` : '';
 
             let deleteBtnHtml = '';
-            if(item.source === 'itinerary') {
-                deleteBtnHtml = `<button class="btn-ghost" onclick="event.stopPropagation(); deleteItineraryItem(${item.id})" style="color:#e57373;">
-                                    <svg class="icon-svg icon-sm"><use href="#icon-trash"></use></svg>
-                                 </button>`;
-            }
+            // DELETED: if(item.source === 'itinerary') logic removed per request.
 
             list.innerHTML += `
                 <div class="timeline-item" onclick="${clickAction}">
@@ -1472,7 +1467,7 @@
                         </div>
                         <div class="it-actions">
                             ${mapBtn}
-                            ${deleteBtnHtml}
+                            <!-- No delete button here -->
                         </div>
                     </div>
                 </div>`;
@@ -1718,7 +1713,7 @@
         
         const newData = {
             id: appState.editId || Date.now(), 
-            dayIdx: appState.dayIdx,
+            dayIdx: appState.dayIdx, 
             date: document.getElementById('m-date').value,
             title, 
             cost: parseFloat(cost), 
