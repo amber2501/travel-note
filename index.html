@@ -89,7 +89,6 @@
         .nav-item.active svg { stroke-width: 2.5; filter: drop-shadow(0 2px 4px rgba(127,169,190,0.3));}
         
         .fab { position: fixed; bottom: 105px; right: 25px; width: 60px; height: 60px; border-radius: 50%; background: var(--primary); color: white; border: none; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-float); z-index: 900; cursor: pointer; transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
-        /* Mobile rotation fix: Use active on element */
         .fab:active { transform: scale(0.9) rotate(90deg); background: var(--primary-dark); }
         
         /* Tabs */
@@ -101,7 +100,12 @@
         .info-card-item { background: #FFFFFF; border-radius: var(--radius-M); padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); border: 1px solid #F0F0F0; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
         .info-card-content { flex: 1; min-width: 0; }
         .info-card-sub { font-size: 0.8rem; color: var(--text-light); margin-top: 4px; display: flex; align-items: center; gap: 5px; font-weight: 500;}
+        .info-card-sub .icon-svg { width: 15px; height: 15px; } /* Fix: Smaller Calendar Icon */
         .item-icon-box { width: 42px; height: 42px; border-radius: 12px; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        
+        /* Charter Contact Fix */
+        .contact-info { display: flex; align-items: center; gap: 5px; color: var(--text-light); font-size: 0.8rem; margin-top: 2px;}
+        .contact-info svg { width: 14px; height: 14px; flex-shrink: 0;}
 
         /* Modal */
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(5px); z-index: 2000; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: 0.3s; }
@@ -169,14 +173,25 @@
         .pack-member-chip { border: 1px solid #E2E8F0; border-radius: 12px; padding: 8px; text-align: center; font-size: 0.8rem; color: var(--text-light); cursor: pointer; background: #FAFAFA; transition: 0.2s; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 4px;}
         .pack-member-chip.checked { background: var(--primary); color: white; border-color: var(--primary); }
 
+        /* Money List Redesign */
+        .money-item-row { display: flex; align-items: center; justify-content: space-between; padding: 14px; background: white; border-radius: 16px; margin-bottom: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.03); border: 1px solid #F0F4F8; transition: transform 0.1s;}
+        .money-item-row:active { transform: scale(0.99); }
+        .money-info { display: flex; flex-direction: column; gap: 4px; }
+        .money-title { font-weight: bold; font-size: 1rem; color: var(--text); }
+        .money-meta { display: flex; gap: 6px; font-size: 0.75rem; color: var(--text-light); align-items: center;}
+        .money-tag { background: #EDF2F7; padding: 2px 8px; border-radius: 6px; font-weight: bold; color: var(--text-light); }
+        .money-amount { font-weight: 900; font-size: 1.1rem; color: var(--primary-dark); }
+
+        /* Journal Redesign (Sticky Note Style) */
+        .journal-card { background: white; border-radius: 20px; padding: 20px; margin-bottom: 20px; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.03); overflow: hidden; }
+        .journal-header { display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 12px; border-bottom: 2px dashed #f0f0f0; margin-bottom: 12px; }
+        .j-date-box { display: flex; align-items: baseline; gap: 5px; color: var(--primary); }
+        .j-day { font-size: 1.8rem; font-weight: 900; line-height: 1; }
+        .j-ym { font-size: 0.85rem; font-weight: bold; color: var(--text-light); }
+        .j-writer-badge { font-size: 0.75rem; padding: 4px 10px; border-radius: 12px; font-weight: bold; color: white; background: var(--text-light); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .journal-content { line-height: 1.6; color: var(--text); white-space: pre-wrap; font-size: 0.95rem; }
+
         #loading-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.8); z-index:9999; display:flex; justify-content:center; align-items:center; color:var(--primary); font-weight:bold; backdrop-filter: blur(5px); }
-        
-        /* Category colors */
-        .type-spot { border-left: 4px solid var(--c-spot-line); } .type-spot .it-icon { background: white; color: var(--c-spot-icon); }
-        .type-food { border-left: 4px solid var(--c-food-line); } .type-food .it-icon { background: white; color: var(--c-food-icon); }
-        .type-shop { border-left: 4px solid var(--c-shop-line); } .type-shop .it-icon { background: white; color: var(--c-shop-icon); }
-        .type-transport { border-left: 4px solid var(--c-trans-line); } .type-transport .it-icon { background: white; color: var(--c-trans-icon); }
-        .type-other { border-left: 4px solid var(--c-other-line); } .type-other .it-icon { background: white; color: var(--c-other-icon); }
         
         .flight-edit-block .row { align-items: center; }
         .tz-select { padding: 0 10px; border: none; background: #E2E8F0; border-radius: var(--radius-S); font-weight: bold; color: var(--text); flex-shrink: 0; width: auto; height: 48px;}
@@ -213,6 +228,7 @@
         <symbol id="icon-user" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></symbol>
         <symbol id="icon-camera" viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></symbol>
         <symbol id="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></symbol>
+        <symbol id="icon-chart-bar" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></symbol>
     </svg>
 
     <div id="loading-overlay" class="hidden">同步中...</div>
@@ -273,9 +289,9 @@
                             <span class="card-label">航班號 / 航空</span>
                             <div class="row"><div class="col"><input placeholder="航班號" id="f-out-code" oninput="window.saveFlight('out', 'code', this.value)"></div><div class="col"><input placeholder="航空公司" id="f-out-airline" oninput="window.saveFlight('out', 'airline', this.value)"></div></div>
                             <span class="card-label">起飛</span>
-                            <div class="row"><div class="col"><input type="time" id="f-out-depTime" oninput="window.saveFlight('out', 'depTime', this.value)"></div><select class="tz-select" id="f-out-depTz" onchange="window.saveFlight('out', 'depTz', this.value)"><option value="8">UTC+8</option><option value="9">UTC+9</option></select><div class="col"><input placeholder="機場(TPE)" id="f-out-depAir" oninput="window.saveFlight('out', 'depAir', this.value)"></div></div>
+                            <div class="row"><div class="col"><input type="time" id="f-out-depTime" oninput="window.saveFlight('out', 'depTime', this.value)"></div><select class="tz-select" id="f-out-depTz" onchange="window.saveFlight('out', 'depTz', this.value)"></select><div class="col"><input placeholder="機場(TPE)" id="f-out-depAir" oninput="window.saveFlight('out', 'depAir', this.value)"></div></div>
                             <span class="card-label">降落</span>
-                            <div class="row"><div class="col"><input type="time" id="f-out-arrTime" oninput="window.saveFlight('out', 'arrTime', this.value)"></div><select class="tz-select" id="f-out-arrTz" onchange="window.saveFlight('out', 'arrTz', this.value)"><option value="8">UTC+8</option><option value="9" selected>UTC+9</option></select><div class="col"><input placeholder="機場(NRT)" id="f-out-arrAir" oninput="window.saveFlight('out', 'arrAir', this.value)"></div></div>
+                            <div class="row"><div class="col"><input type="time" id="f-out-arrTime" oninput="window.saveFlight('out', 'arrTime', this.value)"></div><select class="tz-select" id="f-out-arrTz" onchange="window.saveFlight('out', 'arrTz', this.value)"></select><div class="col"><input placeholder="機場(NRT)" id="f-out-arrAir" oninput="window.saveFlight('out', 'arrAir', this.value)"></div></div>
                         </div>
                     </div>
                     <div class="card">
@@ -284,9 +300,9 @@
                             <span class="card-label">航班號 / 航空</span>
                             <div class="row"><div class="col"><input placeholder="航班號" id="f-in-code" oninput="window.saveFlight('in', 'code', this.value)"></div><div class="col"><input placeholder="航空公司" id="f-in-airline" oninput="window.saveFlight('in', 'airline', this.value)"></div></div>
                             <span class="card-label">起飛</span>
-                            <div class="row"><div class="col"><input type="time" id="f-in-depTime" oninput="window.saveFlight('in', 'depTime', this.value)"></div><select class="tz-select" id="f-in-depTz" onchange="window.saveFlight('in', 'depTz', this.value)"><option value="9" selected>UTC+9</option><option value="8">UTC+8</option></select><div class="col"><input placeholder="機場(NRT)" id="f-in-depAir" oninput="window.saveFlight('in', 'depAir', this.value)"></div></div>
+                            <div class="row"><div class="col"><input type="time" id="f-in-depTime" oninput="window.saveFlight('in', 'depTime', this.value)"></div><select class="tz-select" id="f-in-depTz" onchange="window.saveFlight('in', 'depTz', this.value)"></select><div class="col"><input placeholder="機場(NRT)" id="f-in-depAir" oninput="window.saveFlight('in', 'depAir', this.value)"></div></div>
                             <span class="card-label">降落</span>
-                            <div class="row"><div class="col"><input type="time" id="f-in-arrTime" oninput="window.saveFlight('in', 'arrTime', this.value)"></div><select class="tz-select" id="f-in-arrTz" onchange="window.saveFlight('in', 'arrTz', this.value)"><option value="8">UTC+8</option><option value="9">UTC+9</option></select><div class="col"><input placeholder="機場(TPE)" id="f-in-arrAir" oninput="window.saveFlight('in', 'arrAir', this.value)"></div></div>
+                            <div class="row"><div class="col"><input type="time" id="f-in-arrTime" oninput="window.saveFlight('in', 'arrTime', this.value)"></div><select class="tz-select" id="f-in-arrTz" onchange="window.saveFlight('in', 'arrTz', this.value)"></select><div class="col"><input placeholder="機場(TPE)" id="f-in-arrAir" oninput="window.saveFlight('in', 'arrAir', this.value)"></div></div>
                         </div>
                     </div>
                 </div>
@@ -772,11 +788,34 @@
             currentTrip.journals.sort((a,b) => b.date.localeCompare(a.date));
             window.saveData(); window.closeModal('journal');
         };
+        function getPastelColor(str) {
+            const colors = ['#FCA5A5', '#FDBA74', '#FDE047', '#86EFAC', '#67E8F9', '#93C5FD', '#C4B5FD', '#F9A8D4'];
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
+            return colors[Math.abs(hash) % colors.length];
+        }
         window.renderJournal = function() {
             const list = document.getElementById('journal-list'); list.innerHTML = '';
             if(!currentTrip.journals || currentTrip.journals.length===0) { list.innerHTML='<div style="text-align:center; color:#CCC; margin-top:20px;">還沒有日誌，寫一篇吧！</div>'; return; }
             currentTrip.journals.forEach(j => {
-                list.innerHTML += `<div class="card journal-card" style="padding:15px;"><div class="journal-date"><span>${j.date}</span><span class="journal-writer">${j.writer}</span></div><div class="journal-content">${j.content}</div><button class="btn-del" style="float:right; margin-top:10px; font-size:0.7rem;" onclick="window.delItem('journals', ${j.id})">刪除</button><div style="clear:both;"></div></div>`;
+                const d = new Date(j.date);
+                const day = d.getDate();
+                const ym = `${d.getFullYear()}.${String(d.getMonth()+1).padStart(2,'0')}`;
+                const bg = getPastelColor(j.writer || 'A');
+                
+                list.innerHTML += `
+                <div class="journal-card">
+                    <div class="journal-header">
+                        <div class="j-date-box">
+                            <span class="j-day">${day}</span>
+                            <span class="j-ym">${ym}</span>
+                        </div>
+                        <div class="j-writer-badge" style="background:${bg}">${j.writer}</div>
+                    </div>
+                    <div class="journal-content">${j.content}</div>
+                    <button class="btn-del" style="float:right; margin-top:15px; background:#f9f9f9;" onclick="window.delItem('journals', ${j.id})">刪除</button>
+                    <div style="clear:both;"></div>
+                </div>`;
             });
         };
 
@@ -856,12 +895,29 @@
         window.shareTrip = function() { navigator.clipboard.writeText(currentTrip.id).then(()=>alert("ID已複製: "+currentTrip.id)); };
 
         // --- Info: Flights/Hotels/Tickets/Charters ---
+        function renderTimezoneOptions(selected) {
+            let html = '';
+            for(let i=-12; i<=14; i++) {
+                const label = i >= 0 ? `UTC+${i}` : `UTC${i}`;
+                html += `<option value="${i}" ${parseInt(selected)==i?'selected':''}>${label}</option>`;
+            }
+            return html;
+        }
+
         window.fillFlightInputs = function() {
             if(!currentTrip) return;
             const f = currentTrip.flights;
-            ['code','airline','depTime','depTz','depAir','arrTime','arrTz','arrAir'].forEach(k => {
-                const elOut = document.getElementById('f-out-'+k); if(elOut) elOut.value = f.out[k] || (k.includes('Tz')? (k==='arrTz'?9:8) : '');
-                const elIn = document.getElementById('f-in-'+k); if(elIn) elIn.value = f.in[k] || (k.includes('Tz')? (k==='depTz'?9:8) : '');
+            ['out','in'].forEach(dir => {
+                document.getElementById(`f-${dir}-code`).value = f[dir].code || '';
+                document.getElementById(`f-${dir}-airline`).value = f[dir].airline || '';
+                document.getElementById(`f-${dir}-depTime`).value = f[dir].depTime || '';
+                document.getElementById(`f-${dir}-depAir`).value = f[dir].depAir || '';
+                document.getElementById(`f-${dir}-arrTime`).value = f[dir].arrTime || '';
+                document.getElementById(`f-${dir}-arrAir`).value = f[dir].arrAir || '';
+                
+                // Dynamic Timezone
+                document.getElementById(`f-${dir}-depTz`).innerHTML = renderTimezoneOptions(f[dir].depTz || (dir==='out'?8:9));
+                document.getElementById(`f-${dir}-arrTz`).innerHTML = renderTimezoneOptions(f[dir].arrTz || (dir==='out'?9:8));
             });
         };
         window.saveFlight = function(dir, field, val) {
@@ -886,7 +942,6 @@
                 txt.innerHTML = "旅程進行中";
                 num.innerHTML = "Have Fun!";
             } else {
-                // Trip Ended
                 banner.classList.add('ended');
                 txt.innerHTML = "旅程已結束";
                 num.innerHTML = "See you next time!";
@@ -913,7 +968,7 @@
         window.renderHotels = function() { 
             const list = document.getElementById('hotel-list'); list.innerHTML = '';
             (currentTrip.hotels||[]).sort((a,b)=>a.date.localeCompare(b.date)).forEach(h => {
-                list.innerHTML += `<div class="info-card-item"><div class="item-icon-box"><svg class="icon-svg"><use href="#icon-house"></use></svg></div><div class="info-card-content"><div style="font-weight:bold;">${h.name}</div><div class="info-card-sub"><svg class="icon-svg icon-xs"><use href="#icon-nav-cal"></use></svg> ${h.date} (${h.days}晚)</div><div class="info-card-sub" style="color:var(--primary); font-weight:bold;">${h.source || ''} #${h.order || ''}</div></div><div style="flex-shrink:0;"><button class="btn-edit" onclick="window.openHotelModal(${h.id})">✎</button><button class="btn-del" onclick="window.delItem('hotels', ${h.id})">✕</button></div></div>`;
+                list.innerHTML += `<div class="info-card-item"><div class="item-icon-box"><svg class="icon-svg"><use href="#icon-house"></use></svg></div><div class="info-card-content"><div style="font-weight:bold;">${h.name}</div><div class="info-card-sub"><svg class="icon-svg"><use href="#icon-nav-cal"></use></svg> ${h.date} (${h.days}晚)</div><div class="info-card-sub" style="color:var(--primary); font-weight:bold;">${h.source || ''} #${h.order || ''}</div></div><div style="flex-shrink:0;"><button class="btn-edit" onclick="window.openHotelModal(${h.id})">✎</button><button class="btn-del" onclick="window.delItem('hotels', ${h.id})">✕</button></div></div>`;
             });
         };
 
@@ -922,8 +977,7 @@
         window.renderTickets = function() { 
             const list = document.getElementById('ticket-list'); list.innerHTML = '';
             (currentTrip.tickets||[]).sort((a,b)=>a.date.localeCompare(b.date)).forEach(t => {
-                // Fixed: Changed Icon to Calendar SVG
-                list.innerHTML += `<div class="info-card-item"><div class="item-icon-box" style="background:#FFF8E1; color:#FBC02D;"><svg class="icon-svg"><use href="#icon-ticket"></use></svg></div><div class="info-card-content"><div style="font-weight:bold;">${t.name}</div><div class="info-card-sub"><svg class="icon-svg icon-xs"><use href="#icon-nav-cal"></use></svg> ${t.date}</div><div class="info-card-sub" style="color:#666;">#${t.order||'無編號'}</div></div><div style="flex-shrink:0;"><button class="btn-edit" onclick="window.openTicketModal(${t.id})">✎</button><button class="btn-del" onclick="window.delItem('tickets', ${t.id})">✕</button></div></div>`;
+                list.innerHTML += `<div class="info-card-item"><div class="item-icon-box" style="background:#FFF8E1; color:#FBC02D;"><svg class="icon-svg"><use href="#icon-ticket"></use></svg></div><div class="info-card-content"><div style="font-weight:bold;">${t.name}</div><div class="info-card-sub"><svg class="icon-svg"><use href="#icon-nav-cal"></use></svg> ${t.date}</div><div class="info-card-sub" style="color:#666;">#${t.order||'無編號'}</div></div><div style="flex-shrink:0;"><button class="btn-edit" onclick="window.openTicketModal(${t.id})">✎</button><button class="btn-del" onclick="window.delItem('tickets', ${t.id})">✕</button></div></div>`;
             });
         };
 
@@ -941,127 +995,9 @@
             const list = document.getElementById('charter-list'); list.innerHTML = '';
             (currentTrip.charters||[]).sort((a,b)=>a.date.localeCompare(b.date)).forEach(c => {
                 let noteHtml = c.note ? `<div style="font-size:0.8rem; color:#999; display:flex; align-items:center; gap:4px;"><svg class="icon-svg icon-xs"><use href="#icon-note"></use></svg> ${c.note}</div>` : '';
-                let contactHtml = c.contact ? `<div style="font-size:0.8rem; color:#999; display:flex; align-items:center; gap:4px;"><svg class="icon-svg icon-xs"><use href="#icon-phone"></use></svg> ${c.contact}</div>` : '';
+                let contactHtml = c.contact ? `<div class="contact-info"><svg class="icon-svg"><use href="#icon-phone"></use></svg> ${c.contact}</div>` : '';
                 list.innerHTML += `<div class="info-card-item"><div class="item-icon-box" style="background:#F3F0FF; color:#9F7AEA;"><svg class="icon-svg"><use href="#icon-car"></use></svg></div><div class="info-card-content"><div class="info-card-title" style="color:var(--primary); font-size:0.9rem;">${c.date} ${c.time}</div><div style="font-weight:bold;">${c.type}</div><div class="info-card-sub" style="font-weight:bold; color:var(--text);">${c.from} ➝ ${c.to}</div>${contactHtml}${noteHtml}</div><div style="flex-shrink:0;"><button class="btn-edit" onclick="window.openCharterModal(${c.id})">✎</button><button class="btn-del" onclick="window.delItem('charters', ${c.id})">✕</button></div></div>`;
             });
-        };
-
-        // --- Itinerary ---
-        window.getTargetDateStr = function(startStr, dayOffset) {
-            const parts = startStr.split('-');
-            const d = new Date(parts[0], parts[1]-1, parts[2]);
-            d.setDate(d.getDate() + dayOffset);
-            return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-        };
-
-        window.renderAllDetail = function() {
-            const dc = document.getElementById('day-tabs-itinerary'); dc.innerHTML = '';
-            const mc = document.getElementById('day-tabs-money'); mc.innerHTML = '';
-            for(let i=0; i<currentTrip.days; i++) {
-                const dateStr = window.getTargetDateStr(currentTrip.startDate, i);
-                const d = new Date(dateStr);
-                const html = `<span class="day-idx">DAY ${i+1}</span><span class="date">${d.getMonth()+1}/${d.getDate()}</span>`;
-                const div = document.createElement('div'); div.className=`day-chip ${i===appState.dayIdx?'active':''}`; div.innerHTML=html; div.onclick=()=>{appState.dayIdx=i; window.renderAllDetail();};
-                const divM = div.cloneNode(true); divM.onclick=()=>{appState.dayIdx=i; window.renderAllDetail(); window.renderMoney();};
-                dc.appendChild(div); mc.appendChild(divM);
-            }
-            window.renderItinerary(); window.renderMoney(); window.fetchWeatherForDay();
-        };
-
-        window.renderItinerary = function() {
-            const list = document.getElementById('list-itinerary'); list.innerHTML = '';
-            const flightC = document.getElementById('flight-card-container'); flightC.innerHTML = '';
-            const nightStayC = document.getElementById('night-stay-container'); nightStayC.innerHTML = '';
-            
-            let f = null, title = '';
-            if (appState.dayIdx === 0 && currentTrip.flights.out.code) { f = currentTrip.flights.out; title = '去程 OUTBOUND'; }
-            else if (appState.dayIdx === (currentTrip.days - 1) && currentTrip.flights.in.code) { f = currentTrip.flights.in; title = '回程 INBOUND'; }
-            if (f) flightC.innerHTML = `<div class="bp-card"><div class="bp-header">${title}</div><div class="bp-body"><div class="bp-group"><span class="bp-code">${f.depAir||'DEP'}</span><span class="bp-time">${f.depTime||'--:--'}</span></div><div class="bp-center"><div style="font-size:0.8rem;">${f.airline}</div><div class="bp-line"></div><div style="color:var(--primary); font-weight:bold;">${f.code}</div><div class="bp-duration">${calcDuration(f.depTime,f.depTz,f.arrTime,f.arrTz)}</div></div><div class="bp-group"><span class="bp-code">${f.arrAir||'ARR'}</span><span class="bp-time">${f.arrTime||'--:--'}</span></div></div></div>`;
-
-            const dateStr = window.getTargetDateStr(currentTrip.startDate, appState.dayIdx);
-            let mixed = (currentTrip.itinerary||[]).filter(x=>x.dayIdx===appState.dayIdx).map(x=>({...x, src:'it'}));
-            (currentTrip.charters||[]).filter(x=>x.date===dateStr).forEach(x=>mixed.push({...x, src:'charter', loc:x.from, title:x.type}));
-            mixed.sort((a,b) => (a.time||'').localeCompare(b.time||''));
-
-            const icons = { spot:'icon-spot', food:'icon-food', shop:'icon-nav-shop', transport:'icon-transport', other:'icon-star', charter:'icon-car' };
-
-            mixed.forEach(item => {
-                let timeHTML = item.time;
-                let title = item.loc || item.title;
-                let sub = '';
-                if(item.type === 'transport') {
-                    timeHTML = `<div class="trans-label">出發</div><div class="trans-time">${item.time}</div>`;
-                    if(item.endTime) timeHTML += `<div class="trans-divider"></div><div class="trans-label">抵達</div><div class="trans-time">${item.endTime}</div>`;
-                    if(item.dest) { sub = `<div style="font-size:0.85rem; color:var(--text); margin-top:4px; display:flex; align-items:center; gap:5px;"><span>${item.loc}</span><span style="color:var(--primary);">➝</span><span>${item.dest}</span></div>`; title = item.title || "移動"; }
-                } else { 
-                    if(item.title && item.title!==item.loc) sub = `<div style="font-size:0.85rem; color:#999; margin-top:2px;">${item.title}</div>`; 
-                }
-                
-                // Add Opening Hours to Sub with Icon
-                if(item.open) {
-                     sub += `<div style="font-size:0.8rem; color:var(--text-light); display:flex; align-items:center; gap:4px; margin-top:4px;"><svg class="icon-svg icon-xs"><use href="#icon-clock"></use></svg>${item.open}</div>`;
-                }
-
-                const clickAction = item.src==='charter' ? `window.openCharterModal(${item.id})` : `window.editItinerary(${item.id})`;
-                const mapBtn = (item.loc || item.dest) ? `<button class="btn-map-icon" onclick="event.stopPropagation(); window.openMap(event, '${item.type==='transport'?item.dest:item.loc}')"><svg class="icon-svg icon-sm"><use href="#icon-map-pin"></use></svg></button>` : '';
-                
-                // Show clock icon on card if opening hours exist
-                let cardIconOverlay = item.open ? `<div style="position:absolute; top:12px; right:12px; opacity:0.3;"><svg class="icon-svg icon-xs"><use href="#icon-clock"/></svg></div>` : '';
-
-                list.innerHTML += `<div class="timeline-item" onclick="${clickAction}"><div class="time-bubble">${timeHTML}</div><div class="it-card type-${item.type}"><div class="it-icon"><svg class="icon-svg icon-sm"><use href="#${icons[item.type]||'icon-star'}"></use></svg></div><div style="flex:1; min-width:0;"><div style="font-weight:bold; font-size:1.05rem;">${title}</div>${sub}<div style="font-size:0.85rem; color:var(--text); opacity:0.8; margin-top:4px;">${item.note||''}</div></div><div class="it-actions">${mapBtn}</div>${cardIconOverlay}</div></div>`;
-            });
-
-            // Night Stay
-            const stay = currentTrip.hotels.find(h => {
-                const checkIn = new Date(h.date);
-                const checkOut = new Date(h.date);
-                checkOut.setDate(checkOut.getDate() + parseInt(h.days));
-                const currentD = new Date(dateStr);
-                return currentD >= checkIn && currentD < checkOut;
-            });
-            if(stay) {
-                nightStayC.innerHTML = `<div class="night-stay-box"><svg class="icon-svg"><use href="#icon-moon"></use></svg><div><div style="font-size:0.8rem; opacity:0.8;">Tonight's Stay</div><div style="font-weight:bold; font-size:1.1rem;">${stay.name}</div><div style="font-size:0.8rem;">${stay.address}</div></div></div>`;
-            }
-        };
-
-        window.openNewItinerary = function() {
-            appState.editId = null;
-            // 清空
-            ['i-time','i-title','i-loc','i-note','i-open','i-end-time','i-dest'].forEach(id=>document.getElementById(id).value='');
-            const typeSelect = document.getElementById('i-type');
-            typeSelect.value = 'spot';
-            typeSelect.dispatchEvent(new Event('change')); // Trigger visibility logic
-            window.openModal('itinerary');
-        };
-        window.editItinerary = function(id) {
-            const item = currentTrip.itinerary.find(i=>i.id===id);
-            if(!item) return;
-            appState.editId = id;
-            document.getElementById('i-time').value=item.time;
-            const typeSelect = document.getElementById('i-type');
-            typeSelect.value=item.type;
-            typeSelect.dispatchEvent(new Event('change')); // Trigger visibility logic
-            
-            document.getElementById('i-title').value=item.title;
-            document.getElementById('i-loc').value=item.loc;
-            document.getElementById('i-note').value=item.note;
-            document.getElementById('i-open').value=item.open;
-            document.getElementById('i-end-time').value=item.endTime;
-            document.getElementById('i-dest').value=item.dest;
-            window.openModal('itinerary');
-        };
-        window.saveItinerary = function() {
-            const time = document.getElementById('i-time').value;
-            const loc = document.getElementById('i-loc').value;
-            if(!time || !loc) return alert('請填寫時間與地點');
-            const newItem = { id: appState.editId || Date.now(), dayIdx: appState.dayIdx, time, type: document.getElementById('i-type').value, title: document.getElementById('i-title').value, loc, note: document.getElementById('i-note').value, open: document.getElementById('i-open').value, endTime: document.getElementById('i-end-time').value, dest: document.getElementById('i-dest').value };
-            if(appState.editId) { const idx = currentTrip.itinerary.findIndex(x=>x.id===appState.editId); if(idx!==-1) currentTrip.itinerary[idx] = newItem; } 
-            else currentTrip.itinerary.push(newItem);
-            window.saveData(); window.closeModal('itinerary');
-        };
-        window.deleteItineraryItemInModal = function() {
-            if(!appState.editId) return;
-            if(confirm('確定刪除？')) { currentTrip.itinerary = currentTrip.itinerary.filter(x=>x.id!==appState.editId); window.saveData(); window.closeModal('itinerary'); }
         };
 
         // --- Money ---
@@ -1109,8 +1045,19 @@
             let tStr = Object.keys(totals).map(k=>`${k} ${totals[k].toLocaleString()}`).join(' ');
             document.getElementById('day-total-display').innerText = tStr || '$0';
             const methodMap = { 'cash': '現金', 'card': '信用卡', 'other': '其他' };
+            
             items.reverse().forEach(i => {
-                list.innerHTML += `<div class="money-item-compact" onclick="window.openMoneyModal(${i.id})"><div style="flex:1;"><div style="font-weight:bold;">${i.title}</div><div class="money-meta"><svg class="icon-svg icon-xs"><use href="#icon-user"></use></svg> ${i.payer} · ${methodMap[i.method]}</div></div><div style="font-weight:900; color:var(--primary-dark);">${i.curr} ${i.cost}</div></div>`;
+                list.innerHTML += `
+                <div class="money-item-row" onclick="window.openMoneyModal(${i.id})">
+                    <div class="money-info">
+                        <div class="money-title">${i.title}</div>
+                        <div class="money-meta">
+                            <span class="money-tag">${i.payer}</span>
+                            <span>${methodMap[i.method]}</span>
+                        </div>
+                    </div>
+                    <div class="money-amount">${i.curr} ${i.cost}</div>
+                </div>`;
             });
         };
         window.switchMoneySub = function(sub) {
@@ -1137,7 +1084,7 @@
                  grandTotalHtml += `<div style="display:flex; justify-content:space-between; font-size:1.1rem; font-weight:bold; padding:5px 0;"><span>${c}</span><span>${grandTotals[c].toLocaleString()}</span></div>`;
             });
             if(grandTotalHtml) {
-                 container.innerHTML += `<div class="card" style="padding:15px; background:var(--primary-light); border-color:var(--primary);"><div style="font-weight:900; color:var(--primary-dark); margin-bottom:10px;">💰 總支出一覽</div>${grandTotalHtml}</div>`;
+                 container.innerHTML += `<div class="card" style="padding:15px; background:var(--primary-light); border-color:var(--primary);"><div style="font-weight:900; color:var(--primary-dark); margin-bottom:10px; display:flex; align-items:center; gap:5px;"><svg class="icon-svg"><use href="#icon-chart-bar"/></svg> 總支出一覽</div>${grandTotalHtml}</div>`;
             }
 
             Object.keys(stats).forEach(member => {
@@ -1160,11 +1107,18 @@
             if(!currentTrip.city) return;
             const dateStr = window.getTargetDateStr(currentTrip.startDate, appState.dayIdx);
             try {
-                const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${currentTrip.city}&count=1&language=zh&format=json`);
+                // Fixed: Use "name" correctly and handle "city not found" safely
+                const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(currentTrip.city)}&count=1&language=zh&format=json`);
                 const geoData = await geoRes.json();
-                if(!geoData.results) return;
-                const {latitude, longitude} = geoData.results[0];
-                document.getElementById('weather-loc').innerText = currentTrip.city;
+                
+                if(!geoData.results || geoData.results.length === 0) {
+                     document.getElementById('weather-loc').innerText = "找不到地點";
+                     return;
+                }
+                
+                const {latitude, longitude, name} = geoData.results[0];
+                document.getElementById('weather-loc').innerText = name; // Update with API's found name
+                
                 const wRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=weathercode,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_probability_max&timezone=auto&start_date=${dateStr}&end_date=${dateStr}`);
                 const wData = await wRes.json();
                 if(wData.daily) {
@@ -1176,7 +1130,7 @@
                     document.getElementById('w-rain').innerText = wData.daily.precipitation_probability_max[0];
                     setWeatherIcon(wData.daily.weathercode[0]);
                 }
-            } catch(e) {}
+            } catch(e) { console.error(e); }
         };
         function setWeatherIcon(code) {
             let icon='#icon-sun', t='晴';
