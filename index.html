@@ -96,19 +96,24 @@
         .sub-nav-btn { flex: 0 0 auto; padding: 8px 18px; border: 1px solid transparent; background: white; border-radius: 30px; font-size: 0.9rem; color: var(--text-light); font-weight: 700; box-shadow: 0 2px 6px rgba(0,0,0,0.04); transition: 0.2s; display: flex; align-items: center; gap: 6px; }
         .sub-nav-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(127, 169, 190, 0.3); transform: translateY(-1px); }
 
-        /* Shopping List Item Style (Optimized) */
-        .check-item { display: flex; align-items: center; padding: 16px; background: white; border-radius: var(--radius-M); margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); border: 1px solid #F0F0F0; transition: 0.2s; }
+        /* Shopping List Item Style (Redesigned Flow) */
+        .check-item { display: flex; align-items: center; padding: 14px 16px; background: white; border-radius: var(--radius-M); margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); border: 1px solid #F0F0F0; transition: 0.2s; justify-content: space-between; }
         .check-item:active { transform: scale(0.99); }
-        .check-box { width: 24px; height: 24px; border: 2px solid var(--primary); border-radius: 8px; margin-right: 15px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: white; transition: 0.2s; }
+        
+        .check-left { display: flex; align-items: center; flex: 1; min-width: 0; gap: 12px; }
+        .check-box { width: 22px; height: 22px; border: 2px solid var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: white; transition: 0.2s; }
         .checked .check-box { background: var(--primary); }
-        .checked .check-box::after { content: '✓'; color: white; font-size: 16px; font-weight: bold; }
-        .check-content { flex: 1; min-width: 0; margin-right: 15px; display: flex; flex-direction: column; gap: 6px; } 
-        .check-text { font-weight: bold; font-size: 1.2rem; color: var(--text); transition: 0.2s;} /* Big Font */
-        .check-meta { font-size: 0.85rem; color: var(--accent); }
+        .checked .check-box::after { content: '✓'; color: white; font-size: 14px; font-weight: bold; }
+        
+        .check-info { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+        .check-text { font-weight: bold; font-size: 1.1rem; color: var(--text); transition: 0.2s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .check-meta { font-size: 0.85rem; color: var(--accent); margin-top: 2px;}
         .checked .check-text { text-decoration: line-through; color: var(--text-done); }
         .checked .check-meta { opacity: 0.5; }
-        /* Member badge moved to Left/Below text */
-        .member-badge { align-self: flex-start; font-size: 0.75rem; background: var(--primary-light); color: var(--primary-dark); padding: 4px 10px; border-radius: 12px; font-weight: bold; margin-bottom: 4px; display:inline-block;}
+
+        .check-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; margin-left: 10px; }
+        .member-badge { font-size: 0.75rem; background: var(--primary-light); color: var(--primary-dark); padding: 4px 10px; border-radius: 12px; font-weight: bold; white-space: nowrap; }
+        .btn-list-del { color: #E53E3E; background: #FFF5F5; padding: 8px; border-radius: 10px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
         /* Items (Common) */
         .info-card-item { background: #FFFFFF; border-radius: var(--radius-M); padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); border: 1px solid #F0F0F0; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
@@ -764,7 +769,7 @@
             if(t==='journal') window.renderJournal();
             if(t==='shopping') { fillMemberSelect('shop-owner'); window.renderLists(); }
             if(t==='itinerary') {
-                window.renderAllDetail(); // Ensure this runs immediately
+                setTimeout(() => window.renderAllDetail(), 50); // Small delay to ensure container visible
             }
         };
 
@@ -916,13 +921,17 @@
                 list.innerHTML += `
                     <div class="card check-item ${i.checked?'checked':''}" style="padding:15px; display:block;" onclick="window.toggleCheck('${arr}', ${i.id})">
                         <div style="display:flex; align-items:center;">
-                            <div class="check-box"></div>
-                            <div class="check-content">
-                                <span class="check-text">${i.text}</span>
-                                ${ownerLabel}
-                                <div style="font-size:0.85rem; color:var(--accent);">${i.price||''} ${i.location||''}</div>
+                            <div class="check-left">
+                                <div class="check-box"></div>
+                                <div class="check-info">
+                                    <span class="check-text">${i.text}</span>
+                                    ${ownerLabel}
+                                    <div style="font-size:0.85rem; color:var(--accent);">${i.price||''} ${i.location||''}</div>
+                                </div>
                             </div>
-                            <button class="btn-del" onclick="event.stopPropagation(); window.delItem('${arr}', ${i.id})">移除</button>
+                            <div class="check-right">
+                                <button class="btn-list-del" onclick="event.stopPropagation(); window.delItem('${arr}', ${i.id})"><svg class="icon-svg icon-sm"><use href="#icon-trash"></use></svg></button>
+                            </div>
                         </div>
                     </div>`;
             });
@@ -1217,11 +1226,13 @@
             
             // Safe fallback for days
             const daysCount = currentTrip.days || 1; 
+            const weekDays = ["週日", "週一", "週二", "週三", "週四", "週五", "週六"];
 
             for(let i=0; i<daysCount; i++) {
                 const dateStr = window.getTargetDateStr(currentTrip.startDate, i);
                 const d = new Date(dateStr);
-                const html = `<span class="day-idx">DAY ${i+1}</span><span class="date">${d.getMonth()+1}/${d.getDate()}</span>`;
+                const dayName = weekDays[d.getDay()];
+                const html = `<span class="day-idx">${dayName}</span><span class="date">${d.getMonth()+1}/${d.getDate()}</span>`;
                 
                 const div = document.createElement('div'); 
                 div.className=`day-chip ${i===appState.dayIdx?'active':''}`; 
