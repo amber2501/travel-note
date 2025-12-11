@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -41,7 +40,7 @@
             --shadow-card: 0 4px 15px rgba(148, 163, 184, 0.1);
             --shadow-float: 0 8px 25px rgba(127, 169, 190, 0.3);
 
-            /* 馬卡龍色系 (背景色調淡) */
+            /* 馬卡龍色系 */
             --c-spot-bg: #F2F9FD; --c-spot-line: #4299E1; --c-spot-icon: #3182CE;
             --c-food-bg: #FFFEF9; --c-food-line: #ED8936; --c-food-icon: #DD6B20;
             --c-shop-bg: #FFF9FB; --c-shop-line: #ED64A6; --c-shop-icon: #D53F8C;
@@ -269,6 +268,34 @@
         .money-meta { display: flex; gap: 6px; font-size: 0.75rem; color: var(--text-light); align-items: center;}
         .money-tag { background: #EDF2F7; padding: 2px 8px; border-radius: 6px; font-weight: bold; color: var(--text-light); }
         .money-amount { font-weight: 900; font-size: 1.1rem; color: var(--primary-dark); }
+        
+        /* Analysis Cards */
+        .member-stat-wrapper { margin-bottom: 15px; }
+        .member-stat-card { background: linear-gradient(135deg, #7FA9BE 0%, #5A8296 100%); color: white; border-radius: 16px; padding: 16px; cursor: pointer; transition: transform 0.1s; box-shadow: 0 5px 15px rgba(90,130,150,0.3); display: flex; flex-direction: column; gap: 5px; position: relative; z-index: 2;}
+        .member-stat-card:active { transform: scale(0.98); }
+        .m-stat-header { display: flex; justify-content: space-between; align-items: center; font-weight: 900; font-size: 1.1rem; }
+        .m-stat-total { font-size: 0.95rem; opacity: 0.95; font-weight: 700; }
+        
+        .analysis-detail-box { background: white; border-radius: 0 0 16px 16px; padding: 15px 15px 10px 15px; color: var(--text); box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-top: -10px; padding-top: 25px; border: 1px solid #EDF2F7; position: relative; z-index: 1;}
+
+        /* Split Bill Styles */
+        .split-card { background: white; border-radius: 16px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); border: 1px solid #F0F4F8; position: relative; }
+        .split-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; border-bottom: 1px dashed #eee; padding-bottom: 8px;}
+        .split-title { font-weight: 900; font-size: 1.05rem; color: var(--text); }
+        .split-date { font-size: 0.75rem; color: #999; margin-top: 2px;}
+        .split-payer-badge { background: var(--primary); color: white; font-size: 0.75rem; padding: 3px 8px; border-radius: 6px; font-weight: bold; display: inline-flex; align-items: center; gap: 4px;}
+        
+        .split-member-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.9rem; padding: 6px 0; border-bottom: 1px solid #f9f9f9; }
+        .split-member-name { font-weight: bold; width: 60px; color: var(--text-light); }
+        .split-val-group { text-align: right; flex: 1; display: flex; justify-content: flex-end; gap: 10px; font-size: 0.85rem;}
+        .split-label { font-size: 0.7rem; color: #BBB; margin-right: 2px; }
+        .split-owe { color: #E53E3E; font-weight: bold; } /* 欠款紅字 */
+        .split-clean { color: #38A169; font-weight: bold; opacity: 0.6;} /* 結清綠字 */
+        
+        /* Modal Table Look */
+        .split-input-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; background: #F7FAFC; padding: 8px; border-radius: 10px;}
+        .split-input-name { font-weight: bold; width: 50px; font-size: 0.9rem; flex-shrink: 0;}
+        .split-input-sm { flex: 1; padding: 0 8px; height: 36px; min-height: 36px; font-size: 0.9rem; background: white; border: 1px solid #E2E8F0; border-radius: 6px;}
 
         /* Journal Redesign */
         .journal-card { background: white; border-radius: 20px; padding: 20px; margin-bottom: 25px; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.03); overflow: hidden; }
@@ -342,7 +369,7 @@
         <div style="text-align:center; padding-top:80px; padding-bottom:30px;">
             <div style="font-size:3rem; margin-bottom:10px;">☁️</div>
             <h1 style="color:var(--primary-dark); margin:0; font-size:2rem; letter-spacing:1px;">旅遊手帳</h1>
-            <p style="color:var(--text-light); font-size:0.9rem; margin-top:5px;">Version 7.9</p>
+            <p style="color:var(--text-light); font-size:0.9rem; margin-top:5px;">Version 8.3</p>
         </div>
         <div class="container" style="padding-bottom:20px;">
             <div class="card" style="padding:15px; display:flex; gap:10px;">
@@ -490,17 +517,23 @@
                 <div class="sub-nav" style="justify-content:center; padding-top:15px;">
                     <button class="sub-nav-btn active" id="btn-money-list" onclick="window.switchMoneySub('list')">列表</button>
                     <button class="sub-nav-btn" id="btn-money-analysis" onclick="window.switchMoneySub('analysis')">統計</button>
+                    <button class="sub-nav-btn" id="btn-money-split" onclick="window.switchMoneySub('split')">分帳</button>
                 </div>
             </div>
             <div class="container">
                 <div id="money-view-list">
                     <div class="day-scroller" id="day-tabs-money"></div>
-                    <div style="text-align:right; margin-bottom:10px; font-weight:bold; color:var(--text-light);">當日: <span style="color:var(--primary); font-size:1.1rem;" id="day-total-display">$0</span></div>
+                    <!-- 新增的成員篩選 Tab 區域 -->
+                    <div class="sub-nav" id="money-list-member-tabs" style="justify-content:center; padding-top:5px; margin-bottom:10px;"></div>
                     <div id="list-money"></div>
                 </div>
                 <div id="money-view-analysis" class="hidden"><div id="analysis-content"></div></div>
+                <!-- 3. (新增) 分帳頁 -->
+                <div id="money-view-split" class="hidden">
+                    <div id="split-list-container"></div>
+                </div>
             </div>
-            <button class="fab" onclick="window.openMoneyModal()"><svg class="icon-svg"><use href="#icon-plus"/></svg></button>
+            <button class="fab" onclick="window.handleMoneyFab()"><svg class="icon-svg"><use href="#icon-plus"/></svg></button>
         </div>
 
         <!-- D. Lists -->
@@ -610,39 +643,67 @@
             <div class="row">
                 <div class="col"><span class="card-label">日期</span><input type="date" id="m-date"></div>
             </div>
-            <div class="input-group"><span class="card-label">項目名稱</span><input id="m-title" placeholder="例如：午餐、迪士尼門票"></div>
+
+            <div class="input-group"><span class="card-label">項目名稱</span><input id="m-title" placeholder="例如：午餐、紀念品"></div>
             
             <div class="row">
-                <div style="width:90px;"><span class="card-label">幣別</span><select id="m-curr" style="padding:0 14px;"><option value="NT$">NT$</option><option value="¥">¥</option><option value="₩">₩</option></select></div>
-                <div class="col"><span class="card-label">金額</span><input type="number" id="m-cost"></div>
+                <div style="width:90px;"><span class="card-label">幣別</span><select id="m-curr" style="padding:0 14px;"><option value="NT$">NT$</option><option value="¥">¥</option><option value="₩">₩</option><option value="€">€</option><option value="$">$</option></select></div>
+                <div class="col"><span class="card-label">金額</span><input type="number" id="m-cost" placeholder="0"></div>
             </div>
-    
-            <!-- 新增：備註與公費開關 -->
-            <div class="input-group">
-                <span class="card-label">備註 (詳細內容)</span>
-                <input id="m-note" placeholder="備註... (例如: 含酒水, 需均分)">
-            </div>
-            
-            <div class="input-group" style="display:flex; align-items:center; gap:10px; background:#F7FAFC; padding:10px; border-radius:12px; margin-bottom:15px;">
-                <input type="checkbox" id="m-is-shared" style="width:20px; height:20px; margin:0;" checked>
-                <label for="m-is-shared" style="font-weight:bold; color:var(--primary-dark); font-size:0.95rem;">這是公費 (大家均分)</label>
-            </div>
-            <!-- 結束新增 -->
-    
-            <span class="card-label">先代墊 / 付款人</span>
-            <div id="m-payer-wrapper" class="chip-group" style="margin-bottom:20px;"></div>
-            
+
+            <span class="card-label">付款人</span>
+            <div id="m-payer-wrapper" class="chip-group" style="margin-bottom:15px;"></div>
+
+            <!-- 修改：付款方式移到同一行比較省空間，或保持原樣 -->
             <span class="card-label">方式</span>
-            <div class="chip-group">
+            <div class="chip-group" style="margin-bottom:15px;">
                 <button class="chip-btn method-btn" onclick="window.setMoneyMethod('cash', this)">現金</button>
                 <button class="chip-btn method-btn" onclick="window.setMoneyMethod('card', this)">信用卡</button>
-                <button class="chip-btn method-btn" onclick="window.setMoneyMethod('other', this)">其他</button>
             </div>
-    
-            <div class="row" style="margin-top:25px; gap:10px;">
+
+            <!-- 新增：備註 -->
+            <div class="input-group">
+                <span class="card-label">備註 (選填)</span>
+                <textarea id="m-note" style="height:60px;" placeholder="寫點備註..."></textarea>
+            </div>
+
+            <div class="row" style="margin-top:20px; gap:10px;">
                 <button class="btn" id="btn-delete-money" onclick="window.deleteMoneyItemInModal()" style="background:#FFF5F5; color:var(--accent); width:50px; flex:none; display:none;"><svg class="icon-svg icon-sm"><use href="#icon-trash"></use></svg></button>
                 <div class="col"><button class="btn" onclick="window.closeModal('money')">取消</button></div>
                 <div class="col"><button class="btn btn-primary" onclick="window.saveMoney()">儲存</button></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- New Split Modal -->
+    <div id="modal-split" class="modal hidden">
+        <div class="modal-content" style="max-width:400px;">
+            <h3>💰 新增分帳</h3>
+            
+            <div class="row">
+                <div class="col"><span class="card-label">日期</span><input type="date" id="sp-date"></div>
+            </div>
+            <div class="input-group"><span class="card-label">項目名稱</span><input id="sp-title" placeholder="例如：包車費用、晚餐"></div>
+            
+            <div class="row" style="align-items:center;">
+                <div class="col"><span class="card-label">先墊款人 (Payer)</span><select id="sp-payer" style="padding:0 10px;"></select></div>
+                <div style="width:90px;"><span class="card-label">幣別</span><select id="sp-curr" style="padding:0 10px;"><option value="NT$">NT$</option><option value="¥">¥</option><option value="₩">₩</option></select></div>
+            </div>
+
+            <div style="border-top:1px dashed #eee; margin:15px 0;"></div>
+            
+            <div style="display:flex; justify-content:space-between; margin-bottom:5px;">
+                <span class="card-label">成員分帳細節</span>
+                <span style="font-size:0.7rem; color:#999;">(不需分攤者留空或填0)</span>
+            </div>
+            
+            <!-- 動態生成成員輸入框 -->
+            <div id="sp-members-container" style="margin-bottom:20px;"></div>
+
+            <div class="row" style="margin-top:20px; gap:10px;">
+                <button class="btn" id="btn-delete-split" onclick="window.deleteSplitItem()" style="background:#FFF5F5; color:var(--accent); width:50px; flex:none; display:none;"><svg class="icon-svg icon-sm"><use href="#icon-trash"></use></svg></button>
+                <div class="col"><button class="btn" onclick="window.closeModal('split')">取消</button></div>
+                <div class="col"><button class="btn btn-primary" onclick="window.saveSplitBill()">儲存</button></div>
             </div>
         </div>
     </div>
@@ -724,6 +785,7 @@
         let unsubscribe = null;
         let appState = { dayIdx: 0, editId: null, editType: null, listType: 'food', charterType:'接送' };
         let moneyState = { payer: '', method: 'cash' };
+        let moneyListMemberFilter = 'all'; // New: Filter state for money list
         let currentRate = 0.22;
         let currentInfoTab = 'flight';
         let sortableInstance = null;
@@ -797,7 +859,7 @@
                 id, name, city, startDate: date,
                 days: parseInt(document.getElementById('new-trip-days').value) || 1,
                 members: document.getElementById('new-trip-members').value.split(/[,，\s]+/).filter(Boolean),
-                itinerary: [], money: [], shopping: [], foodList: [], packing: [], journals: [],
+                itinerary: [], money: [], shopping: [], foodList: [], packing: [], journals: [], splitBills: [],
                 flights: { out:{depTz:8, arrTz:9}, in:{depTz:9, arrTz:8} }, hotels: [], tickets: [], charters: []
             };
             if(newTrip.members.length===0) newTrip.members=['我'];
@@ -850,6 +912,7 @@
                     if(!currentTrip.foodList) currentTrip.foodList = [];
                     if(!currentTrip.flights) currentTrip.flights = { out:{}, in:{} };
                     if(!currentTrip.itinerary) currentTrip.itinerary = [];
+                    if(!currentTrip.splitBills) currentTrip.splitBills = [];
                     
                     document.getElementById('header-trip-name-info').innerText = currentTrip.name;
                     document.getElementById('header-trip-name-itinerary').innerText = currentTrip.name;
@@ -860,6 +923,7 @@
                         window.renderAllDetail(); 
                         window.renderMoney(); 
                         window.renderMoneyAnalysis(); 
+                        if(appState.moneyTab === 'split') window.renderSplitBills();
                     }
                     else if(activeTabId === 'info') { 
                         window.fillFlightInputs(); 
@@ -1404,32 +1468,54 @@
         };
 
         // --- Money ---
+        // 新增：設定列表篩選成員
+        window.setMoneyListFilter = function(member) {
+            moneyListMemberFilter = member;
+            window.renderMoney();
+        };
+
+        // 修改：處理 FAB 按鈕邏輯 (根據分頁開啟不同 Modal)
+        window.handleMoneyFab = function() {
+            if (appState.moneyTab === 'split') {
+                window.openSplitModal();
+            } else {
+                window.openMoneyModal();
+            }
+        };
+
         window.openMoneyModal = function(id) {
             appState.editId = id; appState.editType='money';
+            
+            // 重置按鈕樣式
+            document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('active'));
+
             if(id) {
                 const m = currentTrip.money.find(x=>x.id===id);
                 document.getElementById('m-title').value = m.title;
                 document.getElementById('m-cost').value = m.cost;
                 document.getElementById('m-date').value = m.date;
-                document.getElementById('m-curr').value = m.curr || 'NT$'; 
+                document.getElementById('m-curr').value = m.curr || 'NT$';
+                document.getElementById('m-note').value = m.note || ''; // 讀取備註
                 
-                // 新增：讀取備註與公費狀態
-                document.getElementById('m-note').value = m.note || ''; 
-                document.getElementById('m-is-shared').checked = (m.isShared !== undefined) ? m.isShared : true; // 預設為公費
-                
-                moneyState.payer = m.payer; moneyState.method = m.method;
+                moneyState.payer = m.payer; 
+                moneyState.method = m.method;
             } else {
-                ['m-title','m-cost','m-note'].forEach(k=>document.getElementById(k).value=''); // 清空備註
-                document.getElementById('m-is-shared').checked = true; // 新增預設勾選
+                ['m-title','m-cost','m-note'].forEach(k=>document.getElementById(k).value='');
+                moneyState.payer = currentTrip.members[0]; 
+                moneyState.method = 'cash';
                 
-                moneyState.payer = currentTrip.members[0]; moneyState.method='cash';
-                const d = new Date(currentTrip.startDate); d.setDate(d.getDate() + appState.dayIdx);
+                const d = new Date(currentTrip.startDate); 
+                d.setDate(d.getDate() + appState.dayIdx);
                 document.getElementById('m-date').value = d.toISOString().split('T')[0];
             }
-            renderPayerBtns(); renderMethodBtns(); 
-            // Delete button logic
+            
+            // 更新 UI 按鈕狀態
+            renderPayerBtns(); 
+            renderMethodBtns();
+            
             const delBtn = document.getElementById('btn-delete-money');
             if(id) delBtn.style.display = 'flex'; else delBtn.style.display = 'none';
+            
             window.openModal('money');
         };
         
@@ -1455,89 +1541,343 @@
         function renderMethodBtns() {
             document.querySelectorAll('.method-btn').forEach(b => {
                 b.classList.remove('active');
-                const map={'現金':'cash','信用卡':'card','其他':'other'};
-                if(map[b.innerText]===moneyState.method) b.classList.add('active');
+                const text = b.innerText;
+                if((text==='現金' && moneyState.method==='cash') || (text==='信用卡' && moneyState.method==='card')) {
+                   b.classList.add('active'); 
+                }
             });
         }
         window.setMoneyMethod = function(m, el) { moneyState.method=m; renderMethodBtns(); };
+        
         window.saveMoney = function() {
+            const title = v('m-title');
+            const cost = parseFloat(v('m-cost'));
+            if(!title || isNaN(cost)) return alert('請輸入項目與金額');
+
             saveItem('money', { 
                 dayIdx: appState.dayIdx, 
                 date: v('m-date'), 
-                title: v('m-title'), 
-                cost: parseFloat(v('m-cost')), 
+                title: title, 
+                cost: cost, 
                 curr: document.getElementById('m-curr').value, 
                 payer: moneyState.payer, 
                 method: moneyState.method,
-                // 新增儲存欄位
-                note: v('m-note'),
-                isShared: document.getElementById('m-is-shared').checked
+                note: v('m-note') // 儲存備註
             });
         };
+
         window.renderMoney = function() {
-            const list = document.getElementById('list-money'); list.innerHTML='';
-            const items = (currentTrip.money||[]).filter(i=>i.dayIdx===appState.dayIdx);
-            let totals = {}; items.forEach(i => { totals[i.curr] = (totals[i.curr]||0) + i.cost; });
-            let tStr = Object.keys(totals).map(k=>`${k} ${totals[k].toLocaleString()}`).join(' ');
-            document.getElementById('day-total-display').innerText = tStr || '$0';
+            const list = document.getElementById('list-money'); 
+            const tabs = document.getElementById('money-list-member-tabs');
+            list.innerHTML='';
+            tabs.innerHTML='';
+
+            // 1. 渲染成員分頁按鈕 (Tabs)
+            const allBtn = document.createElement('button');
+            allBtn.className = `sub-nav-btn ${moneyListMemberFilter === 'all' ? 'active' : ''}`;
+            allBtn.innerText = '全體';
+            allBtn.onclick = () => window.setMoneyListFilter('all');
+            tabs.appendChild(allBtn);
+
+            currentTrip.members.forEach(m => {
+                const btn = document.createElement('button');
+                btn.className = `sub-nav-btn ${moneyListMemberFilter === m ? 'active' : ''}`;
+                btn.innerText = m;
+                btn.onclick = () => window.setMoneyListFilter(m);
+                tabs.appendChild(btn);
+            });
+            
+            // 2. 篩選當日
+            const dailyItems = (currentTrip.money||[]).filter(i=>i.dayIdx===appState.dayIdx);
+            
             const methodMap = { 'cash': '現金', 'card': '信用卡', 'other': '其他' };
             
-            items.reverse().forEach(i => {
-                // 處理備註顯示
-                const noteHtml = i.note ? `<div style="font-size:0.8rem; color:#999; margin-top:2px; display:flex; align-items:center; gap:4px;"><svg class="icon-svg icon-sm" style="width:12px; height:12px;"><use href="#icon-note"/></svg>${i.note}</div>` : '';
-                
-                // 處理公費標籤 (如果是公費顯示 '公', 個人顯示 '私')
-                // isShared 預設為 true (舊資料視為公費)
-                const isShared = (i.isShared !== undefined) ? i.isShared : true;
-                const typeBadge = isShared 
-                    ? `<span style="background:#EBF8FF; color:#3182CE; padding:2px 6px; border-radius:4px; font-size:0.7rem; margin-right:6px;">公費</span>`
-                    : `<span style="background:#FFF5F5; color:#E53E3E; padding:2px 6px; border-radius:4px; font-size:0.7rem; margin-right:6px;">個人</span>`;
-
-                list.innerHTML += `
-                <div class="money-item-row" onclick="window.openMoneyModal(${i.id})">
-                    <div class="money-info">
-                        <div class="money-title">${typeBadge}${i.title}</div>
-                        ${noteHtml}
-                        <div class="money-meta">
-                            <span class="money-tag">${i.payer}</span>
-                            <span>${methodMap[i.method]}</span>
+            // 3. 顯示列表函式
+            const renderItems = (items) => {
+                if(items.length === 0) return '<div style="text-align:center; padding:20px; color:#ccc;">無支出</div>';
+                let html = '';
+                // 反轉讓新的在上面
+                items.slice().reverse().forEach(i => {
+                    // ★ 備註在標題後面 (用括號包起來)
+                    const noteHtml = i.note ? `<span style="font-size:0.85rem; color:#999; font-weight:normal; margin-left:6px;">(${i.note})</span>` : '';
+                    
+                    html += `
+                    <div class="money-item-row" onclick="window.openMoneyModal(${i.id})">
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <div class="money-info">
+                                <div class="money-title">${i.title}${noteHtml}</div>
+                                <div class="money-meta">
+                                    <span class="money-tag">${i.payer}</span>
+                                    <span>${methodMap[i.method]}</span>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="money-amount">${i.curr} ${i.cost}</div>
-                </div>`;
-            });
+                        <div class="money-amount">${i.curr} ${i.cost.toLocaleString()}</div>
+                    </div>`;
+                });
+                return html;
+            };
+
+            if(moneyListMemberFilter === 'all') {
+                list.innerHTML = renderItems(dailyItems);
+            } else {
+                const memberItems = dailyItems.filter(i => i.payer === moneyListMemberFilter);
+                list.innerHTML = renderItems(memberItems);
+            }
         };
+
         window.switchMoneySub = function(sub) {
+            appState.moneyTab = sub; // 記錄當前分頁以控制 FAB
             document.getElementById('money-view-list').classList.toggle('hidden', sub!=='list');
             document.getElementById('money-view-analysis').classList.toggle('hidden', sub!=='analysis');
+            document.getElementById('money-view-split').classList.toggle('hidden', sub!=='split'); // 新增
+
             document.getElementById('btn-money-list').classList.toggle('active', sub==='list');
             document.getElementById('btn-money-analysis').classList.toggle('active', sub==='analysis');
+            document.getElementById('btn-money-split').classList.toggle('active', sub==='split'); // 新增
+
             if(sub==='analysis') window.renderMoneyAnalysis();
+            if(sub==='split') window.renderSplitBills(); // 新增
         };
+
+        window.toggleAnalysisDetail = function(member) {
+            const el = document.getElementById(`analysis-detail-${member}`);
+            if(el) {
+                const isHidden = el.classList.contains('hidden');
+                // 關閉其他所有已打開的明細，確保不重疊且整潔
+                document.querySelectorAll('.analysis-detail-box').forEach(e => e.classList.add('hidden'));
+                
+                if(isHidden) {
+                    el.classList.remove('hidden');
+                }
+            }
+        };
+
         window.renderMoneyAnalysis = function() {
-            const container = document.getElementById('analysis-content'); container.innerHTML = '';
-            let stats = {}; let grandTotals = {}; 
-            currentTrip.members.forEach(m => { stats[m] = {}; });
-            currentTrip.money.forEach(m => {
-                const p = m.payer || currentTrip.members[0]; const curr = m.curr || 'NT$'; const cost = parseFloat(m.cost);
-                if (!stats[p]) stats[p] = {};
-                stats[p][curr] = (stats[p][curr] || 0) + cost;
-                grandTotals[curr] = (grandTotals[curr] || 0) + cost;
+            const container = document.getElementById('analysis-content'); 
+            container.innerHTML = '';
+            
+            // 資料處理
+            let memberTotals = {};
+            let memberItems = {};
+            
+            currentTrip.members.forEach(m => { 
+                memberTotals[m] = {}; 
+                memberItems[m] = []; 
             });
             
-            // Grand Totals Section
-            let grandTotalHtml = '';
-            Object.keys(grandTotals).forEach(c => {
-                 grandTotalHtml += `<div style="display:flex; justify-content:space-between; font-size:1.1rem; font-weight:bold; padding:5px 0;"><span>${c}</span><span>${grandTotals[c].toLocaleString()}</span></div>`;
+            currentTrip.money.forEach(m => {
+                const curr = m.curr || 'NT$';
+                const cost = parseFloat(m.cost);
+                const payer = m.payer || currentTrip.members[0];
+                
+                memberTotals[payer][curr] = (memberTotals[payer][curr] || 0) + cost;
+                memberItems[payer].push(m);
             });
-            if(grandTotalHtml) {
-                 container.innerHTML += `<div class="card" style="padding:15px; background:var(--primary-light); border-color:var(--primary);"><div style="font-weight:900; color:var(--primary-dark); margin-bottom:10px; display:flex; align-items:center; gap:5px;"><svg class="icon-svg"><use href="#icon-chart-bar"/></svg> 總支出一覽</div>${grandTotalHtml}</div>`;
+
+            // 產生各別成員總支出卡片
+            currentTrip.members.forEach(member => {
+                const totals = memberTotals[member];
+                const hasSpending = Object.keys(totals).length > 0;
+                
+                let totalStr = '';
+                if(hasSpending) {
+                    totalStr = Object.keys(totals).map(c => `${c} ${totals[c].toLocaleString()}`).join('  /  ');
+                } else {
+                    totalStr = '無支出';
+                }
+
+                // 生成明細列表
+                const items = memberItems[member];
+                items.sort((a,b) => {
+                     if(a.date !== b.date) return b.date.localeCompare(a.date);
+                     return b.id - a.id;
+                });
+
+                let detailHtml = '';
+                if(items.length > 0) {
+                    items.forEach(i => {
+                        const noteHtml = i.note ? `<span style="font-size:0.8rem; color:#999; margin-left:5px;">(${i.note})</span>` : '';
+                        detailHtml += `
+                            <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #eee; align-items:center;">
+                                <div>
+                                    <div style="font-size:0.75rem; color:#AAA;">${i.date.slice(5)}</div>
+                                    <div style="font-weight:bold; font-size:0.95rem;">${i.title} ${noteHtml}</div>
+                                </div>
+                                <div style="font-weight:bold;">${i.curr} ${i.cost.toLocaleString()}</div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    detailHtml = '<div style="text-align:center; padding:10px; color:#ccc;">無紀錄</div>';
+                }
+
+                container.innerHTML += `
+                    <div class="member-stat-wrapper">
+                        <div class="member-stat-card" onclick="window.toggleAnalysisDetail('${member}')">
+                            <div class="m-stat-header">
+                                <span>${member}</span>
+                                <svg class="icon-svg icon-sm"><use href="#icon-chart-bar"/></svg>
+                            </div>
+                            <div class="m-stat-total">${totalStr}</div>
+                        </div>
+                        <div id="analysis-detail-${member}" class="analysis-detail-box hidden">
+                            ${detailHtml}
+                        </div>
+                    </div>
+                `;
+            });
+        };
+
+        // --- Split Bill Logic ---
+        window.openSplitModal = function(id) {
+            appState.editId = id; appState.editType = 'split';
+            const container = document.getElementById('sp-members-container');
+            container.innerHTML = '';
+
+            // 填入付款人選單
+            const payerSel = document.getElementById('sp-payer');
+            payerSel.innerHTML = '';
+            currentTrip.members.forEach(m => {
+                const opt = document.createElement('option');
+                opt.value = m; opt.innerText = m;
+                payerSel.appendChild(opt);
+            });
+
+            let data = null;
+            if(id) {
+                data = currentTrip.splitBills.find(x => x.id === id);
+                document.getElementById('sp-date').value = data.date;
+                document.getElementById('sp-title').value = data.title;
+                document.getElementById('sp-curr').value = data.curr;
+                payerSel.value = data.payer;
+                document.getElementById('btn-delete-split').style.display = 'flex';
+            } else {
+                document.getElementById('sp-date').value = new Date().toISOString().split('T')[0];
+                document.getElementById('sp-title').value = '';
+                payerSel.value = currentTrip.members[0];
+                document.getElementById('btn-delete-split').style.display = 'none';
             }
 
-            Object.keys(stats).forEach(member => {
-                let currencyHtml = '';
-                Object.keys(stats[member]).forEach(c => { currencyHtml += `<div style="display:flex; justify-content:space-between;"><span>${c}</span><span>${stats[member][c].toLocaleString()}</span></div>`; });
-                container.innerHTML += `<div class="card" style="padding:15px;"><div style="font-weight:bold; border-bottom:1px solid #eee; margin-bottom:5px;">${member}</div>${currencyHtml||'無'}</div>`;
+            // 生成成員輸入列
+            currentTrip.members.forEach(m => {
+                let should = '';
+                let paid = '';
+                if (data && data.details && data.details[m]) {
+                    should = data.details[m].should || '';
+                    paid = data.details[m].paid || '';
+                }
+
+                container.innerHTML += `
+                    <div class="split-input-row">
+                        <div class="split-input-name">${m}</div>
+                        <input type="number" class="split-input-sm sp-should" data-member="${m}" placeholder="需付" value="${should}">
+                        <input type="number" class="split-input-sm sp-paid" data-member="${m}" placeholder="已還" value="${paid}">
+                    </div>
+                `;
+            });
+
+            window.openModal('split');
+        };
+
+        window.saveSplitBill = function() {
+            const date = v('sp-date');
+            const title = v('sp-title');
+            const payer = document.getElementById('sp-payer').value;
+            const curr = document.getElementById('sp-curr').value;
+            
+            if(!title) return alert('請輸入項目名稱');
+
+            let details = {};
+            let total = 0;
+            document.querySelectorAll('.sp-should').forEach(el => {
+                const m = el.getAttribute('data-member');
+                const row = el.parentElement;
+                const shouldVal = parseFloat(el.value) || 0;
+                const paidVal = parseFloat(row.querySelector('.sp-paid').value) || 0;
+                
+                details[m] = {
+                    should: shouldVal,
+                    paid: paidVal
+                };
+                total += shouldVal;
+            });
+
+            const newItem = {
+                id: appState.editId || Date.now(),
+                date, title, payer, curr, total, details
+            };
+
+            if(appState.editId) {
+                const idx = currentTrip.splitBills.findIndex(x=>x.id===appState.editId);
+                if(idx!==-1) currentTrip.splitBills[idx] = newItem;
+            } else {
+                currentTrip.splitBills.push(newItem);
+            }
+
+            window.saveData();
+            window.closeModal('split');
+            window.renderSplitBills();
+        };
+
+        window.deleteSplitItem = function() {
+            if(confirm('確定刪除此分帳紀錄？')) {
+                currentTrip.splitBills = currentTrip.splitBills.filter(x=>x.id!==appState.editId);
+                window.saveData();
+                window.closeModal('split');
+                window.renderSplitBills();
+            }
+        };
+
+        window.renderSplitBills = function() {
+            const list = document.getElementById('split-list-container');
+            list.innerHTML = '';
+
+            if(!currentTrip.splitBills || currentTrip.splitBills.length === 0) {
+                list.innerHTML = '<div style="text-align:center; padding:30px; color:#ccc;">尚無分帳紀錄<br><span style="font-size:0.8rem;">點擊 + 新增</span></div>';
+                return;
+            }
+
+            const sorted = [...currentTrip.splitBills].sort((a,b) => b.date.localeCompare(a.date));
+
+            sorted.forEach(item => {
+                let membersHtml = '';
+                
+                currentTrip.members.forEach(m => {
+                    const d = item.details[m] || {should:0, paid:0};
+                    const owe = d.should - d.paid;
+                    
+                    if (d.should > 0 || owe !== 0) {
+                        let statusHtml = '';
+                        if (owe > 0) statusHtml = `<span class="split-owe">欠 ${owe}</span>`;
+                        else if (owe < 0) statusHtml = `<span class="split-clean">找 ${Math.abs(owe)}</span>`;
+                        else statusHtml = `<span class="split-clean">✔ 結清</span>`;
+
+                        membersHtml += `
+                            <div class="split-member-row">
+                                <div class="split-member-name">${m}</div>
+                                <div class="split-val-group">
+                                    <span><span class="split-label">需付</span>${d.should}</span>
+                                    <span><span class="split-label">已付</span>${d.paid}</span>
+                                    ${statusHtml}
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+
+                list.innerHTML += `
+                    <div class="split-card" onclick="window.openSplitModal(${item.id})">
+                        <div class="split-header">
+                            <div>
+                                <div class="split-title">${item.title} <span style="font-weight:normal; font-size:0.9rem;">(${item.curr} ${item.total})</span></div>
+                                <div class="split-date">${item.date}</div>
+                            </div>
+                            <div class="split-payer-badge">墊: ${item.payer}</div>
+                        </div>
+                        <div>${membersHtml}</div>
+                    </div>
+                `;
             });
         };
 
