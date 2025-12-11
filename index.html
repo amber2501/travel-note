@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -341,7 +342,7 @@
         <div style="text-align:center; padding-top:80px; padding-bottom:30px;">
             <div style="font-size:3rem; margin-bottom:10px;">☁️</div>
             <h1 style="color:var(--primary-dark); margin:0; font-size:2rem; letter-spacing:1px;">旅遊手帳</h1>
-            <p style="color:var(--text-light); font-size:0.9rem; margin-top:5px;">Version 7.8</p>
+            <p style="color:var(--text-light); font-size:0.9rem; margin-top:5px;">Version 7.9</p>
         </div>
         <div class="container" style="padding-bottom:20px;">
             <div class="card" style="padding:15px; display:flex; gap:10px;">
@@ -609,19 +610,35 @@
             <div class="row">
                 <div class="col"><span class="card-label">日期</span><input type="date" id="m-date"></div>
             </div>
-            <div class="input-group"><span class="card-label">項目</span><input id="m-title"></div>
+            <div class="input-group"><span class="card-label">項目名稱</span><input id="m-title" placeholder="例如：午餐、迪士尼門票"></div>
+            
             <div class="row">
                 <div style="width:90px;"><span class="card-label">幣別</span><select id="m-curr" style="padding:0 14px;"><option value="NT$">NT$</option><option value="¥">¥</option><option value="₩">₩</option></select></div>
                 <div class="col"><span class="card-label">金額</span><input type="number" id="m-cost"></div>
             </div>
-            <span class="card-label">付款人</span>
+    
+            <!-- 新增：備註與公費開關 -->
+            <div class="input-group">
+                <span class="card-label">備註 (詳細內容)</span>
+                <input id="m-note" placeholder="備註... (例如: 含酒水, 需均分)">
+            </div>
+            
+            <div class="input-group" style="display:flex; align-items:center; gap:10px; background:#F7FAFC; padding:10px; border-radius:12px; margin-bottom:15px;">
+                <input type="checkbox" id="m-is-shared" style="width:20px; height:20px; margin:0;" checked>
+                <label for="m-is-shared" style="font-weight:bold; color:var(--primary-dark); font-size:0.95rem;">這是公費 (大家均分)</label>
+            </div>
+            <!-- 結束新增 -->
+    
+            <span class="card-label">先代墊 / 付款人</span>
             <div id="m-payer-wrapper" class="chip-group" style="margin-bottom:20px;"></div>
+            
             <span class="card-label">方式</span>
             <div class="chip-group">
                 <button class="chip-btn method-btn" onclick="window.setMoneyMethod('cash', this)">現金</button>
                 <button class="chip-btn method-btn" onclick="window.setMoneyMethod('card', this)">信用卡</button>
                 <button class="chip-btn method-btn" onclick="window.setMoneyMethod('other', this)">其他</button>
             </div>
+    
             <div class="row" style="margin-top:25px; gap:10px;">
                 <button class="btn" id="btn-delete-money" onclick="window.deleteMoneyItemInModal()" style="background:#FFF5F5; color:var(--accent); width:50px; flex:none; display:none;"><svg class="icon-svg icon-sm"><use href="#icon-trash"></use></svg></button>
                 <div class="col"><button class="btn" onclick="window.closeModal('money')">取消</button></div>
@@ -1394,9 +1411,17 @@
                 document.getElementById('m-title').value = m.title;
                 document.getElementById('m-cost').value = m.cost;
                 document.getElementById('m-date').value = m.date;
+                document.getElementById('m-curr').value = m.curr || 'NT$'; 
+                
+                // 新增：讀取備註與公費狀態
+                document.getElementById('m-note').value = m.note || ''; 
+                document.getElementById('m-is-shared').checked = (m.isShared !== undefined) ? m.isShared : true; // 預設為公費
+                
                 moneyState.payer = m.payer; moneyState.method = m.method;
             } else {
-                ['m-title','m-cost'].forEach(k=>document.getElementById(k).value='');
+                ['m-title','m-cost','m-note'].forEach(k=>document.getElementById(k).value=''); // 清空備註
+                document.getElementById('m-is-shared').checked = true; // 新增預設勾選
+                
                 moneyState.payer = currentTrip.members[0]; moneyState.method='cash';
                 const d = new Date(currentTrip.startDate); d.setDate(d.getDate() + appState.dayIdx);
                 document.getElementById('m-date').value = d.toISOString().split('T')[0];
@@ -1436,7 +1461,18 @@
         }
         window.setMoneyMethod = function(m, el) { moneyState.method=m; renderMethodBtns(); };
         window.saveMoney = function() {
-            saveItem('money', { dayIdx: appState.dayIdx, date: v('m-date'), title: v('m-title'), cost: parseFloat(v('m-cost')), curr: document.getElementById('m-curr').value, payer: moneyState.payer, method: moneyState.method });
+            saveItem('money', { 
+                dayIdx: appState.dayIdx, 
+                date: v('m-date'), 
+                title: v('m-title'), 
+                cost: parseFloat(v('m-cost')), 
+                curr: document.getElementById('m-curr').value, 
+                payer: moneyState.payer, 
+                method: moneyState.method,
+                // 新增儲存欄位
+                note: v('m-note'),
+                isShared: document.getElementById('m-is-shared').checked
+            });
         };
         window.renderMoney = function() {
             const list = document.getElementById('list-money'); list.innerHTML='';
@@ -1447,10 +1483,21 @@
             const methodMap = { 'cash': '現金', 'card': '信用卡', 'other': '其他' };
             
             items.reverse().forEach(i => {
+                // 處理備註顯示
+                const noteHtml = i.note ? `<div style="font-size:0.8rem; color:#999; margin-top:2px; display:flex; align-items:center; gap:4px;"><svg class="icon-svg icon-sm" style="width:12px; height:12px;"><use href="#icon-note"/></svg>${i.note}</div>` : '';
+                
+                // 處理公費標籤 (如果是公費顯示 '公', 個人顯示 '私')
+                // isShared 預設為 true (舊資料視為公費)
+                const isShared = (i.isShared !== undefined) ? i.isShared : true;
+                const typeBadge = isShared 
+                    ? `<span style="background:#EBF8FF; color:#3182CE; padding:2px 6px; border-radius:4px; font-size:0.7rem; margin-right:6px;">公費</span>`
+                    : `<span style="background:#FFF5F5; color:#E53E3E; padding:2px 6px; border-radius:4px; font-size:0.7rem; margin-right:6px;">個人</span>`;
+
                 list.innerHTML += `
                 <div class="money-item-row" onclick="window.openMoneyModal(${i.id})">
                     <div class="money-info">
-                        <div class="money-title">${i.title}</div>
+                        <div class="money-title">${typeBadge}${i.title}</div>
+                        ${noteHtml}
                         <div class="money-meta">
                             <span class="money-tag">${i.payer}</span>
                             <span>${methodMap[i.method]}</span>
