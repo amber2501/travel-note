@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -78,7 +79,7 @@
         .input-group { margin-bottom: 15px; width: 100%; }
         .card-label { font-size: 0.9rem; color: var(--text-light); font-weight: 700; margin-left: 4px; display: block; margin-bottom: 6px; }
 
-        /* Header (Absolute Centering Fix) */
+        /* Header */
         .sticky-header { position: sticky; top: 0; z-index: 100; background: rgba(247, 249, 252, 0.95); backdrop-filter: blur(12px); padding-top: env(safe-area-inset-top); border-bottom: 1px solid rgba(0,0,0,0.03); }
         .header-top { position: relative; height: 60px; display: flex; align-items: center; padding: 0 15px; }
         .header-title { position: absolute; left: 50%; transform: translateX(-50%); font-size: 1.3rem; color: var(--text); font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 60%; text-align: center; pointer-events: none;}
@@ -136,6 +137,15 @@
 
         .checked .check-text { text-decoration: line-through; color: var(--text-done); }
         .checked .meta-pill { opacity: 0.5; }
+
+        /* Packing List Simplification */
+        .pack-item-card { background: white; border-radius: 16px; padding: 12px 16px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 6px rgba(0,0,0,0.03); border: 1px solid #F5F5F5; user-select: none; }
+        .pack-info { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px;}
+        .pack-name { font-weight: bold; font-size: 1rem; color: var(--text); }
+        .pack-members-row { display: flex; gap: 6px; }
+        .pack-avatar { width: 32px; height: 32px; border-radius: 50%; background: #EDF2F7; color: #A0AEC0; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 800; cursor: pointer; transition: 0.2s; border: 2px solid transparent; }
+        .pack-avatar.checked { background: var(--primary); color: white; box-shadow: 0 2px 5px rgba(127,169,190,0.4); transform: scale(1.05); }
+        .pack-btn-del { margin-left: 12px; color: #E53E3E; background: transparent; border: none; cursor: pointer; padding: 5px; }
 
         /* Items (Common) */
         .info-card-item { background: #FFFFFF; border-radius: var(--radius-M); padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); border: 1px solid #F0F0F0; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
@@ -248,11 +258,6 @@
         .d-date { font-size: 1.1rem; font-weight: 900; line-height: 1.2;}
         .d-week { font-size: 0.75rem; font-weight: bold; }
 
-        /* Packing Member Grid */
-        .packing-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px; margin-top: 10px; }
-        .pack-member-chip { border: 1px solid #E2E8F0; border-radius: 12px; padding: 8px; text-align: center; font-size: 0.85rem; color: var(--text-light); cursor: pointer; background: #FAFAFA; transition: 0.2s; font-weight: bold; display: flex; align-items: center; justify-content: center; gap: 4px;}
-        .pack-member-chip.checked { background: var(--primary); color: white; border-color: var(--primary); }
-
         /* Money List Redesign */
         .money-item-row { display: flex; align-items: center; justify-content: space-between; padding: 14px; background: white; border-radius: 16px; margin-bottom: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.03); border: 1px solid #F0F4F8; transition: transform 0.1s;}
         .money-item-row:active { transform: scale(0.99); }
@@ -334,7 +339,7 @@
         <div style="text-align:center; padding-top:80px; padding-bottom:30px;">
             <div style="font-size:3rem; margin-bottom:10px;">☁️</div>
             <h1 style="color:var(--primary-dark); margin:0; font-size:2rem; letter-spacing:1px;">旅遊手帳</h1>
-            <p style="color:var(--text-light); font-size:0.9rem; margin-top:5px;">Version 7.6</p>
+            <p style="color:var(--text-light); font-size:0.9rem; margin-top:5px;">Version 7.7</p>
         </div>
         <div class="container" style="padding-bottom:20px;">
             <div class="card" style="padding:15px; display:flex; gap:10px;">
@@ -476,8 +481,8 @@
             <div class="sticky-header">
                 <div class="header-top"><button class="back-btn btn-ghost" onclick="window.goHome()">◀</button><div class="header-title">清單</div><div style="width:30px;"></div></div>
                 <div class="sub-nav" style="justify-content:center;">
-                    <button class="sub-nav-btn active" onclick="window.switchListSub('shop')">購物</button>
-                    <button class="sub-nav-btn" onclick="window.switchListSub('food')">美食</button>
+                    <button class="sub-nav-btn active" onclick="window.switchListSub('food')">美食</button>
+                    <button class="sub-nav-btn" onclick="window.switchListSub('shop')">購物</button>
                 </div>
             </div>
             <div class="container">
@@ -674,11 +679,12 @@
         // ---------------------------------------------------------
         let currentTrip = null;
         let unsubscribe = null;
-        let appState = { dayIdx: 0, editId: null, editType: null, listType: 'shop', charterType:'接送' };
+        let appState = { dayIdx: 0, editId: null, editType: null, listType: 'food', charterType:'接送' };
         let moneyState = { payer: '', method: 'cash' };
         let currentRate = 0.22;
         let currentInfoTab = 'flight';
         let sortableInstance = null;
+        let sortablePacking = null;
 
         window.openCreateTripModal = function() {
             document.getElementById('new-trip-name').value = '';
@@ -1083,15 +1089,45 @@
             }
         };
         window.renderPacking = function() {
-            const list = document.getElementById('list-packing'); list.innerHTML = '';
-            currentTrip.packing.forEach(i => {
-                let membersHtml = '<div class="packing-grid">';
+            const list = document.getElementById('list-packing'); 
+            list.innerHTML = '';
+            
+            (currentTrip.packing || []).forEach(i => {
+                let membersHtml = '<div class="pack-members-row">';
                 currentTrip.members.forEach(m => {
                     const isChecked = i.checks && i.checks[m];
-                    membersHtml += `<div class="pack-member-chip ${isChecked?'checked':''}" onclick="window.toggleMemberCheck(${i.id}, '${m}')">${isChecked?'✓':''} ${m}</div>`;
+                    const firstChar = m.charAt(0);
+                    membersHtml += `<div class="pack-avatar ${isChecked?'checked':''}" onclick="window.toggleMemberCheck(${i.id}, '${m}')">${firstChar}</div>`;
                 });
                 membersHtml += '</div>';
-                list.innerHTML += `<div class="card" style="padding:15px; margin-bottom:10px;"><div style="display:flex; justify-content:space-between; align-items:center;"><span style="font-weight:bold; font-size:1.1rem;">${i.text}</span><button class="btn-ghost" onclick="window.delItem('packing', ${i.id})"><svg class="icon-svg icon-sm"><use href="#icon-trash"/></svg></button></div>${membersHtml}</div>`;
+                
+                list.innerHTML += `
+                    <div class="pack-item-card" data-id="${i.id}">
+                        <div class="pack-info">
+                            <span class="pack-name">${i.text}</span>
+                        </div>
+                        <div style="display:flex; align-items:center;">
+                            ${membersHtml}
+                            <button class="pack-btn-del" onclick="window.delItem('packing', ${i.id})">✕</button>
+                        </div>
+                    </div>`;
+            });
+
+            // Initialize Sortable for Packing List
+            if (sortablePacking) { sortablePacking.destroy(); }
+            sortablePacking = new Sortable(list, {
+                animation: 150,
+                delay: 300, 
+                delayOnTouchOnly: true,
+                ghostClass: 'sortable-ghost',
+                onEnd: function (evt) {
+                    const newIndex = evt.newIndex;
+                    const oldIndex = evt.oldIndex;
+                    if (newIndex === oldIndex) return;
+                    const movedItem = currentTrip.packing.splice(oldIndex, 1)[0];
+                    currentTrip.packing.splice(newIndex, 0, movedItem);
+                    window.saveData();
+                }
             });
         };
 
@@ -1103,22 +1139,18 @@
         };
         
         window.openShoppingModal = function(id) {
-            appState.editId = id; // Store ID for editing
+            appState.editId = id; 
             const arr = appState.listType === 'shop' ? 'shopping' : 'foodList';
-            
             if (id) {
-                // Edit Mode: Fill inputs
                 const item = currentTrip[arr].find(i => i.id === id);
                 if (item) {
                     document.getElementById('s-name').value = item.text || '';
                     document.getElementById('s-loc').value = item.location || '';
                     document.getElementById('s-open').value = item.open || item.price || '';
-                    // Populate owner
                     fillMemberSelect('s-owner');
                     document.getElementById('s-owner').value = item.owner || '';
                 }
             } else {
-                // Add Mode: Clear inputs
                 document.getElementById('s-name').value = '';
                 document.getElementById('s-loc').value = '';
                 document.getElementById('s-open').value = '';
@@ -1137,13 +1169,11 @@
             const arr = appState.listType==='shop'?'shopping':'foodList';
             
             if (appState.editId) {
-                // Edit Existing
                 const idx = currentTrip[arr].findIndex(i => i.id === appState.editId);
                 if (idx !== -1) {
                     currentTrip[arr][idx] = { ...currentTrip[arr][idx], text: name, location: loc, open: open, owner: owner };
                 }
             } else {
-                // Create New
                 currentTrip[arr].push({
                     id: Date.now(), 
                     text: name, 
@@ -1153,7 +1183,6 @@
                     checked: false
                 });
             }
-            
             window.saveData();
             window.closeModal('shopping');
             window.renderLists();
@@ -1193,11 +1222,10 @@
                     </div>`;
             });
 
-            // Initialize SortableJS
             if (sortableInstance) { sortableInstance.destroy(); }
             sortableInstance = new Sortable(listContainer, {
                 animation: 150,
-                delay: 300, // 300ms long press to start drag
+                delay: 300, 
                 delayOnTouchOnly: true,
                 touchStartThreshold: 5,
                 ghostClass: 'sortable-ghost',
@@ -1205,11 +1233,8 @@
                     const newIndex = evt.newIndex;
                     const oldIndex = evt.oldIndex;
                     if (newIndex === oldIndex) return;
-
-                    // Reorder Array
                     const movedItem = currentTrip[arr].splice(oldIndex, 1)[0];
                     currentTrip[arr].splice(newIndex, 0, movedItem);
-                    
                     window.saveData();
                 }
             });
