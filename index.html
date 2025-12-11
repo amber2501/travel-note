@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
@@ -13,6 +12,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
+    <!-- 拖曳排序套件 SortableJS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
 
     <style>
         :root {
@@ -102,33 +104,36 @@
         .sub-nav-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(127, 169, 190, 0.3); transform: translateY(-1px); }
 
         /* Shopping List Item Style */
-        .check-item { display: flex; padding: 16px; background: white; border-radius: var(--radius-M); margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); border: 1px solid #F0F0F0; transition: 0.2s; align-items: stretch; }
+        .check-item { display: flex; padding: 16px; background: white; border-radius: var(--radius-M); margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); border: 1px solid #F0F0F0; transition: 0.2s; align-items: stretch; user-select: none; }
         .check-item:active { transform: scale(0.99); background: #FAFAFA;}
+        /* 拖曳時的樣式 */
+        .sortable-ghost { opacity: 0.4; background: #F2F9FD; }
         
         .check-left { flex: 1; display: flex; flex-direction: column; min-width: 0; gap: 8px; justify-content: center;}
         .check-name-row { display: flex; align-items: center; gap: 12px; }
-        .check-box { width: 24px; height: 24px; border: 2px solid var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: white; transition: 0.2s; }
+        .check-box { width: 30px; height: 30px; border: 2px solid var(--primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: white; transition: 0.2s; cursor: pointer; }
         .checked .check-box { background: var(--primary); }
-        .checked .check-box::after { content: '✓'; color: white; font-size: 16px; font-weight: bold; }
+        .checked .check-box::after { content: '✓'; color: white; font-size: 18px; font-weight: bold; }
         
-        /* 字體調小一點點 */
         .check-text { font-weight: bold; font-size: 1.05rem; color: var(--text); transition: 0.2s; line-height: 1.3; }
         
         .check-separator { height: 1px; border-bottom: 2px dashed #E2E8F0; width: 100%; }
         
-        .check-meta-row { display: flex; gap: 8px; align-items: center; padding-left: 36px; }
+        .check-meta-row { display: flex; gap: 8px; align-items: center; padding-left: 42px; }
         .meta-pill { font-size: 0.75rem; padding: 3px 10px; border-radius: 12px; font-weight: bold; display: flex; align-items: center; gap: 4px; }
         .meta-price { background: #F0FFF4; color: #38A169; }
         .meta-loc { background: #EBF8FF; color: #3182CE; }
-        /* 新增：時間標籤樣式 (灰色) */
         .meta-time { background: #EDF2F7; color: #4A5568; }
 
         .meta-pill svg { width: 12px; height: 12px; }
 
         .check-right { display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; padding-left: 10px; flex-shrink: 0; min-width: 60px; }
         .member-badge-pill { font-size: 0.7rem; background: var(--text); color: white; padding: 4px 10px; border-radius: 10px; font-weight: bold; opacity: 0.8;}
+        
+        .btn-list-action-group { display: flex; gap: 8px; }
         .btn-list-del { width: 32px; height: 32px; color: #E53E3E; background: #FFF5F5; border-radius: 10px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;}
-        .btn-list-del:active { transform: scale(0.9); }
+        .btn-list-edit { width: 32px; height: 32px; color: var(--primary); background: var(--primary-light); border-radius: 10px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s;}
+        .btn-list-del:active, .btn-list-edit:active { transform: scale(0.9); }
 
         .checked .check-text { text-decoration: line-through; color: var(--text-done); }
         .checked .meta-pill { opacity: 0.5; }
@@ -315,7 +320,7 @@
         <div style="text-align:center; padding-top:80px; padding-bottom:30px;">
             <div style="font-size:3rem; margin-bottom:10px;">☁️</div>
             <h1 style="color:var(--primary-dark); margin:0; font-size:2rem; letter-spacing:1px;">旅遊手帳</h1>
-            <p style="color:var(--text-light); font-size:0.9rem; margin-top:5px;">Version 7.4</p>
+            <p style="color:var(--text-light); font-size:0.9rem; margin-top:5px;">Version 7.5</p>
         </div>
         <div class="container" style="padding-bottom:20px;">
             <div class="card" style="padding:15px; display:flex; gap:10px;">
@@ -659,6 +664,7 @@
         let moneyState = { payer: '', method: 'cash' };
         let currentRate = 0.22;
         let currentInfoTab = 'flight';
+        let sortableInstance = null;
 
         window.openCreateTripModal = function() {
             document.getElementById('new-trip-name').value = '';
@@ -964,11 +970,28 @@
             window.renderLists(); 
         };
         
-        window.openShoppingModal = function() {
-            document.getElementById('s-name').value = '';
-            document.getElementById('s-loc').value = '';
-            document.getElementById('s-open').value = '';
-            fillMemberSelect('s-owner');
+        window.openShoppingModal = function(id) {
+            appState.editId = id; // Store ID for editing
+            const arr = appState.listType === 'shop' ? 'shopping' : 'foodList';
+            
+            if (id) {
+                // Edit Mode: Fill inputs
+                const item = currentTrip[arr].find(i => i.id === id);
+                if (item) {
+                    document.getElementById('s-name').value = item.text || '';
+                    document.getElementById('s-loc').value = item.location || '';
+                    document.getElementById('s-open').value = item.open || item.price || '';
+                    // Populate owner
+                    fillMemberSelect('s-owner');
+                    document.getElementById('s-owner').value = item.owner || '';
+                }
+            } else {
+                // Add Mode: Clear inputs
+                document.getElementById('s-name').value = '';
+                document.getElementById('s-loc').value = '';
+                document.getElementById('s-open').value = '';
+                fillMemberSelect('s-owner');
+            }
             window.openModal('shopping');
         };
 
@@ -978,34 +1001,49 @@
             const open = document.getElementById('s-open').value;
             const owner = document.getElementById('s-owner').value;
             if(!name) return;
+            
             const arr = appState.listType==='shop'?'shopping':'foodList';
-            currentTrip[arr].push({
-                id: Date.now(), 
-                text: name, 
-                open: open,     
-                location: loc, 
-                owner: owner, 
-                checked: false
-            });
+            
+            if (appState.editId) {
+                // Edit Existing
+                const idx = currentTrip[arr].findIndex(i => i.id === appState.editId);
+                if (idx !== -1) {
+                    currentTrip[arr][idx] = { ...currentTrip[arr][idx], text: name, location: loc, open: open, owner: owner };
+                }
+            } else {
+                // Create New
+                currentTrip[arr].push({
+                    id: Date.now(), 
+                    text: name, 
+                    open: open,     
+                    location: loc, 
+                    owner: owner, 
+                    checked: false
+                });
+            }
+            
             window.saveData();
             window.closeModal('shopping');
             window.renderLists();
         };
 
         window.renderLists = function() {
-            const list = document.getElementById('list-items-container'); list.innerHTML = '';
+            const listContainer = document.getElementById('list-items-container'); 
+            listContainer.innerHTML = '';
             const arr = appState.listType==='shop'?'shopping':'foodList';
+            
             (currentTrip[arr]||[]).forEach(i => {
                 const displayTime = i.open || i.price;
                 let pillTime = displayTime ? `<span class="meta-pill meta-time"><svg class="icon-svg"><use href="#icon-clock"/></svg>${displayTime}</span>` : '';
                 let pillLoc = i.location ? `<span class="meta-pill meta-loc"><svg class="icon-svg"><use href="#icon-map-pin"/></svg>${i.location}</span>` : '';
                 let ownerHtml = i.owner ? `<div class="member-badge-pill">${i.owner}</div>` : '';
 
-                list.innerHTML += `
-                    <div class="card check-item ${i.checked?'checked':''}" onclick="window.toggleCheck('${arr}', ${i.id})">
+                // Note: removed onclick from parent card, added onclick to check-box
+                listContainer.innerHTML += `
+                    <div class="card check-item ${i.checked?'checked':''}" data-id="${i.id}">
                         <div class="check-left">
                             <div class="check-name-row">
-                                <div class="check-box"></div>
+                                <div class="check-box" onclick="event.stopPropagation(); window.toggleCheck('${arr}', ${i.id})"></div>
                                 <div class="check-text">${i.text}</div>
                             </div>
                             ${ (i.location || displayTime) ? '<div class="check-separator"></div>' : '' }
@@ -1016,9 +1054,33 @@
                         </div>
                         <div class="check-right">
                             ${ownerHtml}
-                            <button class="btn-list-del" onclick="event.stopPropagation(); window.delItem('${arr}', ${i.id})"><svg class="icon-svg icon-sm"><use href="#icon-trash"></use></svg></button>
+                            <div class="btn-list-action-group">
+                                <button class="btn-list-edit" onclick="event.stopPropagation(); window.openShoppingModal(${i.id})">✎</button>
+                                <button class="btn-list-del" onclick="event.stopPropagation(); window.delItem('${arr}', ${i.id})"><svg class="icon-svg icon-sm"><use href="#icon-trash"></use></svg></button>
+                            </div>
                         </div>
                     </div>`;
+            });
+
+            // Initialize SortableJS
+            if (sortableInstance) { sortableInstance.destroy(); }
+            sortableInstance = new Sortable(listContainer, {
+                animation: 150,
+                delay: 300, // 300ms long press to start drag
+                delayOnTouchOnly: true,
+                touchStartThreshold: 5,
+                ghostClass: 'sortable-ghost',
+                onEnd: function (evt) {
+                    const newIndex = evt.newIndex;
+                    const oldIndex = evt.oldIndex;
+                    if (newIndex === oldIndex) return;
+
+                    // Reorder Array
+                    const movedItem = currentTrip[arr].splice(oldIndex, 1)[0];
+                    currentTrip[arr].splice(newIndex, 0, movedItem);
+                    
+                    window.saveData();
+                }
             });
         };
 
