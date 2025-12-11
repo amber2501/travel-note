@@ -106,7 +106,6 @@
         /* Shopping List Item Style */
         .check-item { display: flex; padding: 16px; background: white; border-radius: var(--radius-M); margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); border: 1px solid #F0F0F0; transition: 0.2s; align-items: stretch; user-select: none; }
         .check-item:active { transform: scale(0.99); background: #FAFAFA;}
-        /* 拖曳時的樣式 */
         .sortable-ghost { opacity: 0.4; background: #F2F9FD; }
         
         .check-left { flex: 1; display: flex; flex-direction: column; min-width: 0; gap: 8px; justify-content: center;}
@@ -172,7 +171,6 @@
             border-radius: var(--radius-L); 
             padding: 25px 20px; 
             margin-bottom: 25px; 
-            /* Changed to a brighter, clearer Morandi blue gradient */
             background: linear-gradient(135deg, #74AED4 0%, #BBE3F7 100%); 
             box-shadow: 0 10px 30px rgba(116, 174, 212, 0.4); 
             border: none; position: relative; overflow: hidden; color: white;
@@ -265,13 +263,29 @@
         .money-amount { font-weight: 900; font-size: 1.1rem; color: var(--primary-dark); }
 
         /* Journal Redesign */
-        .journal-card { background: white; border-radius: 20px; padding: 20px; margin-bottom: 20px; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.03); overflow: hidden; }
+        .journal-card { background: white; border-radius: 20px; padding: 20px; margin-bottom: 25px; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.03); overflow: hidden; }
         .journal-header { display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 12px; border-bottom: 2px dashed #f0f0f0; margin-bottom: 12px; }
         .j-date-box { display: flex; align-items: baseline; gap: 6px; color: var(--primary); }
         .j-day { font-size: 2rem; font-weight: 900; line-height: 1; }
         .j-ym { font-size: 0.9rem; font-weight: bold; color: var(--text-light); }
         .j-writer-badge { font-size: 0.8rem; padding: 4px 12px; border-radius: 12px; font-weight: bold; color: var(--text); opacity: 0.8; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .journal-content { line-height: 1.7; color: var(--text); white-space: pre-wrap; font-size: 1rem; font-weight: 500;}
+        
+        .j-footer { margin-top: 15px; border-top: 1px solid #f0f0f0; padding-top: 10px; display: flex; justify-content: space-between; align-items: center;}
+        .j-last-edit { font-size: 0.75rem; color: #CCC; text-align: right; width: 100%; margin-top: 5px; margin-bottom: 10px;}
+
+        /* Journal Comments */
+        .j-comments-section { background: #F9FAFB; margin: 15px -20px -20px -20px; padding: 15px 20px; border-top: 1px solid #F0F0F0; }
+        .j-comment-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: flex-start; }
+        .j-comment-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.8rem; flex-shrink: 0; }
+        .j-comment-bubble { background: white; padding: 8px 12px; border-radius: 12px; border: 1px solid #E2E8F0; flex: 1; font-size: 0.9rem; position: relative;}
+        .j-comment-meta { font-size: 0.7rem; color: #A0AEC0; margin-top: 4px; display: flex; justify-content: space-between; align-items: center; }
+        .j-del-comment { color: #E53E3E; cursor: pointer; padding: 2px 5px; }
+
+        .j-input-area { display: flex; gap: 8px; margin-top: 10px; }
+        .j-input-select { width: 70px; border: 1px solid #E2E8F0; border-radius: 8px; font-size: 0.8rem; padding: 0 5px; background: white;}
+        .j-input-text { flex: 1; border: 1px solid #E2E8F0; border-radius: 8px; font-size: 0.9rem; padding: 8px 12px; background: white; }
+        .j-send-btn { background: var(--primary); color: white; border: none; border-radius: 8px; padding: 0 12px; font-weight: bold; font-size: 0.85rem; cursor: pointer; }
 
         #loading-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.8); z-index:9999; display:flex; justify-content:center; align-items:center; color:var(--primary); font-weight:bold; backdrop-filter: blur(5px); }
         
@@ -320,7 +334,7 @@
         <div style="text-align:center; padding-top:80px; padding-bottom:30px;">
             <div style="font-size:3rem; margin-bottom:10px;">☁️</div>
             <h1 style="color:var(--primary-dark); margin:0; font-size:2rem; letter-spacing:1px;">旅遊手帳</h1>
-            <p style="color:var(--text-light); font-size:0.9rem; margin-top:5px;">Version 7.5</p>
+            <p style="color:var(--text-light); font-size:0.9rem; margin-top:5px;">Version 7.6</p>
         </div>
         <div class="container" style="padding-bottom:20px;">
             <div class="card" style="padding:15px; display:flex; gap:10px;">
@@ -875,18 +889,60 @@
         }
 
         // --- Journal ---
-        window.openJournalModal = function() {
-            document.getElementById('j-date').value = new Date().toISOString().split('T')[0];
-            document.getElementById('j-content').value = '';
-            fillMemberSelect('j-writer');
+        window.openJournalModal = function(id) {
+            appState.editId = id;
+            if (id) {
+                // Edit mode
+                const j = currentTrip.journals.find(x => x.id === id);
+                document.getElementById('j-date').value = j.date;
+                fillMemberSelect('j-writer');
+                document.getElementById('j-writer').value = j.writer;
+                document.getElementById('j-content').value = j.content;
+            } else {
+                // Create mode
+                document.getElementById('j-date').value = new Date().toISOString().split('T')[0];
+                document.getElementById('j-content').value = '';
+                fillMemberSelect('j-writer');
+            }
             window.openModal('journal');
         };
+
+        function getFormattedTime() {
+            const now = new Date();
+            const pad = (n) => String(n).padStart(2,'0');
+            return `${now.getFullYear()}/${pad(now.getMonth()+1)}/${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+        }
+
         window.saveJournal = function() {
             const date = document.getElementById('j-date').value;
             const writer = document.getElementById('j-writer').value;
             const content = document.getElementById('j-content').value;
             if(!content) return;
-            currentTrip.journals.unshift({ id:Date.now(), date, writer, content }); // Use unshift to add to top
+            
+            if (appState.editId) {
+                // Update
+                const idx = currentTrip.journals.findIndex(x => x.id === appState.editId);
+                if (idx !== -1) {
+                    const oldJ = currentTrip.journals[idx];
+                    currentTrip.journals[idx] = { 
+                        ...oldJ, 
+                        date, 
+                        writer, 
+                        content, 
+                        lastEdited: getFormattedTime() 
+                    };
+                }
+            } else {
+                // Create
+                currentTrip.journals.unshift({ 
+                    id: Date.now(), 
+                    date, 
+                    writer, 
+                    content,
+                    comments: []
+                });
+            }
+
             // Force sort just in case
             currentTrip.journals.sort((a,b) => {
                 if(a.date !== b.date) return b.date.localeCompare(a.date);
@@ -894,12 +950,45 @@
             });
             window.saveData(); window.closeModal('journal');
         };
+
+        window.addJournalComment = function(jId) {
+            const input = document.getElementById(`j-c-input-${jId}`);
+            const select = document.getElementById(`j-c-writer-${jId}`);
+            const text = input.value;
+            const writer = select.value;
+            
+            if(!text) return;
+            
+            const jIdx = currentTrip.journals.findIndex(x => x.id === jId);
+            if(jIdx !== -1) {
+                if(!currentTrip.journals[jIdx].comments) currentTrip.journals[jIdx].comments = [];
+                currentTrip.journals[jIdx].comments.push({
+                    id: Date.now(),
+                    text: text,
+                    writer: writer,
+                    time: getFormattedTime()
+                });
+                window.saveData();
+                // input.value = ''; // Render will clear it
+            }
+        };
+
+        window.delJournalComment = function(jId, cId) {
+            if(!confirm('刪除留言?')) return;
+            const jIdx = currentTrip.journals.findIndex(x => x.id === jId);
+            if(jIdx !== -1 && currentTrip.journals[jIdx].comments) {
+                currentTrip.journals[jIdx].comments = currentTrip.journals[jIdx].comments.filter(c => c.id !== cId);
+                window.saveData();
+            }
+        };
+
         function getPastelColor(str) {
             const colors = ['#FCA5A5', '#FDBA74', '#FDE047', '#86EFAC', '#67E8F9', '#93C5FD', '#C4B5FD', '#F9A8D4'];
             let hash = 0;
             for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
             return colors[Math.abs(hash) % colors.length];
         }
+        
         window.renderJournal = function() {
             const list = document.getElementById('journal-list'); list.innerHTML = '';
             if(!currentTrip.journals || currentTrip.journals.length===0) { list.innerHTML='<div style="text-align:center; color:#CCC; margin-top:20px;">還沒有日誌，寫一篇吧！</div>'; return; }
@@ -915,7 +1004,34 @@
                 const day = d.getDate();
                 const ym = `${d.getFullYear()} 年 ${d.getMonth()+1} 月`;
                 const bg = getPastelColor(j.writer || 'A');
+                const lastEdit = j.lastEdited ? `最後編輯於 ${j.lastEdited}` : '';
                 
+                // Comments HTML
+                let commentsHtml = '';
+                if(j.comments && j.comments.length > 0) {
+                    j.comments.forEach(c => {
+                        const cBg = getPastelColor(c.writer || 'U');
+                        commentsHtml += `
+                            <div class="j-comment-row">
+                                <div class="j-comment-avatar" style="background:${cBg}">${(c.writer||'U')[0]}</div>
+                                <div class="j-comment-bubble">
+                                    <div>${c.text}</div>
+                                    <div class="j-comment-meta">
+                                        <span>${c.writer} • ${c.time.split(' ')[1]}</span>
+                                        <span class="j-del-comment" onclick="window.delJournalComment(${j.id}, ${c.id})">✕</span>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+                
+                // Comment Writer Options
+                let memberOpts = '';
+                currentTrip.members.forEach(m => {
+                    memberOpts += `<option value="${m}">${m}</option>`;
+                });
+
                 list.innerHTML += `
                 <div class="journal-card">
                     <div class="journal-header">
@@ -926,8 +1042,24 @@
                         <div class="j-writer-badge" style="background:${bg}">${j.writer}</div>
                     </div>
                     <div class="journal-content">${j.content}</div>
-                    <button class="btn-del" style="float:right; margin-top:15px; background:#f9f9f9;" onclick="window.delItem('journals', ${j.id})">刪除</button>
-                    <div style="clear:both;"></div>
+                    
+                    <div class="j-last-edit">${lastEdit}</div>
+
+                    <div class="j-footer">
+                        <div class="btn-list-action-group">
+                            <button class="btn-list-edit" onclick="window.openJournalModal(${j.id})">✎</button>
+                            <button class="btn-list-del" onclick="window.delItem('journals', ${j.id})"><svg class="icon-svg icon-sm"><use href="#icon-trash"></use></svg></button>
+                        </div>
+                    </div>
+
+                    <div class="j-comments-section">
+                        ${commentsHtml}
+                        <div class="j-input-area">
+                            <select id="j-c-writer-${j.id}" class="j-input-select">${memberOpts}</select>
+                            <input type="text" id="j-c-input-${j.id}" class="j-input-text" placeholder="留言...">
+                            <button class="j-send-btn" onclick="window.addJournalComment(${j.id})">➤</button>
+                        </div>
+                    </div>
                 </div>`;
             });
         };
@@ -1038,7 +1170,6 @@
                 let pillLoc = i.location ? `<span class="meta-pill meta-loc"><svg class="icon-svg"><use href="#icon-map-pin"/></svg>${i.location}</span>` : '';
                 let ownerHtml = i.owner ? `<div class="member-badge-pill">${i.owner}</div>` : '';
 
-                // Note: removed onclick from parent card, added onclick to check-box
                 listContainer.innerHTML += `
                     <div class="card check-item ${i.checked?'checked':''}" data-id="${i.id}">
                         <div class="check-left">
