@@ -165,7 +165,7 @@
         .modal h3 { margin: 0 0 20px; text-align: center; color: var(--primary); font-size: 1.3rem; }
 
         /* Boarding Pass */
-        .bp-card { background: white; border-radius: var(--radius-M); margin-bottom: 25px; overflow: hidden; position: relative; box-shadow: var(--shadow-card); filter: drop-shadow(0 4px 10px rgba(0,0,0,0.05)); }
+        .bp-card { background: white; border-radius: var(--radius-M); margin-bottom: 12px; overflow: hidden; position: relative; box-shadow: var(--shadow-card); filter: drop-shadow(0 4px 10px rgba(0,0,0,0.05)); }
         .bp-header { background: var(--primary); color: white; padding: 10px; text-align: center; font-size: 0.9rem; font-weight: bold; letter-spacing: 2px; }
         .bp-body { padding: 20px 15px; display: flex; justify-content: space-between; align-items: center; }
         .bp-group { text-align: center; flex: 1; }
@@ -178,6 +178,8 @@
         .bp-line { width: 100%; height: 2px; background: #E0E0E0; position: relative; margin: 10px 0; }
         .bp-line::after { content:''; position:absolute; top:-10px; left:50%; transform:translateX(-50%); width:20px; height:20px; background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%237FA9BE'%3E%3Cpath d='M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z'/%3E%3C/svg%3E") no-repeat center; background-size:contain; background-color:white; padding:0 2px;} 
         .bp-duration { font-size: 0.75rem; color: var(--text-light); font-weight: bold; margin-top: 4px; }
+        .flight-row-item { border: 1px solid #E2E8F0; border-radius: 12px; padding: 12px; margin-bottom: 10px; background: #FAFAFA; position: relative;}
+        .flight-del-btn { position: absolute; top: 8px; right: 8px; color: #E53E3E; background: transparent; border: none; font-weight: bold; cursor: pointer; }
 
         /* Weather (Update: Dusty Sky Blue - Less Gloomy, More Friendly) */
         .weather-card { 
@@ -208,6 +210,8 @@
         .it-card:active { transform: scale(0.99); filter: brightness(0.95); }
         .it-icon { width: 36px; height: 36px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.05); background: white !important;}
         .btn-map-icon { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: white; color: #4299E1; border: 1px solid rgba(0,0,0,0.05); padding: 0; box-shadow: 0 2px 6px rgba(0,0,0,0.05); transition: 0.2s; }
+        /* Itinerary Note with Line Break */
+        .it-note { font-size: 0.85rem; color: var(--text); opacity: 0.8; margin-top: 4px; white-space: pre-wrap; }
         
         /* Macaron Color Backgrounds */
         .type-spot { background: var(--c-spot-bg); border-left: 4px solid var(--c-spot-line); } .type-spot .it-icon { color: var(--c-spot-icon); }
@@ -384,7 +388,7 @@
         <div style="text-align:center; padding-top:80px; padding-bottom:30px;">
             <div style="font-size:3rem; margin-bottom:10px;">☁️</div>
             <h1 style="color:var(--primary-dark); margin:0; font-size:2rem; letter-spacing:1px;">旅遊手帳</h1>
-            <p style="color:var(--text-light); font-size:0.9rem; margin-top:5px;">Version 9.3</p>
+            <p style="color:var(--text-light); font-size:0.9rem; margin-top:5px;">Version 10.1</p>
         </div>
         <div class="container" style="padding-bottom:20px;">
             <div class="card" style="padding:15px; display:flex; gap:10px;">
@@ -428,52 +432,16 @@
                         <div class="countdown-label" id="countdown-txt"></div>
                         <div class="countdown-num" id="countdown-val"></div>
                     </div>
-                    <!-- Flights -->
+                    <!-- Flights: Dynamic Lists -->
                     <div class="card">
                         <div class="card-header"><svg class="icon-svg"><use href="#icon-plane-real"></use></svg> 去程 Outbound</div>
-                        <div class="flight-edit-block">
-                            <span class="card-label">航班號 / 航空</span>
-                            <div class="row"><div class="col"><input placeholder="航班號" id="f-out-code" oninput="window.saveFlight('out', 'code', this.value)"></div><div class="col"><input placeholder="航空公司" id="f-out-airline" oninput="window.saveFlight('out', 'airline', this.value)"></div></div>
-                            
-                            <span class="card-label">起飛 (時間 / 機場 / 航廈)</span>
-                            <div class="row">
-                                <div class="col" style="flex:1.2;"><input type="time" id="f-out-depTime" oninput="window.saveFlight('out', 'depTime', this.value)"></div>
-                                <select class="tz-select" id="f-out-depTz" onchange="window.saveFlight('out', 'depTz', this.value)"></select>
-                                <div class="col" style="flex:1.5;"><input placeholder="機場(TPE)" id="f-out-depAir" oninput="window.saveFlight('out', 'depAir', this.value)"></div>
-                                <div class="col" style="flex:1;"><input placeholder="航廈" id="f-out-depTerm" oninput="window.saveFlight('out', 'depTerm', this.value)"></div>
-                            </div>
-
-                            <span class="card-label">降落 (時間 / 機場 / 航廈)</span>
-                            <div class="row">
-                                <div class="col" style="flex:1.2;"><input type="time" id="f-out-arrTime" oninput="window.saveFlight('out', 'arrTime', this.value)"></div>
-                                <select class="tz-select" id="f-out-arrTz" onchange="window.saveFlight('out', 'arrTz', this.value)"></select>
-                                <div class="col" style="flex:1.5;"><input placeholder="機場(NRT)" id="f-out-arrAir" oninput="window.saveFlight('out', 'arrAir', this.value)"></div>
-                                <div class="col" style="flex:1;"><input placeholder="航廈" id="f-out-arrTerm" oninput="window.saveFlight('out', 'arrTerm', this.value)"></div>
-                            </div>
-                        </div>
+                        <div id="flight-out-list"></div>
+                        <button class="btn btn-ghost" style="width:100%; margin-top:5px; border:1px dashed #E2E8F0;" onclick="window.addFlight('out')">＋ 轉機/新增航班</button>
                     </div>
                     <div class="card">
                         <div class="card-header"><svg class="icon-svg" style="transform: rotate(180deg);"><use href="#icon-plane-real"></use></svg> 回程 Inbound</div>
-                        <div class="flight-edit-block">
-                            <span class="card-label">航班號 / 航空</span>
-                            <div class="row"><div class="col"><input placeholder="航班號" id="f-in-code" oninput="window.saveFlight('in', 'code', this.value)"></div><div class="col"><input placeholder="航空公司" id="f-in-airline" oninput="window.saveFlight('in', 'airline', this.value)"></div></div>
-                            
-                            <span class="card-label">起飛 (時間 / 機場 / 航廈)</span>
-                            <div class="row">
-                                <div class="col" style="flex:1.2;"><input type="time" id="f-in-depTime" oninput="window.saveFlight('in', 'depTime', this.value)"></div>
-                                <select class="tz-select" id="f-in-depTz" onchange="window.saveFlight('in', 'depTz', this.value)"></select>
-                                <div class="col" style="flex:1.5;"><input placeholder="機場(NRT)" id="f-in-depAir" oninput="window.saveFlight('in', 'depAir', this.value)"></div>
-                                <div class="col" style="flex:1;"><input placeholder="航廈" id="f-in-depTerm" oninput="window.saveFlight('in', 'depTerm', this.value)"></div>
-                            </div>
-
-                            <span class="card-label">降落 (時間 / 機場 / 航廈)</span>
-                            <div class="row">
-                                <div class="col" style="flex:1.2;"><input type="time" id="f-in-arrTime" oninput="window.saveFlight('in', 'arrTime', this.value)"></div>
-                                <select class="tz-select" id="f-in-arrTz" onchange="window.saveFlight('in', 'arrTz', this.value)"></select>
-                                <div class="col" style="flex:1.5;"><input placeholder="機場(TPE)" id="f-in-arrAir" oninput="window.saveFlight('in', 'arrAir', this.value)"></div>
-                                <div class="col" style="flex:1;"><input placeholder="航廈" id="f-in-arrTerm" oninput="window.saveFlight('in', 'arrTerm', this.value)"></div>
-                            </div>
-                        </div>
+                        <div id="flight-in-list"></div>
+                        <button class="btn btn-ghost" style="width:100%; margin-top:5px; border:1px dashed #E2E8F0;" onclick="window.addFlight('in')">＋ 轉機/新增航班</button>
                     </div>
                 </div>
                 <div id="info-hotel" class="info-sub-tab hidden"><div id="hotel-list"></div><button class="btn btn-primary" style="width:100%; margin-top:10px;" onclick="window.openHotelModal()"><svg class="icon-svg icon-sm"><use href="#icon-plus"></use></svg> 新增住宿</button></div>
@@ -757,6 +725,7 @@
                 </select>
             </div>
             <div class="row">
+                <div class="col"><span class="card-label">日期</span><input type="date" id="i-date"></div>
                 <div class="col"><span class="card-label" id="label-time-start">開始時間</span><input type="time" id="i-time"></div>
                 <div class="col hidden" id="wrapper-end-time"><span class="card-label">抵達時間</span><input type="time" id="i-end-time"></div>
             </div>
@@ -928,7 +897,7 @@
                         id, name, city, startDate: date,
                         days, members,
                         itinerary: [], money: [], shopping: [], foodList: [], packing: [], journals: [], splitBills: [],
-                        flights: { out:{depTz:8, arrTz:9}, in:{depTz:9, arrTz:8} }, hotels: [], tickets: [], charters: []
+                        flights: { out:[], in:[] }, hotels: [], tickets: [], charters: []
                     };
                     await setDoc(doc(db, "trips", id), newTrip);
                     saveLocal(id, name, date);
@@ -974,12 +943,30 @@
             unsubscribe = onSnapshot(doc(db, "trips", id), (doc) => {
                 if(doc.exists()) {
                     currentTrip = doc.data();
+                    // Initial Data Structure Migration
                     if(!currentTrip.journals) currentTrip.journals = [];
                     if(!currentTrip.foodList) currentTrip.foodList = [];
-                    if(!currentTrip.flights) currentTrip.flights = { out:{}, in:{} };
+                    // Migration flight object to array if needed
+                    if(!Array.isArray(currentTrip.flights.out)) {
+                        currentTrip.flights.out = currentTrip.flights.out.code ? [currentTrip.flights.out] : [];
+                    }
+                    if(!Array.isArray(currentTrip.flights.in)) {
+                        currentTrip.flights.in = currentTrip.flights.in.code ? [currentTrip.flights.in] : [];
+                    }
+                    
                     if(!currentTrip.itinerary) currentTrip.itinerary = [];
                     if(!currentTrip.splitBills) currentTrip.splitBills = [];
                     
+                    // Migrate Itinerary: dayIdx -> date
+                    let needUpdate = false;
+                    currentTrip.itinerary.forEach(it => {
+                        if(!it.date && typeof it.dayIdx !== 'undefined') {
+                            it.date = window.getTargetDateStr(currentTrip.startDate, it.dayIdx);
+                            needUpdate = true;
+                        }
+                    });
+                    if(needUpdate) window.saveData();
+
                     document.getElementById('header-trip-name-info').innerText = currentTrip.name;
                     document.getElementById('header-trip-name-itinerary').innerText = currentTrip.name;
                     
@@ -1436,25 +1423,68 @@
         window.fillFlightInputs = function() {
             if(!currentTrip) return;
             const f = currentTrip.flights;
-            ['out','in'].forEach(dir => {
-                document.getElementById(`f-${dir}-code`).value = f[dir].code || '';
-                document.getElementById(`f-${dir}-airline`).value = f[dir].airline || '';
-                document.getElementById(`f-${dir}-depTime`).value = f[dir].depTime || '';
-                document.getElementById(`f-${dir}-depAir`).value = f[dir].depAir || '';
-                // 新增讀取航廈
-                document.getElementById(`f-${dir}-depTerm`).value = f[dir].depTerm || ''; 
-                
-                document.getElementById(`f-${dir}-arrTime`).value = f[dir].arrTime || '';
-                document.getElementById(`f-${dir}-arrAir`).value = f[dir].arrAir || '';
-                // 新增讀取航廈
-                document.getElementById(`f-${dir}-arrTerm`).value = f[dir].arrTerm || '';
-
-                document.getElementById(`f-${dir}-depTz`).innerHTML = renderTimezoneOptions(f[dir].depTz || (dir==='out'?8:9));
-                document.getElementById(`f-${dir}-arrTz`).innerHTML = renderTimezoneOptions(f[dir].arrTz || (dir==='out'?9:8));
-            });
+            
+            // Render Dynamic Lists
+            renderFlightList('out', 'flight-out-list');
+            renderFlightList('in', 'flight-in-list');
         };
-        window.saveFlight = function(dir, field, val) {
-            currentTrip.flights[dir][field] = val; window.saveData();
+
+        function renderFlightList(dir, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            const flights = currentTrip.flights[dir];
+
+            flights.forEach((fl, idx) => {
+                const row = document.createElement('div');
+                row.className = 'flight-row-item';
+                row.innerHTML = `
+                    <button class="flight-del-btn" onclick="window.removeFlight('${dir}', ${idx})">✕</button>
+                    <div style="margin-bottom:8px; font-weight:bold; color:var(--text-light); font-size:0.85rem;">航班 ${idx+1}</div>
+                    <div class="flight-edit-block">
+                        <span class="card-label">日期 / 航班號 / 航空</span>
+                        <div class="row" style="margin-bottom:8px;">
+                            <div class="col" style="flex:1.5;"><input type="date" value="${fl.date||''}" onchange="window.updateFlightField('${dir}', ${idx}, 'date', this.value)"></div>
+                            <div class="col"><input placeholder="航班號" value="${fl.code||''}" onchange="window.updateFlightField('${dir}', ${idx}, 'code', this.value)"></div>
+                            <div class="col"><input placeholder="航空公司" value="${fl.airline||''}" onchange="window.updateFlightField('${dir}', ${idx}, 'airline', this.value)"></div>
+                        </div>
+                        
+                        <span class="card-label">起飛 (時間 / 機場 / 航廈)</span>
+                        <div class="row" style="margin-bottom:8px;">
+                            <div class="col" style="flex:1.2;"><input type="time" value="${fl.depTime||''}" onchange="window.updateFlightField('${dir}', ${idx}, 'depTime', this.value)"></div>
+                            <select class="tz-select" onchange="window.updateFlightField('${dir}', ${idx}, 'depTz', this.value)">${renderTimezoneOptions(fl.depTz || (dir==='out'?8:9))}</select>
+                            <div class="col" style="flex:1.5;"><input placeholder="機場" value="${fl.depAir||''}" onchange="window.updateFlightField('${dir}', ${idx}, 'depAir', this.value)"></div>
+                            <div class="col" style="flex:1;"><input placeholder="航廈" value="${fl.depTerm||''}" onchange="window.updateFlightField('${dir}', ${idx}, 'depTerm', this.value)"></div>
+                        </div>
+
+                        <span class="card-label">降落 (時間 / 機場 / 航廈)</span>
+                        <div class="row" style="margin-bottom:0;">
+                            <div class="col" style="flex:1.2;"><input type="time" value="${fl.arrTime||''}" onchange="window.updateFlightField('${dir}', ${idx}, 'arrTime', this.value)"></div>
+                            <select class="tz-select" onchange="window.updateFlightField('${dir}', ${idx}, 'arrTz', this.value)">${renderTimezoneOptions(fl.arrTz || (dir==='out'?9:8))}</select>
+                            <div class="col" style="flex:1.5;"><input placeholder="機場" value="${fl.arrAir||''}" onchange="window.updateFlightField('${dir}', ${idx}, 'arrAir', this.value)"></div>
+                            <div class="col" style="flex:1;"><input placeholder="航廈" value="${fl.arrTerm||''}" onchange="window.updateFlightField('${dir}', ${idx}, 'arrTerm', this.value)"></div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        window.addFlight = function(dir) {
+            currentTrip.flights[dir].push({ depTz: (dir==='out'?8:9), arrTz: (dir==='out'?9:8) });
+            window.saveData();
+            // Re-render handled by onSnapshot
+        };
+
+        window.removeFlight = function(dir, idx) {
+            if(confirm('刪除此航班？')) {
+                currentTrip.flights[dir].splice(idx, 1);
+                window.saveData();
+            }
+        };
+
+        window.updateFlightField = function(dir, idx, field, val) {
+            currentTrip.flights[dir][idx][field] = val;
+            window.saveData();
         };
         
         window.updateCountdown = function() {
@@ -2132,47 +2162,75 @@
             if(!currentTrip) return;
             if(!currentTrip.itinerary) currentTrip.itinerary = [];
 
-            let f = null, title = '';
-            // Flight Logic
+            // Flight Logic (Using array structure)
+            const currentDayDate = window.getTargetDateStr(currentTrip.startDate, appState.dayIdx);
+            let fList = [];
+            let title = '';
+
+            // Combine outbound and inbound checking
             if (currentTrip.flights) {
-                if (appState.dayIdx === 0 && currentTrip.flights.out && currentTrip.flights.out.code) { 
-                    f = currentTrip.flights.out; title = '去程 OUTBOUND'; 
-                } else if (appState.dayIdx === (currentTrip.days - 1) && currentTrip.flights.in && currentTrip.flights.in.code) { 
-                    f = currentTrip.flights.in; title = '回程 INBOUND'; 
+                // Check Outbound
+                if (currentTrip.flights.out) {
+                    currentTrip.flights.out.forEach(f => {
+                        if (f.date === currentDayDate) {
+                            fList.push({ ...f, type: 'OUTBOUND' });
+                        }
+                    });
+                }
+                // Check Inbound
+                if (currentTrip.flights.in) {
+                    currentTrip.flights.in.forEach(f => {
+                        if (f.date === currentDayDate) {
+                            fList.push({ ...f, type: 'INBOUND' });
+                        }
+                    });
                 }
             }
             
-            if (f && flightC) {
-                const depTermHtml = f.depTerm ? `<span class="bp-term">${f.depTerm}</span>` : '';
-                const arrTermHtml = f.arrTerm ? `<span class="bp-term">${f.arrTerm}</span>` : '';
-
-                flightC.innerHTML = `
-                <div class="bp-card">
-                    <div class="bp-header">${title}</div>
-                    <div class="bp-body">
-                        <div class="bp-group">
-                            <span class="bp-code">${f.depAir||'DEP'}</span>
-                            ${depTermHtml}
-                            <span class="bp-time">${f.depTime||'--:--'}</span>
+            if (fList.length > 0 && flightC) {
+                let flightsHtml = '';
+                fList.forEach(f => {
+                    const depTermHtml = f.depTerm ? `<span class="bp-term">${f.depTerm}</span>` : '';
+                    const arrTermHtml = f.arrTerm ? `<span class="bp-term">${f.arrTerm}</span>` : '';
+                    
+                    flightsHtml += `
+                    <div class="bp-card">
+                        <div class="bp-header">${f.type === 'OUTBOUND' ? '去程 OUTBOUND' : '回程 INBOUND'}</div>
+                        <div class="bp-body">
+                            <div class="bp-group">
+                                <span class="bp-code">${f.depAir||'DEP'}</span>
+                                ${depTermHtml}
+                                <span class="bp-time">${f.depTime||'--:--'}</span>
+                            </div>
+                            <div class="bp-center">
+                                <div style="font-size:0.8rem;">${f.airline}</div>
+                                <div class="bp-line"></div>
+                                <div style="color:var(--primary); font-weight:bold;">${f.code}</div>
+                                <div class="bp-duration">${calcDuration(f.depTime,f.depTz,f.arrTime,f.arrTz)}</div>
+                            </div>
+                            <div class="bp-group">
+                                <span class="bp-code">${f.arrAir||'ARR'}</span>
+                                ${arrTermHtml}
+                                <span class="bp-time">${f.arrTime||'--:--'}</span>
+                            </div>
                         </div>
-                        <div class="bp-center">
-                            <div style="font-size:0.8rem;">${f.airline}</div>
-                            <div class="bp-line"></div>
-                            <div style="color:var(--primary); font-weight:bold;">${f.code}</div>
-                            <div class="bp-duration">${calcDuration(f.depTime,f.depTz,f.arrTime,f.arrTz)}</div>
-                        </div>
-                        <div class="bp-group">
-                            <span class="bp-code">${f.arrAir||'ARR'}</span>
-                            ${arrTermHtml}
-                            <span class="bp-time">${f.arrTime||'--:--'}</span>
-                        </div>
-                    </div>
-                </div>`;
+                    </div>`;
+                });
+                flightC.innerHTML = flightsHtml;
+            } else if (flightC) {
+                flightC.innerHTML = '';
             }
 
-            const dateStr = window.getTargetDateStr(currentTrip.startDate, appState.dayIdx);
-            let mixed = (currentTrip.itinerary||[]).filter(x=>x.dayIdx===appState.dayIdx).map(x=>({...x, src:'it'}));
-            (currentTrip.charters||[]).filter(x=>x.date===dateStr).forEach(x=>mixed.push({...x, src:'charter', loc:x.from, title:x.type}));
+            // Itinerary Items: Match by DATE
+            let mixed = (currentTrip.itinerary||[]).filter(x => {
+                // If item has date, match date. If legacy item (no date), match dayIdx (fallback)
+                if(x.date) return x.date === currentDayDate;
+                return x.dayIdx === appState.dayIdx;
+            }).map(x=>({...x, src:'it'}));
+
+            // Charters also need date match
+            (currentTrip.charters||[]).filter(x=>x.date===currentDayDate).forEach(x=>mixed.push({...x, src:'charter', loc:x.from, title:x.type}));
+            
             mixed.sort((a,b) => (a.time||'').localeCompare(b.time||''));
 
             const icons = { spot:'icon-spot', food:'icon-food', shop:'icon-nav-shop', transport:'icon-transport', other:'icon-star', charter:'icon-car' };
@@ -2199,7 +2257,7 @@
                 const clickAction = item.src==='charter' ? `window.openCharterModal(${item.id})` : `window.editItinerary(${item.id})`;
                 const mapBtn = (item.loc || item.dest) ? `<button class="btn-map-icon" onclick="event.stopPropagation(); window.openMap(event, '${item.type==='transport'?item.dest:item.loc}')"><svg class="icon-svg icon-sm"><use href="#icon-map-pin"></use></svg></button>` : '';
                 
-                if(list) list.innerHTML += `<div class="timeline-item" onclick="${clickAction}"><div class="time-bubble">${timeHTML}</div><div class="it-card type-${item.type}"><div class="it-icon"><svg class="icon-svg icon-sm"><use href="#${icons[item.type]||'icon-star'}"></use></svg></div><div style="flex:1; min-width:0;"><div style="font-weight:bold; font-size:1.05rem;">${title}</div>${sub}<div style="font-size:0.85rem; color:var(--text); opacity:0.8; margin-top:4px;">${item.note||''}</div></div><div class="it-actions">${mapBtn}</div></div></div>`;
+                if(list) list.innerHTML += `<div class="timeline-item" onclick="${clickAction}"><div class="time-bubble">${timeHTML}</div><div class="it-card type-${item.type}"><div class="it-icon"><svg class="icon-svg icon-sm"><use href="#${icons[item.type]||'icon-star'}"></use></svg></div><div style="flex:1; min-width:0;"><div style="font-weight:bold; font-size:1.05rem;">${title}</div>${sub}<div class="it-note">${item.note||''}</div></div><div class="it-actions">${mapBtn}</div></div></div>`;
             });
 
             // Night Stay
@@ -2208,7 +2266,7 @@
                     const checkIn = new Date(h.date);
                     const checkOut = new Date(h.date);
                     checkOut.setDate(checkOut.getDate() + parseInt(h.days));
-                    const currentD = new Date(dateStr);
+                    const currentD = new Date(currentDayDate);
                     return currentD >= checkIn && currentD < checkOut;
                 });
                 if(stay) {
@@ -2221,6 +2279,9 @@
             appState.editId = null;
             // 清空
             ['i-time','i-title','i-loc','i-note','i-open','i-end-time','i-dest'].forEach(id=>document.getElementById(id).value='');
+            // 預設填入當前分頁的日期
+            document.getElementById('i-date').value = window.getTargetDateStr(currentTrip.startDate, appState.dayIdx);
+            
             const typeSelect = document.getElementById('i-type');
             typeSelect.value = 'spot';
             typeSelect.dispatchEvent(new Event('change')); // Trigger visibility logic
@@ -2231,9 +2292,12 @@
             if(!item) return;
             appState.editId = id;
             document.getElementById('i-time').value=item.time;
+            // 如果舊資料沒有日期，就幫他算一個填進去
+            document.getElementById('i-date').value = item.date || window.getTargetDateStr(currentTrip.startDate, item.dayIdx);
+            
             const typeSelect = document.getElementById('i-type');
             typeSelect.value=item.type;
-            typeSelect.dispatchEvent(new Event('change')); // Trigger visibility logic
+            typeSelect.dispatchEvent(new Event('change')); 
             
             document.getElementById('i-title').value=item.title;
             document.getElementById('i-loc').value=item.loc;
@@ -2246,8 +2310,17 @@
         window.saveItinerary = function() {
             const time = document.getElementById('i-time').value;
             const loc = document.getElementById('i-loc').value;
-            if(!time || !loc) return alert('請填寫時間與地點');
-            const newItem = { id: appState.editId || Date.now(), dayIdx: appState.dayIdx, time, type: document.getElementById('i-type').value, title: document.getElementById('i-title').value, loc, note: document.getElementById('i-note').value, open: document.getElementById('i-open').value, endTime: document.getElementById('i-end-time').value, dest: document.getElementById('i-dest').value };
+            const date = document.getElementById('i-date').value;
+            
+            if(!time || !loc || !date) return alert('請填寫日期、時間與地點');
+            
+            const newItem = { 
+                id: appState.editId || Date.now(), 
+                dayIdx: appState.dayIdx, // Kept for legacy reference but date is primary now
+                date: date, // Save the specific date
+                time, type: document.getElementById('i-type').value, title: document.getElementById('i-title').value, loc, note: document.getElementById('i-note').value, open: document.getElementById('i-open').value, endTime: document.getElementById('i-end-time').value, dest: document.getElementById('i-dest').value 
+            };
+            
             if(appState.editId) { const idx = currentTrip.itinerary.findIndex(x=>x.id===appState.editId); if(idx!==-1) currentTrip.itinerary[idx] = newItem; } 
             else currentTrip.itinerary.push(newItem);
             window.saveData(); window.closeModal('itinerary');
