@@ -49,7 +49,8 @@
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { margin: 0; padding: 0; font-family: 'Zen Maru Gothic', sans-serif; background-color: var(--bg-body); color: var(--text); padding-bottom: calc(var(--nav-height) + 40px); -webkit-overflow-scrolling: touch; }
+        /* 優化底部留白：原本 padding-bottom 過大，改為適應 Nav 高度即可 */
+        body { margin: 0; padding: 0; font-family: 'Zen Maru Gothic', sans-serif; background-color: var(--bg-body); color: var(--text); padding-bottom: calc(var(--nav-height) + 20px); -webkit-overflow-scrolling: touch; }
         .hidden { display: none !important; }
 
         /* Icons */
@@ -85,7 +86,8 @@
         .header-title { position: absolute; left: 50%; transform: translateX(-50%); font-size: 1.3rem; color: var(--text); font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 60%; text-align: center; pointer-events: none;}
         .back-btn, .btn-ghost { position: relative; z-index: 10; }
         
-        .container { padding: 20px; padding-bottom: 100px; max-width: 600px; margin: 0 auto; }
+        /* 優化底部留白：減少 container 預設底部距離 */
+        .container { padding: 20px; padding-bottom: 80px; max-width: 600px; margin: 0 auto; }
         
         .card { background: var(--card-bg); border-radius: var(--radius-L); padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow-card); position: relative; border: 1px solid rgba(255,255,255,0.8); }
         .card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 15px; color: var(--primary-dark); font-weight: 800; font-size: 1.1rem; }
@@ -104,10 +106,25 @@
         .sub-nav-btn { flex: 0 0 auto; padding: 8px 18px; border: 1px solid transparent; background: white; border-radius: 30px; font-size: 0.9rem; color: var(--text-light); font-weight: 700; box-shadow: 0 2px 6px rgba(0,0,0,0.04); transition: 0.2s; display: flex; align-items: center; gap: 6px; }
         .sub-nav-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(127, 169, 190, 0.3); transform: translateY(-1px); }
 
+        /* Flight Compact Card Style (New) */
+        .flight-compact-card {
+            background: #F8FAFC; border-radius: 12px; padding: 12px; margin-bottom: 10px;
+            border: 1px solid #E2E8F0; display: flex; align-items: center; justify-content: space-between;
+            cursor: pointer; transition: 0.2s;
+        }
+        .flight-compact-card:active { transform: scale(0.98); background: #EDF2F7; }
+        .fc-left { display: flex; flex-direction: column; gap: 2px; }
+        .fc-date { font-weight: 800; font-size: 1rem; color: var(--primary-dark); }
+        .fc-route { font-weight: bold; font-size: 0.9rem; color: var(--text); display: flex; align-items: center; gap: 6px;}
+        .fc-airline { font-size: 0.75rem; color: var(--text-light); font-weight: bold; }
+        .fc-right { text-align: right; }
+        .fc-time { font-family: monospace; font-weight: bold; font-size: 1rem; color: var(--text); }
+        .fc-tz { font-size: 0.7rem; color: #A0AEC0; }
+
         /* Shopping List Item Style */
         .check-item { display: flex; flex-direction: column; padding: 16px; background: white; border-radius: var(--radius-M); margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); border: 1px solid #F0F0F0; transition: 0.2s; user-select: none; }
         .check-item:active { transform: scale(0.99); background: #FAFAFA;}
-        .check-item-body { display: flex; align-items: stretch; width: 100%; }
+        .check-item-body { display: flex; align-items: stretch; width: 100%; } 
         .sortable-ghost { opacity: 0.4; background: #F2F9FD; }
         
         .check-left { flex: 1; display: flex; flex-direction: column; min-width: 0; gap: 8px; justify-content: center;}
@@ -128,7 +145,7 @@
 
         .meta-pill svg { width: 12px; height: 12px; }
 
-        .check-right { display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; padding-left: 10px; flex-shrink: 0; min-width: 60px; }
+        .check-right { display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; padding--left: 10px; flex-shrink: 0; min-width: 60px; }
         .member-badge-pill { font-size: 0.7rem; background: var(--text); color: white; padding: 4px 10px; border-radius: 10px; font-weight: bold; opacity: 0.8;}
         
         .btn-list-action-group { display: flex; gap: 8px; }
@@ -139,14 +156,13 @@
         .checked .check-text { text-decoration: line-through; color: var(--text-done); }
         .checked .meta-pill { opacity: 0.5; }
         
-        /* Note Dropdown */
         .check-note-panel { display: none; margin-top: 12px; padding-top: 12px; border-top: 1px dashed #E2E8F0; font-size: 0.9rem; color: #666; white-space: pre-wrap; padding-left: 42px; line-height: 1.6;}
         .check-item.show-note .check-note-panel { display: block; }
         .note-toggle-btn { background: none; border: none; color: var(--primary); cursor: pointer; font-size: 0.8rem; padding: 2px 6px; border-radius: 4px; transition: 0.2s; margin-left: 5px; }
         .note-toggle-btn:active { background: var(--primary-light); }
         .check-item.show-note .note-toggle-btn { transform: rotate(180deg); }
 
-        /* Packing List Simplification */
+        /* Packing List */
         .pack-item-card { background: white; border-radius: 16px; padding: 12px 16px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 6px rgba(0,0,0,0.03); border: 1px solid #F5F5F5; user-select: none; }
         .pack-info { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px;}
         .pack-name { font-weight: bold; font-size: 1rem; color: var(--text); }
@@ -172,25 +188,21 @@
         .modal:not(.hidden) .modal-content { transform: scale(1); }
         .modal h3 { margin: 0 0 20px; text-align: center; color: var(--primary); font-size: 1.3rem; }
 
-        /* Boarding Pass (Updated Layout) */
+        /* Boarding Pass */
         .bp-card { background: white; border-radius: var(--radius-M); margin-bottom: 12px; overflow: hidden; position: relative; box-shadow: var(--shadow-card); filter: drop-shadow(0 4px 10px rgba(0,0,0,0.05)); }
         .bp-header { background: var(--primary); color: white; padding: 10px; text-align: center; font-size: 0.9rem; font-weight: bold; letter-spacing: 2px; }
         .bp-body { padding: 20px 15px; display: flex; justify-content: space-between; align-items: center; }
-        .bp-group { text-align: center; flex: 1; display:flex; flex-direction:column; gap:5px; }
-        .bp-code { font-size: 1.8rem; font-weight: 900; color: var(--text); display: block; line-height: 1; }
-        .bp-time-row { display:flex; align-items:center; justify-content:center; gap:5px; margin-bottom:2px;}
-        .bp-time { font-size: 1rem; color: var(--text); font-weight: 900; }
-        .bp-tz { font-size: 0.75rem; color: #999; font-weight: bold; background:#eee; padding:2px 4px; border-radius:4px; }
-        .bp-loc-row { display:flex; flex-direction:column; align-items:center; }
-        .bp-term { font-size: 0.75rem; color: var(--primary-dark); background: var(--primary-light); padding: 2px 6px; border-radius: 4px; font-weight: bold; display: inline-block; margin-top: 2px; }
+        .bp-group { text-align: center; flex: 1; }
+        .bp-code { font-size: 2rem; font-weight: 900; color: var(--text); display: block; line-height: 1; margin-bottom: 5px;}
+        .bp-time { font-size: 0.9rem; color: var(--text); font-weight: bold; background: #F0F4F8; padding: 4px 8px; border-radius: 6px; display: inline-block;}
+        .bp-term { font-size: 0.75rem; color: var(--primary-dark); background: var(--primary-light); padding: 2px 6px; border-radius: 4px; font-weight: bold; display: inline-block; margin-bottom: 4px; vertical-align: middle; }
 
-        .bp-center { display: flex; flex-direction: column; align-items: center; width: 70px; margin: 0 10px;}
+        .bp-center { display: flex; flex-direction: column; align-items: center; width: 90px; }
         .bp-line { width: 100%; height: 2px; background: #E0E0E0; position: relative; margin: 10px 0; }
         .bp-line::after { content:''; position:absolute; top:-10px; left:50%; transform:translateX(-50%); width:20px; height:20px; background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%237FA9BE'%3E%3Cpath d='M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z'/%3E%3C/svg%3E") no-repeat center; background-size:contain; background-color:white; padding:0 2px;} 
         .bp-duration { font-size: 0.75rem; color: var(--text-light); font-weight: bold; margin-top: 4px; }
-        
-        .flight-row-item { border: 1px solid #E2E8F0; border-radius: 12px; padding: 12px; margin-bottom: 15px; background: #FAFAFA; position: relative;}
-        .flight-del-btn { position: absolute; top: 8px; right: 8px; color: #E53E3E; background: transparent; border: none; font-weight: bold; cursor: pointer; font-size: 1.2rem;}
+        .flight-row-item { border: 1px solid #E2E8F0; border-radius: 12px; padding: 12px; margin-bottom: 10px; background: #FAFAFA; position: relative;}
+        .flight-del-btn { position: absolute; top: 8px; right: 8px; color: #E53E3E; background: transparent; border: none; font-weight: bold; cursor: pointer; }
 
         /* Weather */
         .weather-card { 
@@ -210,37 +222,31 @@
         .w-stat-label { font-size: 0.7rem; color: rgba(255,255,255,0.8); margin-bottom: 4px; font-weight: bold; }
         .w-stat-val { font-size: 0.9rem; color: white; font-weight: 800; }
 
-        /* Timeline & Itinerary (Colorful) */
+        /* Timeline & Itinerary */
         .timeline-wrapper { position: relative; padding-left: 10px; margin-top: 20px; padding-bottom: 20px;}
         .timeline-line { position: absolute; left: 38px; top: 15px; bottom: 15px; width: 2px; background: #E2E8F0; z-index: 0; border-radius: 2px; }
         .timeline-item { display: flex; gap: 15px; margin-bottom: 24px; position: relative; z-index: 1; align-items: flex-start; }
         .time-bubble { flex-shrink: 0; width: 56px; text-align: center; background: white; color: var(--primary-dark); border-radius: 12px; padding: 10px 0; font-weight: 800; font-size: 0.95rem; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #EDF2F7; z-index: 2; display: flex; flex-direction: column; justify-content: center; min-height: 50px;}
         
-        /* Full Colored Itinerary Cards */
         .it-card { flex: 1; border-radius: 20px; padding: 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); display: flex; align-items: flex-start; gap: 14px; position: relative; overflow: hidden; transition: 0.1s; border: 1px solid rgba(0,0,0,0.03);}
         .it-card:active { transform: scale(0.99); filter: brightness(0.95); }
         .it-icon { width: 36px; height: 36px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 2px 5px rgba(0,0,0,0.05); background: white !important;}
         .btn-map-icon { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: white; color: #4299E1; border: 1px solid rgba(0,0,0,0.05); padding: 0; box-shadow: 0 2px 6px rgba(0,0,0,0.05); transition: 0.2s; }
-        /* Itinerary Note with Line Break */
         .it-note { font-size: 0.85rem; color: var(--text); opacity: 0.8; margin-top: 4px; white-space: pre-wrap; }
         
-        /* Macaron Color Backgrounds */
         .type-spot { background: var(--c-spot-bg); border-left: 4px solid var(--c-spot-line); } .type-spot .it-icon { color: var(--c-spot-icon); }
         .type-food { background: var(--c-food-bg); border-left: 4px solid var(--c-food-line); } .type-food .it-icon { color: var(--c-food-icon); }
         .type-shop { background: var(--c-shop-bg); border-left: 4px solid var(--c-shop-line); } .type-shop .it-icon { color: var(--c-shop-icon); }
         .type-transport { background: var(--c-trans-bg); border-left: 4px solid var(--c-trans-line); } .type-transport .it-icon { color: var(--c-trans-icon); }
         .type-other { background: var(--c-other-bg); border-left: 4px solid var(--c-other-line); } .type-other .it-icon { color: var(--c-other-icon); }
 
-        /* Transport Time Styling */
         .trans-time-group { display: flex; flex-direction: column; align-items: center; width: 100%; gap: 2px; }
         .trans-t-val { font-size: 0.8rem; font-weight: 800; color: var(--text); }
         .trans-arrow { font-size: 0.7rem; color: #CBD5E0; line-height: 0.8; }
 
-        /* Opening Hours Badge */
         .open-badge { display: inline-flex; align-items: center; gap: 4px; background: rgba(255,255,255,0.6); color: var(--text-light); padding: 4px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: bold; margin-top: 6px; backdrop-filter: blur(4px); }
         .open-badge svg { width: 12px; height: 12px; }
 
-        /* Night Stay */
         .night-stay-box { margin-top: 30px; background: #2D3748; color: white; border-radius: var(--radius-M); padding: 18px; display: flex; align-items: center; gap: 15px; box-shadow: 0 10px 20px rgba(45, 55, 72, 0.3); }
 
         /* Countdown */
@@ -256,7 +262,6 @@
         
         .day-scroller { display: flex; overflow-x: auto; padding: 10px 20px; gap: 10px; scrollbar-width: none; min-height: 85px; }
         
-        /* Day Chip Glassmorphism Update */
         .day-chip { 
             flex: 0 0 auto; padding: 10px 5px; border-radius: 20px; min-width: 65px; 
             background: rgba(255, 255, 255, 0.45); 
@@ -266,13 +271,17 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; 
         }
         .day-chip.active { 
-            background: rgba(127, 169, 190, 0.85); /* Primary with opacity */
+            background: rgba(127, 169, 190, 0.85);
             color: white; border-color: transparent; 
             box-shadow: 0 4px 10px rgba(127, 169, 190, 0.4); 
             transform: scale(1.05); 
         }
 
-        /* Money List Redesign */
+        .d-num { font-size: 0.7rem; font-weight: bold; opacity: 0.8; letter-spacing: 1px;}
+        .d-date { font-size: 1.1rem; font-weight: 900; line-height: 1.2;}
+        .d-week { font-size: 0.75rem; font-weight: bold; }
+
+        /* Money */
         .money-item-row { display: flex; align-items: center; justify-content: space-between; padding: 14px; background: white; border-radius: 16px; margin-bottom: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.03); border: 1px solid #F0F4F8; transition: transform 0.1s;}
         .money-item-row:active { transform: scale(0.99); }
         .money-info { display: flex; flex-direction: column; gap: 4px; }
@@ -281,47 +290,10 @@
         .money-tag { background: #EDF2F7; padding: 2px 8px; border-radius: 6px; font-weight: bold; color: var(--text-light); }
         .money-amount { font-weight: 900; font-size: 1.1rem; color: var(--primary-dark); }
         
-        .daily-total-box {
-            background: #fff;
-            padding: 10px 15px;
-            border-radius: 12px;
-            margin-bottom: 10px;
-            text-align: right;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
-            border: 1px solid #F0F4F8;
-        }
+        .daily-total-box { background: #fff; padding: 10px 15px; border-radius: 12px; margin-bottom: 10px; text-align: right; box-shadow: 0 2px 6px rgba(0,0,0,0.03); border: 1px solid #F0F4F8; }
         .dt-label { font-size: 0.85rem; color: var(--text-light); font-weight: bold; margin-right: 5px; }
         .dt-val { font-size: 1.1rem; color: var(--primary-dark); font-weight: 900; }
-        
-        /* Money Lock Screen Optimized */
-        .money-lock-overlay {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(247,249,252, 0.98); backdrop-filter: blur(15px);
-            z-index: 50; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
-            padding-top: 80px;
-            border-radius: 20px;
-        }
-        .member-lock-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; width: 80%; max-width: 320px; margin-top: 30px; }
-        .lock-avatar { 
-            aspect-ratio: 1; border-radius: 24px; background: white; 
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.08); cursor: pointer; border: 3px solid transparent;
-            transition: 0.2s;
-        }
-        .lock-avatar:active { transform: scale(0.95); border-color: var(--primary); }
-        .lock-avatar-circle {
-            width: 70px; height: 70px; border-radius: 50%; background: var(--primary-light);
-            color: var(--primary); font-size: 1.8rem; font-weight: 900;
-            display: flex; align-items: center; justify-content: center; margin-bottom: 12px;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
-        }
-        .lock-avatar-name { font-weight: 800; color: var(--text); font-size: 1.1rem;}
 
-        .lock-icon { font-size: 3rem; color: var(--primary); margin-bottom: 15px; }
-        .lock-input { font-size: 1.5rem; letter-spacing: 5px; text-align: center; width: 180px; margin-bottom: 15px; padding: 10px; border: 2px solid #E2E8F0; border-radius: 12px; }
-        .lock-btn { padding: 10px 30px; font-size: 1rem; }
-
-        /* Analysis Cards */
         .member-stat-wrapper { margin-bottom: 15px; }
         .member-stat-card { background: linear-gradient(135deg, #7FA9BE 0%, #5A8296 100%); color: white; border-radius: 16px; padding: 16px; cursor: pointer; transition: transform 0.1s; box-shadow: 0 5px 15px rgba(90,130,150,0.3); display: flex; flex-direction: column; gap: 5px; position: relative; z-index: 2;}
         .member-stat-card:active { transform: scale(0.98); }
@@ -330,7 +302,6 @@
         
         .analysis-detail-box { background: white; border-radius: 0 0 16px 16px; padding: 15px 15px 10px 15px; color: var(--text); box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-top: -10px; padding-top: 25px; border: 1px solid #EDF2F7; position: relative; z-index: 1;}
 
-        /* Split Bill Styles */
         .split-card { background: white; border-radius: 16px; padding: 16px; margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.03); border: 1px solid #F0F4F8; position: relative; }
         .split-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; border-bottom: 1px dashed #eee; padding-bottom: 8px;}
         .split-title { font-weight: 900; font-size: 1.05rem; color: var(--text); }
@@ -341,35 +312,43 @@
         .split-member-name { font-weight: bold; width: 60px; color: var(--text-light); }
         .split-val-group { text-align: right; flex: 1; display: flex; justify-content: flex-end; gap: 10px; font-size: 0.85rem;}
         .split-label { font-size: 0.7rem; color: #BBB; margin-right: 2px; }
-        .split-owe { color: #E53E3E; font-weight: bold; } /* 欠款紅字 */
-        .split-clean { color: #38A169; font-weight: bold; opacity: 0.6;} /* 結清綠字 */
+        .split-owe { color: #E53E3E; font-weight: bold; } 
+        .split-clean { color: #38A169; font-weight: bold; opacity: 0.6;} 
         
-        /* Modal Table Look */
         .split-input-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; background: #F7FAFC; padding: 8px; border-radius: 10px;}
         .split-input-name { font-weight: bold; width: 60px; font-size: 0.9rem; flex-shrink: 0;}
         .split-input-sm { flex: 1; padding: 0 8px; height: 36px; min-height: 36px; font-size: 0.9rem; background: white; border: 1px solid #E2E8F0; border-radius: 6px;}
         .split-check { width: 24px; height: 24px; border: 1px solid #CBD5E0; border-radius: 6px; display: flex; align-items: center; justify-content: center; background: white; cursor: pointer; color: white;}
         .split-check.active { background: var(--primary); border-color: var(--primary); }
 
-        /* Journal Redesign Optimized */
-        .journal-card { 
-            background: white; border-radius: 20px; padding: 24px; margin-bottom: 25px; 
-            position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
-            border: 1px solid rgba(0,0,0,0.03); 
-            display: flex; flex-direction: column; gap: 15px;
-        }
-        .journal-header { 
-            display: flex; justify-content: space-between; align-items: flex-end; 
-            padding-bottom: 15px; border-bottom: 2px dashed #f0f0f0; margin: 0;
-        }
-        .j-date-box { display: flex; align-items: baseline; gap: 6px; color: var(--primary); font-family: 'Zen Maru Gothic'; }
-        .j-day { font-size: 2.8rem; font-weight: 900; line-height: 0.8; letter-spacing: -2px; }
+        /* Journal */
+        .journal-card { background: white; border-radius: 20px; padding: 20px; margin-bottom: 25px; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.03); overflow: hidden; }
+        .journal-header { display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 12px; border-bottom: 2px dashed #f0f0f0; margin-bottom: 12px; }
+        .j-date-box { display: flex; align-items: baseline; gap: 6px; color: var(--primary); }
+        .j-day { font-size: 2rem; font-weight: 900; line-height: 1; }
         .j-ym { font-size: 0.9rem; font-weight: bold; color: var(--text-light); }
-        .j-writer-badge { font-size: 0.85rem; padding: 6px 14px; border-radius: 20px; font-weight: bold; color: var(--text); opacity: 0.9; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .journal-content { line-height: 1.8; color: var(--text); white-space: pre-wrap; font-size: 1.05rem; font-weight: 500;}
+        .j-writer-badge { font-size: 0.8rem; padding: 4px 12px; border-radius: 12px; font-weight: bold; color: var(--text); opacity: 0.8; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .journal-content { line-height: 1.7; color: var(--text); white-space: pre-wrap; font-size: 1rem; font-weight: 500;}
         
-        .j-footer { border-top: 1px solid #f0f0f0; padding-top: 12px; display: flex; justify-content: space-between; align-items: center;}
-        .j-last-edit { font-size: 0.75rem; color: #CCC; text-align: right; width: 100%; margin-top: 0; margin-bottom: 0;}
+        .j-footer { margin-top: 15px; border-top: 1px solid #f0f0f0; padding-top: 10px; display: flex; justify-content: space-between; align-items: center;}
+        .j-last-edit { font-size: 0.75rem; color: #CCC; text-align: right; width: 100%; margin-top: 5px; margin-bottom: 10px;}
+
+        .j-comments-section { background: #F9FAFB; margin: 15px -20px -20px -20px; padding: 15px 20px; border-top: 1px solid #F0F0F0; }
+        .j-comment-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: flex-start; }
+        .j-comment-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.8rem; flex-shrink: 0; }
+        .j-comment-bubble { background: white; padding: 8px 12px; border-radius: 12px; border: 1px solid #E2E8F0; flex: 1; font-size: 0.9rem; position: relative;}
+        .j-comment-meta { font-size: 0.7rem; color: #A0AEC0; margin-top: 4px; display: flex; justify-content: space-between; align-items: center; }
+        .j-del-comment { color: #E53E3E; cursor: pointer; padding: 2px 5px; }
+
+        .j-input-area { display: flex; gap: 8px; margin-top: 10px; }
+        .j-input-select { width: 70px; border: 1px solid #E2E8F0; border-radius: 8px; font-size: 0.8rem; padding: 0 5px; background: white;}
+        .j-input-text { flex: 1; border: 1px solid #E2E8F0; border-radius: 8px; font-size: 0.9rem; padding: 8px 12px; background: white; }
+        .j-send-btn { background: var(--primary); color: white; border: none; border-radius: 8px; padding: 0 12px; font-weight: bold; font-size: 0.85rem; cursor: pointer; }
+
+        #loading-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.8); z-index:9999; display:flex; justify-content:center; align-items:center; color:var(--primary); font-weight:bold; backdrop-filter: blur(5px); }
+        
+        .flight-edit-block .row { align-items: center; }
+        .tz-select { padding: 0 10px; border: none; background: #E2E8F0; border-radius: var(--radius-S); font-weight: bold; color: var(--text); flex-shrink: 0; width: auto; height: 48px;}
     </style>
 </head>
 <body>
@@ -413,7 +392,7 @@
         <div style="text-align:center; padding-top:80px; padding-bottom:30px;">
             <div style="font-size:3rem; margin-bottom:10px;">☁️</div>
             <h1 style="color:var(--primary-dark); margin:0; font-size:2rem; letter-spacing:1px;">旅遊手帳</h1>
-            <p style="color:var(--text-light); font-size:0.9rem; margin-top:5px;">Version 11.3</p>
+            <p style="color:var(--text-light); font-size:0.9rem; margin-top:5px;">Version 10.3</p>
         </div>
         <div class="container" style="padding-bottom:20px;">
             <div class="card" style="padding:15px; display:flex; gap:10px;">
@@ -457,16 +436,16 @@
                         <div class="countdown-label" id="countdown-txt"></div>
                         <div class="countdown-num" id="countdown-val"></div>
                     </div>
-                    <!-- Flights: Dynamic Lists -->
+                    <!-- Flights: Compact Card List -->
                     <div class="card">
                         <div class="card-header"><svg class="icon-svg"><use href="#icon-plane-real"></use></svg> 去程 Outbound</div>
                         <div id="flight-out-list"></div>
-                        <button class="btn btn-ghost" style="width:100%; margin-top:5px; border:1px dashed #E2E8F0;" onclick="window.addFlight('out')">＋ 轉機/新增航班</button>
+                        <button class="btn btn-ghost" style="width:100%; margin-top:5px; border:1px dashed #E2E8F0;" onclick="window.addFlight('out')">＋ 新增去程航班</button>
                     </div>
                     <div class="card">
                         <div class="card-header"><svg class="icon-svg" style="transform: rotate(180deg);"><use href="#icon-plane-real"></use></svg> 回程 Inbound</div>
                         <div id="flight-in-list"></div>
-                        <button class="btn btn-ghost" style="width:100%; margin-top:5px; border:1px dashed #E2E8F0;" onclick="window.addFlight('in')">＋ 轉機/新增航班</button>
+                        <button class="btn btn-ghost" style="width:100%; margin-top:5px; border:1px dashed #E2E8F0;" onclick="window.addFlight('in')">＋ 新增回程航班</button>
                     </div>
                 </div>
                 <div id="info-hotel" class="info-sub-tab hidden"><div id="hotel-list"></div><button class="btn btn-primary" style="width:100%; margin-top:10px;" onclick="window.openHotelModal()"><svg class="icon-svg icon-sm"><use href="#icon-plus"></use></svg> 新增住宿</button></div>
@@ -511,15 +490,6 @@
 
         <!-- C. Money -->
         <div id="tab-money" class="tab-content hidden">
-            <!-- Lock Screen Overlay -->
-            <div id="money-member-selector" class="money-lock-overlay hidden">
-                <div style="text-align:center; margin-bottom:25px;">
-                    <div style="font-size:1.8rem; font-weight:900; color:var(--primary-dark); margin-bottom:5px;">記帳本</div>
-                    <p style="color:#718096; font-size:0.95rem; font-weight:bold;">請選擇您的身份進入</p>
-                </div>
-                <div id="member-lock-grid" class="member-lock-grid"></div>
-            </div>
-
             <div style="background:var(--primary); padding:20px; border-radius:0 0 30px 30px; margin-top:-2px; color:white; box-shadow:0 10px 20px rgba(127,169,190,0.2);">
                 <div style="text-align:center; font-size:0.9rem; opacity:0.8;">匯率換算 (NTD)</div>
                 <div style="font-size:2rem; font-weight:900; text-align:center; margin:5px 0;" id="rate-display">0.0</div>
@@ -531,9 +501,6 @@
                 </div>
             </div>
             <div class="sticky-header" style="top:0; border-bottom:none; background:transparent;">
-                <div style="position: absolute; top: 10px; right: 15px; z-index: 20;">
-                    <button id="btn-logout" class="btn-ghost hidden" onclick="window.logoutMember()" style="padding: 5px; font-weight:bold;">登出</button>
-                </div>
                 <div class="sub-nav" style="justify-content:center; padding-top:15px;">
                     <button class="sub-nav-btn active" id="btn-money-list" onclick="window.switchMoneySub('list')">列表</button>
                     <button class="sub-nav-btn" id="btn-money-analysis" onclick="window.switchMoneySub('analysis')">統計</button>
@@ -541,16 +508,12 @@
                 </div>
             </div>
             <div class="container">
-                <!-- 2. List View -->
-                <div id="money-view-list" class="hidden">
+                <div id="money-view-list">
                     <div class="day-scroller" id="day-tabs-money"></div>
+                    <div class="sub-nav" id="money-list-member-tabs" style="justify-content:center; padding-top:5px; margin-bottom:10px;"></div>
                     <div id="list-money"></div>
                 </div>
-
-                <!-- 3. Analysis View -->
                 <div id="money-view-analysis" class="hidden"><div id="analysis-content"></div></div>
-                
-                <!-- 4. Split View (Public) -->
                 <div id="money-view-split" class="hidden">
                     <div id="split-list-container"></div>
                 </div>
@@ -595,6 +558,42 @@
             </div>
             <div class="input-group"><span class="card-label">成員 (逗號隔開)</span><input type="text" id="new-trip-members" placeholder="我, Amy, Bob"></div>
             <div class="row" style="margin-top:20px; gap:10px;"><div class="col"><button class="btn" onclick="window.closeModal('create-trip')">取消</button></div><div class="col"><button class="btn btn-primary" onclick="window.saveTripMetadata()">儲存</button></div></div>
+        </div>
+    </div>
+
+    <!-- NEW: Flight Modal -->
+    <div id="modal-flight" class="modal hidden">
+        <div class="modal-content">
+            <h3>✈️ 編輯航班</h3>
+            <div class="flight-edit-block">
+                <span class="card-label">日期 / 航班號 / 航空</span>
+                <div class="row" style="margin-bottom:8px;">
+                    <div class="col" style="flex:1.5;"><input type="date" id="f-date"></div>
+                    <div class="col"><input placeholder="航班號" id="f-code"></div>
+                    <div class="col"><input placeholder="航空公司" id="f-airline"></div>
+                </div>
+                
+                <span class="card-label">起飛 (時間 / 機場 / 航廈)</span>
+                <div class="row" style="margin-bottom:8px;">
+                    <div class="col" style="flex:1.2;"><input type="time" id="f-dep-time"></div>
+                    <select class="tz-select" id="f-dep-tz"></select>
+                    <div class="col" style="flex:1.5;"><input placeholder="機場" id="f-dep-air"></div>
+                    <div class="col" style="flex:1;"><input placeholder="航廈" id="f-dep-term"></div>
+                </div>
+
+                <span class="card-label">降落 (時間 / 機場 / 航廈)</span>
+                <div class="row" style="margin-bottom:0;">
+                    <div class="col" style="flex:1.2;"><input type="time" id="f-arr-time"></div>
+                    <select class="tz-select" id="f-arr-tz"></select>
+                    <div class="col" style="flex:1.5;"><input placeholder="機場" id="f-arr-air"></div>
+                    <div class="col" style="flex:1;"><input placeholder="航廈" id="f-arr-term"></div>
+                </div>
+            </div>
+            <div class="row" style="margin-top:20px; gap:10px;">
+                <button class="btn" onclick="window.deleteFlight()" style="background:#FFF5F5; color:var(--accent); width:50px; flex:none;"><svg class="icon-svg icon-sm"><use href="#icon-trash"></use></svg></button>
+                <div class="col"><button class="btn" onclick="window.closeModal('flight')">取消</button></div>
+                <div class="col"><button class="btn btn-primary" onclick="window.saveFlight()">儲存</button></div>
+            </div>
         </div>
     </div>
 
@@ -659,7 +658,6 @@
         </div>
     </div>
 
-    <!-- Money Modal -->
     <div id="modal-money" class="modal hidden">
         <div class="modal-content">
             <h3>記帳</h3>
@@ -677,15 +675,12 @@
             <span class="card-label">付款人</span>
             <div id="m-payer-wrapper" class="chip-group" style="margin-bottom:15px;"></div>
 
-            <!-- 修改：付款方式移到同一行比較省空間，或保持原樣 -->
             <span class="card-label">方式</span>
             <div class="chip-group" style="margin-bottom:15px;">
                 <button class="chip-btn method-btn" onclick="window.setMoneyMethod('cash', this)">現金</button>
                 <button class="chip-btn method-btn" onclick="window.setMoneyMethod('card', this)">信用卡</button>
-                <button class="chip-btn method-btn" onclick="window.setMoneyMethod('other', this)">其他</button>
             </div>
 
-            <!-- 新增：備註 -->
             <div class="input-group">
                 <span class="card-label">備註 (選填)</span>
                 <textarea id="m-note" style="height:60px;" placeholder="寫點備註..."></textarea>
@@ -699,22 +694,6 @@
         </div>
     </div>
 
-    <!-- PIN Modal -->
-    <div id="modal-pin" class="modal hidden">
-        <div class="modal-content">
-            <h3 id="pin-title">🔒 驗證密碼</h3>
-            <p id="pin-desc" style="font-size:0.9rem; color:#666; margin-bottom:20px; text-align:center;">請輸入密碼以進入</p>
-            <div class="input-group" style="display:flex; justify-content:center;">
-                <input type="password" id="pin-input" maxlength="4" placeholder="****" style="text-align:center; font-size:1.5rem; letter-spacing:5px; width:150px;">
-            </div>
-            <div class="row" style="margin-top:20px; gap:10px;">
-                <div class="col"><button class="btn" onclick="window.closeModal('pin')">取消</button></div>
-                <div class="col"><button class="btn btn-primary" onclick="window.submitPin()">確認</button></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- New Split Modal -->
     <div id="modal-split" class="modal hidden">
         <div class="modal-content" style="max-width:400px;">
             <h3>💰 新增分帳</h3>
@@ -747,7 +726,6 @@
                 <span class="card-label">成員分帳細節</span>
             </div>
             
-            <!-- 動態生成成員輸入框 -->
             <div id="sp-members-container" style="margin-bottom:20px;"></div>
 
             <div class="row" style="margin-top:20px; gap:10px;">
@@ -808,9 +786,6 @@
     </div>
 
     <script type="module">
-        // ---------------------------------------------------------
-        // 1. Firebase Config (Replace with your own keys)
-        // ---------------------------------------------------------
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
         import { getFirestore, doc, getDoc, setDoc, deleteDoc, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
@@ -830,21 +805,16 @@
             db = getFirestore(app);
         } catch (e) { console.error("FB Init Fail", e); }
 
-        // ---------------------------------------------------------
-        // 2. Logic
-        // ---------------------------------------------------------
         let currentTrip = null;
         let unsubscribe = null;
-        let appState = { dayIdx: 0, editId: null, editType: null, listType: 'food', charterType:'接送' };
+        let appState = { dayIdx: 0, editId: null, editType: null, listType: 'food', charterType:'接送', flightDir: null, flightIdx: null };
         let moneyState = { payer: '', method: 'cash' };
         let moneyListMemberFilter = 'all'; 
-        let activeMember = null; 
-        let pinTargetMember = null; 
         let currentRate = 0.22;
         let currentInfoTab = 'flight';
         let sortableInstance = null;
         let sortablePacking = null;
-        let editingTripId = null;
+        let editingTripId = null; 
 
         window.openCreateTripModal = function() {
             editingTripId = null;
@@ -953,8 +923,7 @@
                         id, name, city, startDate: date,
                         days, members,
                         itinerary: [], money: [], shopping: [], foodList: [], packing: [], journals: [], splitBills: [],
-                        flights: { out:[], in:[] }, hotels: [], tickets: [], charters: [],
-                        memberPins: {} // New: Store member specific PINs
+                        flights: { out:[], in:[] }, hotels: [], tickets: [], charters: []
                     };
                     await setDoc(doc(db, "trips", id), newTrip);
                     saveLocal(id, name, date);
@@ -996,22 +965,20 @@
             if(unsubscribe) unsubscribe();
             document.getElementById('view-home').classList.add('hidden');
             document.getElementById('view-detail').classList.remove('hidden');
-            activeMember = null; // Reset auth state
-            
             unsubscribe = onSnapshot(doc(db, "trips", id), (doc) => {
                 if(doc.exists()) {
                     currentTrip = doc.data();
-                    // Initial Data Structure Migration (Fix for missing data)
                     if(!currentTrip.journals) currentTrip.journals = [];
                     if(!currentTrip.foodList) currentTrip.foodList = [];
-                    if(!currentTrip.flights) currentTrip.flights = { out:[], in:[] };
-                    else {
-                        if(!Array.isArray(currentTrip.flights.out)) currentTrip.flights.out = currentTrip.flights.out.code ? [currentTrip.flights.out] : [];
-                        if(!Array.isArray(currentTrip.flights.in)) currentTrip.flights.in = currentTrip.flights.in.code ? [currentTrip.flights.in] : [];
+                    if(!Array.isArray(currentTrip.flights.out)) {
+                        currentTrip.flights.out = currentTrip.flights.out.code ? [currentTrip.flights.out] : [];
                     }
+                    if(!Array.isArray(currentTrip.flights.in)) {
+                        currentTrip.flights.in = currentTrip.flights.in.code ? [currentTrip.flights.in] : [];
+                    }
+                    
                     if(!currentTrip.itinerary) currentTrip.itinerary = [];
                     if(!currentTrip.splitBills) currentTrip.splitBills = [];
-                    if(!currentTrip.memberPins) currentTrip.memberPins = {};
                     
                     let needUpdate = false;
                     currentTrip.itinerary.forEach(it => {
@@ -1028,7 +995,10 @@
                     const activeTabId = document.querySelector('.nav-item.active').getAttribute('onclick').match(/'([^']+)'/)[1];
                     if(activeTabId === 'itinerary') window.renderAllDetail();
                     else if(activeTabId === 'money') { 
-                        window.switchTab('money'); // Trigger lock check
+                        window.renderAllDetail(); 
+                        window.renderMoney(); 
+                        window.renderMoneyAnalysis(); 
+                        if(appState.moneyTab === 'split') window.renderSplitBills();
                     }
                     else if(activeTabId === 'info') { 
                         window.fillFlightInputs(); 
@@ -1062,7 +1032,11 @@
                 setTimeout(() => window.renderAllDetail(), 50); 
             }
             if(t==='money') {
-                window.switchMoneySub(appState.moneyTab || 'list');
+                setTimeout(() => {
+                    window.renderAllDetail(); 
+                    window.renderMoney();
+                    window.renderMoneyAnalysis();
+                }, 50);
             }
         };
 
@@ -1082,7 +1056,6 @@
             if(sub==='charter') window.renderCharters();
         };
 
-        // --- Modals & Saving Logic ---
         window.openModal = function(id) { document.getElementById('modal-'+id).classList.remove('hidden'); };
         window.closeModal = function(id) { document.getElementById('modal-'+id).classList.add('hidden'); };
         function v(id) { return document.getElementById(id).value; }
@@ -1102,398 +1075,22 @@
             else { map[type].forEach(k => document.getElementById(k).value = ''); }
         }
 
-        // --- Journal ---
-        window.openJournalModal = function(id) {
-            appState.editId = id;
-            if (id) {
-                // Edit mode
-                const j = currentTrip.journals.find(x => x.id === id);
-                document.getElementById('j-date').value = j.date;
-                fillMemberSelect('j-writer');
-                document.getElementById('j-writer').value = j.writer;
-                document.getElementById('j-content').value = j.content;
-            } else {
-                // Create mode
-                document.getElementById('j-date').value = new Date().toISOString().split('T')[0];
-                document.getElementById('j-content').value = '';
-                fillMemberSelect('j-writer');
-            }
-            window.openModal('journal');
-        };
-
-        function getFormattedTime() {
-            const now = new Date();
-            const pad = (n) => String(n).padStart(2,'0');
-            return `${now.getFullYear()}/${pad(now.getMonth()+1)}/${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
-        }
-
-        window.saveJournal = function() {
-            const date = document.getElementById('j-date').value;
-            const writer = document.getElementById('j-writer').value;
-            const content = document.getElementById('j-content').value;
-            if(!content) return;
-            
-            if (appState.editId) {
-                // Update
-                const idx = currentTrip.journals.findIndex(x => x.id === appState.editId);
-                if (idx !== -1) {
-                    const oldJ = currentTrip.journals[idx];
-                    currentTrip.journals[idx] = { 
-                        ...oldJ, 
-                        date, 
-                        writer, 
-                        content, 
-                        lastEdited: getFormattedTime() 
-                    };
-                }
-            } else {
-                // Create
-                currentTrip.journals.unshift({ 
-                    id: Date.now(), 
-                    date, 
-                    writer, 
-                    content,
-                    comments: []
-                });
-            }
-
-            // Force sort just in case
-            currentTrip.journals.sort((a,b) => {
-                if(a.date !== b.date) return b.date.localeCompare(a.date);
-                return b.id - a.id;
-            });
-            window.saveData(); window.closeModal('journal');
-        };
-
-        window.addJournalComment = function(jId) {
-            const input = document.getElementById(`j-c-input-${jId}`);
-            const select = document.getElementById(`j-c-writer-${jId}`);
-            const text = input.value;
-            const writer = select.value;
-            
-            if(!text) return;
-            
-            const jIdx = currentTrip.journals.findIndex(x => x.id === jId);
-            if(jIdx !== -1) {
-                if(!currentTrip.journals[jIdx].comments) currentTrip.journals[jIdx].comments = [];
-                currentTrip.journals[jIdx].comments.push({
-                    id: Date.now(),
-                    text: text,
-                    writer: writer,
-                    time: getFormattedTime()
-                });
-                window.saveData();
-                // input.value = ''; // Render will clear it
-            }
-        };
-
-        window.delJournalComment = function(jId, cId) {
-            if(!confirm('刪除留言?')) return;
-            const jIdx = currentTrip.journals.findIndex(x => x.id === jId);
-            if(jIdx !== -1 && currentTrip.journals[jIdx].comments) {
-                currentTrip.journals[jIdx].comments = currentTrip.journals[jIdx].comments.filter(c => c.id !== cId);
-                window.saveData();
-            }
-        };
-
-        function getPastelColor(str) {
-            const colors = ['#FCA5A5', '#FDBA74', '#FDE047', '#86EFAC', '#67E8F9', '#93C5FD', '#C4B5FD', '#F9A8D4'];
-            let hash = 0;
-            for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
-            return colors[Math.abs(hash) % colors.length];
-        }
-        
-        window.renderJournal = function() {
-            if(!currentTrip) return;
-            const list = document.getElementById('journal-list'); list.innerHTML = '';
-            if(!currentTrip.journals || currentTrip.journals.length===0) { list.innerHTML='<div style="text-align:center; color:#CCC; margin-top:20px;">還沒有日誌，寫一篇吧！</div>'; return; }
-            
-            // Ensure sorted newest first
-            currentTrip.journals.sort((a,b) => {
-                if(a.date !== b.date) return b.date.localeCompare(a.date);
-                return b.id - a.id;
-            });
-
-            currentTrip.journals.forEach(j => {
-                const d = new Date(j.date);
-                const day = d.getDate();
-                const ym = `${d.getFullYear()} 年 ${d.getMonth()+1} 月`;
-                const bg = getPastelColor(j.writer || 'A');
-                const lastEdit = j.lastEdited ? `最後編輯於 ${j.lastEdited}` : '';
-                
-                // Comments HTML
-                let commentsHtml = '';
-                if(j.comments && j.comments.length > 0) {
-                    j.comments.forEach(c => {
-                        const cBg = getPastelColor(c.writer || 'U');
-                        commentsHtml += `
-                            <div class="j-comment-row">
-                                <div class="j-comment-avatar" style="background:${cBg}">${(c.writer||'U')[0]}</div>
-                                <div class="j-comment-bubble">
-                                    <div>${c.text}</div>
-                                    <div class="j-comment-meta">
-                                        <span>${c.writer} • ${c.time.split(' ')[1]}</span>
-                                        <span class="j-del-comment" onclick="window.delJournalComment(${j.id}, ${c.id})">✕</span>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
-                    });
-                }
-                
-                // Comment Writer Options
-                let memberOpts = '';
-                currentTrip.members.forEach(m => {
-                    memberOpts += `<option value="${m}">${m}</option>`;
-                });
-
-                list.innerHTML += `
-                <div class="journal-card">
-                    <div class="journal-header">
-                        <div class="j-date-box">
-                            <span class="j-day">${day}</span>
-                            <span class="j-ym">日 / ${ym}</span>
-                        </div>
-                        <div class="j-writer-badge" style="background:${bg}">${j.writer}</div>
-                    </div>
-                    <div class="journal-content">${j.content}</div>
-                    
-                    <div class="j-last-edit">${lastEdit}</div>
-
-                    <div class="j-footer">
-                        <div class="btn-list-action-group">
-                            <button class="btn-list-edit" onclick="window.openJournalModal(${j.id})">✎</button>
-                            <button class="btn-list-del" onclick="window.delItem('journals', ${j.id})"><svg class="icon-svg icon-sm"><use href="#icon-trash"></use></svg></button>
-                        </div>
-                    </div>
-
-                    <div class="j-comments-section">
-                        ${commentsHtml}
-                        <div class="j-input-area">
-                            <select id="j-c-writer-${j.id}" class="j-input-select">${memberOpts}</select>
-                            <input type="text" id="j-c-input-${j.id}" class="j-input-text" placeholder="留言...">
-                            <button class="j-send-btn" onclick="window.addJournalComment(${j.id})">➤</button>
-                        </div>
-                    </div>
-                </div>`;
-            });
-        };
-
-        // --- Packing (Optimized) ---
-        window.addPackItem = function() {
-            const val = document.getElementById('pack-input').value;
-            if(!val) return;
-            let checks = {};
-            currentTrip.members.forEach(m => checks[m] = false);
-            currentTrip.packing.push({ id:Date.now(), text:val, checks: checks });
-            document.getElementById('pack-input').value = '';
-            window.saveData();
-        };
-        window.toggleMemberCheck = function(itemId, member) {
-            const item = currentTrip.packing.find(x => x.id === itemId);
-            if(item) {
-                if(!item.checks) item.checks = {};
-                item.checks[member] = !item.checks[member];
-                window.saveData();
-            }
-        };
-        window.renderPacking = function() {
-            if(!currentTrip) return;
-            const list = document.getElementById('list-packing'); 
-            list.innerHTML = '';
-            
-            (currentTrip.packing || []).forEach(i => {
-                let membersHtml = '<div class="pack-members-row">';
-                currentTrip.members.forEach(m => {
-                    const isChecked = i.checks && i.checks[m];
-                    const firstChar = m.charAt(0);
-                    membersHtml += `<div class="pack-avatar ${isChecked?'checked':''}" onclick="window.toggleMemberCheck(${i.id}, '${m}')">${firstChar}</div>`;
-                });
-                membersHtml += '</div>';
-                
-                list.innerHTML += `
-                    <div class="pack-item-card" data-id="${i.id}">
-                        <div class="pack-info">
-                            <span class="pack-name">${i.text}</span>
-                        </div>
-                        <div style="display:flex; align-items:center;">
-                            ${membersHtml}
-                            <button class="pack-btn-del" onclick="window.delItem('packing', ${i.id})">✕</button>
-                        </div>
-                    </div>`;
-            });
-
-            // Initialize Sortable for Packing List
-            if (sortablePacking) { sortablePacking.destroy(); }
-            sortablePacking = new Sortable(list, {
-                animation: 150,
-                delay: 300, 
-                delayOnTouchOnly: true,
-                ghostClass: 'sortable-ghost',
-                onEnd: function (evt) {
-                    const newIndex = evt.newIndex;
-                    const oldIndex = evt.oldIndex;
-                    if (newIndex === oldIndex) return;
-                    const movedItem = currentTrip.packing.splice(oldIndex, 1)[0];
-                    currentTrip.packing.splice(newIndex, 0, movedItem);
-                    window.saveData();
-                }
-            });
-        };
-
-        // --- Lists (Shop/Food) ---
-        window.switchListSub = function(t) { 
-            appState.listType=t; 
-            document.querySelectorAll('#tab-shopping .sub-nav-btn').forEach(b=>b.classList.toggle('active', (t==='shop'&&b.innerText.includes('購物'))||(t==='food'&&b.innerText.includes('美食')))); 
-            window.renderLists(); 
-        };
-        
-        window.openShoppingModal = function(id) {
-            appState.editId = id; 
-            const arr = appState.listType === 'shop' ? 'shopping' : 'foodList';
-            if (id) {
-                const item = currentTrip[arr].find(i => i.id === id);
-                if (item) {
-                    document.getElementById('s-name').value = item.text || '';
-                    document.getElementById('s-loc').value = item.location || '';
-                    document.getElementById('s-open').value = item.open || item.price || '';
-                    document.getElementById('s-note').value = item.note || ''; // Load note
-                    fillMemberSelect('s-owner');
-                    document.getElementById('s-owner').value = item.owner || '';
-                }
-            } else {
-                document.getElementById('s-name').value = '';
-                document.getElementById('s-loc').value = '';
-                document.getElementById('s-open').value = '';
-                document.getElementById('s-note').value = '';
-                fillMemberSelect('s-owner');
-            }
-            window.openModal('shopping');
-        };
-
-        window.saveShoppingItem = function() {
-            const name = document.getElementById('s-name').value;
-            const loc = document.getElementById('s-loc').value;
-            const open = document.getElementById('s-open').value;
-            const owner = document.getElementById('s-owner').value;
-            const note = document.getElementById('s-note').value;
-            
-            if(!name) return;
-            
-            const arr = appState.listType==='shop'?'shopping':'foodList';
-            
-            if (appState.editId) {
-                const idx = currentTrip[arr].findIndex(i => i.id === appState.editId);
-                if (idx !== -1) {
-                    currentTrip[arr][idx] = { ...currentTrip[arr][idx], text: name, location: loc, open: open, owner: owner, note: note };
-                }
-            } else {
-                currentTrip[arr].push({
-                    id: Date.now(), 
-                    text: name, 
-                    open: open,     
-                    location: loc, 
-                    owner: owner, 
-                    note: note,
-                    checked: false
-                });
-            }
-            window.saveData();
-            window.closeModal('shopping');
-            window.renderLists();
-        };
-
-        window.toggleShopNote = function(btn) {
-            const card = btn.closest('.check-item');
-            card.classList.toggle('show-note');
-        };
-
-        window.renderLists = function() {
-            if(!currentTrip) return;
-            const listContainer = document.getElementById('list-items-container'); 
-            listContainer.innerHTML = '';
-            const arr = appState.listType==='shop'?'shopping':'foodList';
-            
-            (currentTrip[arr]||[]).forEach(i => {
-                const displayTime = i.open || i.price;
-                let pillTime = displayTime ? `<span class="meta-pill meta-time"><svg class="icon-svg"><use href="#icon-clock"/></svg>${displayTime}</span>` : '';
-                let pillLoc = i.location ? `<span class="meta-pill meta-loc"><svg class="icon-svg"><use href="#icon-map-pin"/></svg>${i.location}</span>` : '';
-                let ownerHtml = i.owner ? `<div class="member-badge-pill">${i.owner}</div>` : '';
-                
-                // Note Logic
-                const hasNote = i.note && i.note.trim().length > 0;
-                const noteToggleBtn = hasNote ? `<button class="note-toggle-btn" onclick="event.stopPropagation(); window.toggleShopNote(this)">▼</button>` : '';
-                const notePanel = hasNote ? `<div class="check-note-panel">${i.note}</div>` : '';
-
-                listContainer.innerHTML += `
-                    <div class="card check-item ${i.checked?'checked':''}" data-id="${i.id}">
-                        <div class="check-item-body">
-                            <div class="check-left">
-                                <div class="check-name-row">
-                                    <div class="check-box" onclick="event.stopPropagation(); window.toggleCheck('${arr}', ${i.id})"></div>
-                                    <div class="check-text">${i.text}${noteToggleBtn}</div>
-                                </div>
-                                ${ (i.location || displayTime) ? '<div class="check-separator"></div>' : '' }
-                                <div class="check-meta-row">
-                                    ${pillLoc}
-                                    ${pillTime}
-                                </div>
-                            </div>
-                            <div class="check-right">
-                                ${ownerHtml}
-                                <div class="btn-list-action-group">
-                                    <button class="btn-list-edit" onclick="event.stopPropagation(); window.openShoppingModal(${i.id})">✎</button>
-                                    <button class="btn-list-del" onclick="event.stopPropagation(); window.delItem('${arr}', ${i.id})"><svg class="icon-svg icon-sm"><use href="#icon-trash"></use></svg></button>
-                                </div>
-                            </div>
-                        </div>
-                        ${notePanel}
-                    </div>`;
-            });
-
-            if (sortableInstance) { sortableInstance.destroy(); }
-            sortableInstance = new Sortable(listContainer, {
-                animation: 150,
-                delay: 300, 
-                delayOnTouchOnly: true,
-                touchStartThreshold: 5,
-                ghostClass: 'sortable-ghost',
-                onEnd: function (evt) {
-                    const newIndex = evt.newIndex;
-                    const oldIndex = evt.oldIndex;
-                    if (newIndex === oldIndex) return;
-                    const movedItem = currentTrip[arr].splice(oldIndex, 1)[0];
-                    currentTrip[arr].splice(newIndex, 0, movedItem);
-                    window.saveData();
-                }
-            });
-        };
-
-        window.toggleCheck = function(arr, id) { const i=currentTrip[arr].find(x=>x.id===id); if(i){i.checked=!i.checked; window.saveData();} };
-        window.delItem = function(arr, id) { if(confirm('刪除？')){ currentTrip[arr]=currentTrip[arr].filter(x=>x.id!==id); window.saveData(); } };
-        window.goHome = function() { 
-            if(unsubscribe) unsubscribe();
-            document.getElementById('view-home').classList.remove('hidden'); 
-            document.getElementById('view-detail').classList.add('hidden'); 
-            window.renderHome();
-        };
-        window.shareTrip = function() { navigator.clipboard.writeText(currentTrip.id).then(()=>alert("ID已複製: "+currentTrip.id)); };
-
-        // --- Info: Flights/Hotels/Tickets/Charters ---
-        function renderTimezoneOptions(selected) {
-            let html = '';
+        // --- Info: Flights (New Logic) ---
+        function renderTimezoneOptions(selectId, selected) {
+            const el = document.getElementById(selectId);
+            el.innerHTML = '';
             for(let i=-12; i<=14; i++) {
                 const label = i >= 0 ? `UTC+${i}` : `UTC${i}`;
-                html += `<option value="${i}" ${parseInt(selected)==i?'selected':''}>${label}</option>`;
+                const opt = document.createElement('option');
+                opt.value = i;
+                opt.innerText = label;
+                if(parseInt(selected) === i) opt.selected = true;
+                el.appendChild(opt);
             }
-            return html;
         }
 
         window.fillFlightInputs = function() {
             if(!currentTrip) return;
-            const f = currentTrip.flights;
-            
-            // Render Dynamic Lists
             renderFlightList('out', 'flight-out-list');
             renderFlightList('in', 'flight-in-list');
         };
@@ -1503,72 +1100,118 @@
             container.innerHTML = '';
             const flights = currentTrip.flights[dir];
 
-            flights.forEach((fl, idx) => {
-                const row = document.createElement('div');
-                row.className = 'flight-row-item';
-                row.innerHTML = `
-                    <button class="flight-del-btn" onclick="window.removeFlight('${dir}', ${idx})">✕</button>
-                    <div style="margin-bottom:8px; font-weight:bold; color:var(--text-light); font-size:0.85rem;">航班 ${idx+1}</div>
-                    <div class="flight-edit-block">
-                        <div class="row">
-                            <div class="col"><span class="card-label">日期</span><input type="date" value="${fl.date||''}" onchange="window.updateFlightField('${dir}', ${idx}, 'date', this.value)"></div>
-                        </div>
-                        <div class="row" style="margin-bottom:8px;">
-                            <div class="col"><span class="card-label">航班號</span><input placeholder="航班號" value="${fl.code||''}" onchange="window.updateFlightField('${dir}', ${idx}, 'code', this.value)"></div>
-                            <div class="col"><span class="card-label">航空公司</span><input placeholder="航空公司" value="${fl.airline||''}" onchange="window.updateFlightField('${dir}', ${idx}, 'airline', this.value)"></div>
-                        </div>
-                        
-                        <div class="row" style="margin-bottom:8px;">
-                            <div class="col" style="flex:1;">
-                                <span class="card-label">起飛</span>
-                                <div style="display:flex; gap:5px;">
-                                    <input type="time" value="${fl.depTime||''}" style="flex:1;" onchange="window.updateFlightField('${dir}', ${idx}, 'depTime', this.value)">
-                                    <select class="tz-select" style="width:80px;" onchange="window.updateFlightField('${dir}', ${idx}, 'depTz', this.value)">${renderTimezoneOptions(fl.depTz || (dir==='out'?8:9))}</select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row" style="margin-bottom:12px;">
-                             <div class="col" style="flex:2;"><input placeholder="機場" value="${fl.depAir||''}" onchange="window.updateFlightField('${dir}', ${idx}, 'depAir', this.value)"></div>
-                             <div class="col" style="flex:1;"><input placeholder="航廈" value="${fl.depTerm||''}" onchange="window.updateFlightField('${dir}', ${idx}, 'depTerm', this.value)"></div>
-                        </div>
+            if(flights.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding:15px; color:#A0AEC0; font-size:0.9rem;">尚未新增航班</div>`;
+                return;
+            }
 
-                        <div class="row" style="margin-bottom:8px;">
-                             <div class="col" style="flex:1;">
-                                <span class="card-label">降落</span>
-                                <div style="display:flex; gap:5px;">
-                                    <input type="time" value="${fl.arrTime||''}" style="flex:1;" onchange="window.updateFlightField('${dir}', ${idx}, 'arrTime', this.value)">
-                                    <select class="tz-select" style="width:80px;" onchange="window.updateFlightField('${dir}', ${idx}, 'arrTz', this.value)">${renderTimezoneOptions(fl.arrTz || (dir==='out'?9:8))}</select>
-                                </div>
-                            </div>
+            flights.forEach((fl, idx) => {
+                const div = document.createElement('div');
+                div.className = 'flight-compact-card';
+                div.onclick = () => window.openFlightModal(dir, idx);
+                
+                div.innerHTML = `
+                    <div class="fc-left">
+                        <div class="fc-date">${fl.date || '未定日期'}</div>
+                        <div class="fc-route">
+                            <span>${fl.depAir || 'DEP'}</span>
+                            <span style="color:#CBD5E0;">➜</span>
+                            <span>${fl.arrAir || 'ARR'}</span>
                         </div>
-                        <div class="row" style="margin-bottom:0;">
-                            <div class="col" style="flex:2;"><input placeholder="機場" value="${fl.arrAir||''}" onchange="window.updateFlightField('${dir}', ${idx}, 'arrAir', this.value)"></div>
-                            <div class="col" style="flex:1;"><input placeholder="航廈" value="${fl.arrTerm||''}" onchange="window.updateFlightField('${dir}', ${idx}, 'arrTerm', this.value)"></div>
-                        </div>
+                        <div class="fc-airline">${fl.airline || ''} ${fl.code || ''}</div>
+                    </div>
+                    <div class="fc-right">
+                        <div class="fc-time">${fl.depTime || '--:--'} - ${fl.arrTime || '--:--'}</div>
+                        <div class="fc-tz" style="margin-top:2px; font-weight:bold; color:var(--primary);">編輯 ></div>
                     </div>
                 `;
-                container.appendChild(row);
+                container.appendChild(div);
             });
         }
 
         window.addFlight = function(dir) {
-            currentTrip.flights[dir].push({ depTz: (dir==='out'?8:9), arrTz: (dir==='out'?9:8) });
-            window.saveData();
-            // Re-render handled by onSnapshot
+            // Open modal for a new flight immediately
+            appState.flightDir = dir;
+            appState.flightIdx = null; // New
+            
+            // Clear inputs
+            ['f-date','f-code','f-airline','f-dep-time','f-dep-air','f-dep-term','f-arr-time','f-arr-air','f-arr-term'].forEach(id => document.getElementById(id).value='');
+            
+            // Default Timezones
+            renderTimezoneOptions('f-dep-tz', dir==='out'?8:9);
+            renderTimezoneOptions('f-arr-tz', dir==='out'?9:8);
+            
+            window.openModal('flight');
         };
 
-        window.removeFlight = function(dir, idx) {
-            if(confirm('刪除此航班？')) {
-                currentTrip.flights[dir].splice(idx, 1);
+        window.openFlightModal = function(dir, idx) {
+            appState.flightDir = dir;
+            appState.flightIdx = idx;
+            const f = currentTrip.flights[dir][idx];
+            
+            document.getElementById('f-date').value = f.date || '';
+            document.getElementById('f-code').value = f.code || '';
+            document.getElementById('f-airline').value = f.airline || '';
+            
+            document.getElementById('f-dep-time').value = f.depTime || '';
+            document.getElementById('f-dep-air').value = f.depAir || '';
+            document.getElementById('f-dep-term').value = f.depTerm || '';
+            renderTimezoneOptions('f-dep-tz', f.depTz || (dir==='out'?8:9));
+
+            document.getElementById('f-arr-time').value = f.arrTime || '';
+            document.getElementById('f-arr-air').value = f.arrAir || '';
+            document.getElementById('f-arr-term').value = f.arrTerm || '';
+            renderTimezoneOptions('f-arr-tz', f.arrTz || (dir==='out'?9:8));
+
+            window.openModal('flight');
+        };
+
+        window.saveFlight = function() {
+            const dir = appState.flightDir;
+            const idx = appState.flightIdx;
+            
+            const newFlight = {
+                date: v('f-date'),
+                code: v('f-code'),
+                airline: v('f-airline'),
+                depTime: v('f-dep-time'),
+                depAir: v('f-dep-air'),
+                depTerm: v('f-dep-term'),
+                depTz: v('f-dep-tz'),
+                arrTime: v('f-arr-time'),
+                arrAir: v('f-arr-air'),
+                arrTerm: v('f-arr-term'),
+                arrTz: v('f-arr-tz')
+            };
+            
+            if (idx === null) {
+                // Add new
+                currentTrip.flights[dir].push(newFlight);
+            } else {
+                // Update
+                currentTrip.flights[dir][idx] = newFlight;
+            }
+            
+            // Sort by Date then Time
+            currentTrip.flights[dir].sort((a,b) => {
+                const da = a.date + a.depTime;
+                const db = b.date + b.depTime;
+                return da.localeCompare(db);
+            });
+
+            window.saveData();
+            window.closeModal('flight');
+        };
+
+        window.deleteFlight = function() {
+            if (appState.flightIdx === null) return;
+            if(confirm('確定刪除此航班？')) {
+                currentTrip.flights[appState.flightDir].splice(appState.flightIdx, 1);
                 window.saveData();
+                window.closeModal('flight');
             }
         };
 
-        window.updateFlightField = function(dir, idx, field, val) {
-            currentTrip.flights[dir][idx][field] = val;
-            window.saveData();
-        };
-        
         window.updateCountdown = function() {
             if(!currentTrip) return;
             const today = new Date(); today.setHours(0,0,0,0);
@@ -1608,6 +1251,7 @@
             return `${h}h ${m}m`;
         }
 
+        // --- Other Items ---
         window.openHotelModal = function(id) { appState.editId=id; appState.editType='hotel'; resetModal('hotel', id); window.openModal('hotel'); };
         window.saveHotel = function() { saveItem('hotels', { name:v('h-name'), address:v('h-address'), source:v('h-source'), order:v('h-order'), date:v('h-date'), days:v('h-days') }); };
         window.renderHotels = function() { 
@@ -1646,28 +1290,21 @@
         };
 
         // --- Money ---
-        // 新增：設定列表篩選成員
         window.setMoneyListFilter = function(member) {
             moneyListMemberFilter = member;
             window.renderMoney();
         };
 
-        // 修改：處理 FAB 按鈕邏輯 (根據分頁開啟不同 Modal)
         window.handleMoneyFab = function() {
             if (appState.moneyTab === 'split') {
                 window.openSplitModal();
-            } else if (activeMember) {
-                // Only allow adding expense if logged in
-                window.openMoneyModal();
             } else {
-                alert('請先選擇成員並解鎖');
+                window.openMoneyModal();
             }
         };
 
         window.openMoneyModal = function(id) {
             appState.editId = id; appState.editType='money';
-            
-            // 重置按鈕樣式
             document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('active'));
 
             if(id) {
@@ -1676,16 +1313,13 @@
                 document.getElementById('m-cost').value = m.cost;
                 document.getElementById('m-date').value = m.date;
                 document.getElementById('m-curr').value = m.curr || 'NT$';
-                document.getElementById('m-note').value = m.note || ''; // 讀取備註
-                
+                document.getElementById('m-note').value = m.note || ''; 
                 moneyState.payer = m.payer; 
                 moneyState.method = m.method;
             } else {
-                // New Expense: Force Payer to Active Member
                 ['m-title','m-cost','m-note'].forEach(k=>document.getElementById(k).value='');
-                moneyState.payer = activeMember; 
+                moneyState.payer = currentTrip.members[0]; 
                 moneyState.method = 'cash';
-                
                 const d = new Date(currentTrip.startDate); 
                 d.setDate(d.getDate() + appState.dayIdx);
                 document.getElementById('m-date').value = d.toISOString().split('T')[0];
@@ -1711,21 +1345,19 @@
 
         function renderPayerBtns() {
             const c = document.getElementById('m-payer-wrapper'); c.innerHTML='';
-            // Only show active member as option (since we are in private mode)
-            // Or allow selecting others? Request said "Privacy". Usually implies you only edit your own.
-            // Let's restrict creation to activeMember for simplicity and privacy.
-            
-            const b = document.createElement('button'); b.className='chip-btn active';
-            b.innerText = activeMember;
-            // Disable click to change
-            c.appendChild(b);
+            currentTrip.members.forEach(m => {
+                const b = document.createElement('button'); b.className='chip-btn';
+                b.innerText=m;
+                if(moneyState.payer===m) b.classList.add('active');
+                b.onclick = () => { moneyState.payer=m; renderPayerBtns(); };
+                c.appendChild(b);
+            });
         }
-
         function renderMethodBtns() {
             document.querySelectorAll('.method-btn').forEach(b => {
                 b.classList.remove('active');
                 const text = b.innerText;
-                if((text==='現金' && moneyState.method==='cash') || (text==='信用卡' && moneyState.method==='card') || (text==='其他' && moneyState.method==='other')) {
+                if((text==='現金' && moneyState.method==='cash') || (text==='信用卡' && moneyState.method==='card')) {
                    b.classList.add('active'); 
                 }
             });
@@ -1745,48 +1377,61 @@
                 curr: document.getElementById('m-curr').value, 
                 payer: moneyState.payer, 
                 method: moneyState.method,
-                note: v('m-note') // 儲存備註
+                note: v('m-note') 
             });
         };
 
         window.renderMoney = function() {
-            if(!currentTrip) return;
             const list = document.getElementById('list-money'); 
             const tabs = document.getElementById('money-list-member-tabs');
             list.innerHTML='';
-            tabs.innerHTML=''; // Remove tabs, we are locked to one member
+            tabs.innerHTML='';
 
-            // 2. 篩選當日 & Active Member
-            const dailyItems = (currentTrip.money||[]).filter(i => 
-                i.dayIdx === appState.dayIdx && i.payer === activeMember
-            );
+            const allBtn = document.createElement('button');
+            allBtn.className = `sub-nav-btn ${moneyListMemberFilter === 'all' ? 'active' : ''}`;
+            allBtn.innerText = '全體';
+            allBtn.onclick = () => window.setMoneyListFilter('all');
+            tabs.appendChild(allBtn);
+
+            currentTrip.members.forEach(m => {
+                const btn = document.createElement('button');
+                btn.className = `sub-nav-btn ${moneyListMemberFilter === m ? 'active' : ''}`;
+                btn.innerText = m;
+                btn.onclick = () => window.setMoneyListFilter(m);
+                tabs.appendChild(btn);
+            });
             
+            const dailyItems = (currentTrip.money||[]).filter(i=>i.dayIdx===appState.dayIdx);
             const methodMap = { 'cash': '現金', 'card': '信用卡', 'other': '其他' };
             
-            // 3. 計算總額
+            let displayItems = [];
+            if(moneyListMemberFilter === 'all') {
+                displayItems = dailyItems;
+            } else {
+                displayItems = dailyItems.filter(i => i.payer === moneyListMemberFilter);
+            }
+
             let totals = {};
-            dailyItems.forEach(i => {
+            displayItems.forEach(i => {
                 const curr = i.curr || 'NT$';
                 totals[curr] = (totals[curr] || 0) + parseFloat(i.cost);
             });
 
-            // 4. 渲染總額
             const currencies = Object.keys(totals);
             if(currencies.length > 0) {
                 const totalStr = currencies.map(c => `${c} ${totals[c].toLocaleString()}`).join('  +  ');
+                const titleStr = moneyListMemberFilter === 'all' ? '當日合計' : `${moneyListMemberFilter} 合計`;
                 list.innerHTML += `<div class="daily-total-box">
-                                        <span class="dt-label">${activeMember} 當日合計:</span> 
+                                        <span class="dt-label">${titleStr}:</span> 
                                         <span class="dt-val">${totalStr}</span>
                                    </div>`;
             }
 
-            // 5. 渲染列表
-            if(dailyItems.length === 0) {
+            if(displayItems.length === 0) {
                 list.innerHTML += '<div style="text-align:center; padding:20px; color:#ccc;">無支出</div>';
             } else {
-                dailyItems.slice().reverse().forEach(i => {
+                displayItems.slice().reverse().forEach(i => {
                     const noteHtml = i.note ? `<span style="font-size:0.85rem; color:#999; font-weight:normal; margin-left:6px;">(${i.note})</span>` : '';
-                    
                     list.innerHTML += `
                     <div class="money-item-row" onclick="window.openMoneyModal(${i.id})">
                         <div style="display:flex; align-items:center; gap:12px;">
@@ -1805,140 +1450,18 @@
         };
 
         window.switchMoneySub = function(sub) {
-            appState.moneyTab = sub;
-            
-            // Logic: Split is public, List/Analysis is private
-            if (sub === 'split') {
-                document.getElementById('money-member-selector').classList.add('hidden');
-                document.getElementById('money-view-list').classList.add('hidden');
-                document.getElementById('money-view-analysis').classList.add('hidden');
-                document.getElementById('money-view-split').classList.remove('hidden');
-                document.getElementById('btn-logout').classList.add('hidden');
-                window.renderSplitBills();
-            } else {
-                // Private Views
-                document.getElementById('money-view-split').classList.add('hidden');
-                
-                if (!activeMember) {
-                    // Not logged in -> Show selector
-                    document.getElementById('money-member-selector').classList.remove('hidden');
-                    document.getElementById('money-view-list').classList.add('hidden');
-                    document.getElementById('money-view-analysis').classList.add('hidden');
-                    document.getElementById('btn-logout').classList.add('hidden');
-                    window.renderMemberSelector();
-                } else {
-                    // Logged in -> Show content
-                    document.getElementById('money-member-selector').classList.add('hidden');
-                    document.getElementById('btn-logout').classList.remove('hidden');
-                    
-                    if (sub === 'list') {
-                        document.getElementById('money-view-list').classList.remove('hidden');
-                        document.getElementById('money-view-analysis').classList.add('hidden');
-                        window.renderMoney();
-                    } else if (sub === 'analysis') {
-                        document.getElementById('money-view-list').classList.add('hidden');
-                        document.getElementById('money-view-analysis').classList.remove('hidden');
-                        window.renderMoneyAnalysis();
-                    }
-                }
-            }
-
-            // Tabs UI
+            appState.moneyTab = sub; 
+            document.getElementById('money-view-list').classList.toggle('hidden', sub!=='list');
+            document.getElementById('money-view-analysis').classList.toggle('hidden', sub!=='analysis');
+            document.getElementById('money-view-split').classList.toggle('hidden', sub!=='split'); 
             document.getElementById('btn-money-list').classList.toggle('active', sub==='list');
             document.getElementById('btn-money-analysis').classList.toggle('active', sub==='analysis');
-            document.getElementById('btn-money-split').classList.toggle('active', sub==='split');
-        };
-
-        window.renderMemberSelector = function() {
-            const grid = document.getElementById('member-lock-grid');
-            grid.innerHTML = '';
-            
-            if(!currentTrip || !currentTrip.members) return;
-
-            currentTrip.members.forEach(m => {
-                // Check if PIN exists
-                const hasPin = currentTrip.memberPins && currentTrip.memberPins[m];
-                const statusIcon = hasPin ? '🔒' : '⚙️';
-                
-                grid.innerHTML += `
-                    <div class="lock-avatar" onclick="window.handleMemberClick('${m}')">
-                        <div class="lock-avatar-circle">${m[0]}</div>
-                        <div class="lock-avatar-name">${m} <span style="font-size:0.7rem;">${statusIcon}</span></div>
-                    </div>
-                `;
-            });
-        };
-
-        window.handleMemberClick = function(member) {
-            pinTargetMember = member;
-            const hasPin = currentTrip.memberPins && currentTrip.memberPins[member];
-            
-            if (!hasPin) {
-                // No PIN: Set up new PIN
-                document.getElementById('pin-title').innerText = `設定 ${member} 的密碼`;
-                document.getElementById('pin-desc').innerText = "首次使用請設定 4 位數密碼";
-                document.getElementById('pin-input').value = '';
-                window.openModal('pin');
-            } else {
-                // Has PIN: Verify
-                document.getElementById('pin-title').innerText = `驗證 ${member} 的密碼`;
-                document.getElementById('pin-desc').innerText = "請輸入密碼以解鎖";
-                document.getElementById('pin-input').value = '';
-                window.openModal('pin');
-            }
-        };
-
-        window.submitPin = function() {
-            const input = document.getElementById('pin-input').value;
-            if (!input || input.length < 4) return alert('請輸入 4 位數密碼');
-            
-            const hasPin = currentTrip.memberPins && currentTrip.memberPins[pinTargetMember];
-            
-            if (!hasPin) {
-                // Setting new PIN
-                if (!currentTrip.memberPins) currentTrip.memberPins = {};
-                currentTrip.memberPins[pinTargetMember] = input;
-                window.saveData();
-                window.closeModal('pin');
-                window.unlockMember(pinTargetMember);
-            } else {
-                // Verifying
-                if (currentTrip.memberPins[pinTargetMember] === input) {
-                    window.closeModal('pin');
-                    window.unlockMember(pinTargetMember);
-                } else {
-                    alert('密碼錯誤');
-                    document.getElementById('pin-input').value = '';
-                }
-            }
-        };
-
-        window.unlockMember = function(member) {
-            activeMember = member;
-            window.switchMoneySub(appState.moneyTab === 'split' ? 'list' : appState.moneyTab);
-        };
-
-        window.logoutMember = function() {
-            activeMember = null;
-            window.switchMoneySub(appState.moneyTab);
-        };
-
-        // Modified Logic: Handle FAB
-        window.handleMoneyFab = function() {
-            if (appState.moneyTab === 'split') {
-                window.openSplitModal();
-            } else if (activeMember) {
-                // Only allow adding expense if logged in
-                window.openMoneyModal();
-            } else {
-                alert('請先選擇成員並解鎖');
-            }
+            document.getElementById('btn-money-split').classList.toggle('active', sub==='split'); 
+            if(sub==='analysis') window.renderMoneyAnalysis();
+            if(sub==='split') window.renderSplitBills(); 
         };
 
         window.toggleAnalysisDetail = function(member) {
-            // In private mode, only allow toggling own detail
-            if (member !== activeMember) return;
-
             const el = document.getElementById(`analysis-detail-${member}`);
             if(el) {
                 const isHidden = el.classList.contains('hidden');
@@ -1951,69 +1474,64 @@
             const container = document.getElementById('analysis-content'); 
             container.innerHTML = '';
             
-            // Only calc for activeMember
             let memberTotals = {};
-            let memberItems = [];
+            let memberItems = {};
+            currentTrip.members.forEach(m => { memberTotals[m] = {}; memberItems[m] = []; });
             
             currentTrip.money.forEach(m => {
-                if(m.payer === activeMember) {
-                    const curr = m.curr || 'NT$';
-                    const cost = parseFloat(m.cost);
-                    memberTotals[curr] = (memberTotals[curr] || 0) + cost;
-                    memberItems.push(m);
-                }
+                const curr = m.curr || 'NT$';
+                const cost = parseFloat(m.cost);
+                const payer = m.payer || currentTrip.members[0];
+                memberTotals[payer][curr] = (memberTotals[payer][curr] || 0) + cost;
+                memberItems[payer].push(m);
             });
 
-            const hasSpending = Object.keys(memberTotals).length > 0;
-            let totalStr = hasSpending ? Object.keys(memberTotals).map(c => `${c} ${memberTotals[c].toLocaleString()}`).join('  /  ') : '無支出';
+            currentTrip.members.forEach(member => {
+                const totals = memberTotals[member];
+                const hasSpending = Object.keys(totals).length > 0;
+                let totalStr = hasSpending ? Object.keys(totals).map(c => `${c} ${totals[c].toLocaleString()}`).join('  /  ') : '無支出';
+                const items = memberItems[member];
+                items.sort((a,b) => b.date.localeCompare(a.date) || b.id - a.id);
 
-            // Detail List
-            memberItems.sort((a,b) => {
-                 if(a.date !== b.date) return b.date.localeCompare(a.date);
-                 return b.id - a.id;
-            });
-
-            let detailHtml = '';
-            if(memberItems.length > 0) {
-                memberItems.forEach(i => {
-                    const noteHtml = i.note ? `<span style="font-size:0.8rem; color:#999; margin-left:5px;">(${i.note})</span>` : '';
-                    detailHtml += `
-                        <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #eee; align-items:center;">
-                            <div>
-                                <div style="font-size:0.75rem; color:#AAA;">${i.date.slice(5)}</div>
-                                <div style="font-weight:bold; font-size:0.95rem;">${i.title} ${noteHtml}</div>
+                let detailHtml = '';
+                if(items.length > 0) {
+                    items.forEach(i => {
+                        const noteHtml = i.note ? `<span style="font-size:0.8rem; color:#999; margin-left:5px;">(${i.note})</span>` : '';
+                        detailHtml += `
+                            <div style="display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid #eee; align-items:center;">
+                                <div>
+                                    <div style="font-size:0.75rem; color:#AAA;">${i.date.slice(5)}</div>
+                                    <div style="font-weight:bold; font-size:0.95rem;">${i.title} ${noteHtml}</div>
+                                </div>
+                                <div style="font-weight:bold;">${i.curr} ${i.cost.toLocaleString()}</div>
                             </div>
-                            <div style="font-weight:bold;">${i.curr} ${i.cost.toLocaleString()}</div>
-                        </div>
-                    `;
-                });
-            } else {
-                detailHtml = '<div style="text-align:center; padding:10px; color:#ccc;">無紀錄</div>';
-            }
+                        `;
+                    });
+                } else {
+                    detailHtml = '<div style="text-align:center; padding:10px; color:#ccc;">無紀錄</div>';
+                }
 
-            container.innerHTML += `
-                <div class="member-stat-wrapper">
-                    <div class="member-stat-card" onclick="window.toggleAnalysisDetail('${activeMember}')">
-                        <div class="m-stat-header">
-                            <span>${activeMember} 的消費統計</span>
-                            <svg class="icon-svg icon-sm"><use href="#icon-chart-bar"/></svg>
+                container.innerHTML += `
+                    <div class="member-stat-wrapper">
+                        <div class="member-stat-card" onclick="window.toggleAnalysisDetail('${member}')">
+                            <div class="m-stat-header">
+                                <span>${member}</span>
+                                <svg class="icon-svg icon-sm"><use href="#icon-chart-bar"/></svg>
+                            </div>
+                            <div class="m-stat-total">${totalStr}</div>
                         </div>
-                        <div class="m-stat-total">${totalStr}</div>
+                        <div id="analysis-detail-${member}" class="analysis-detail-box hidden">
+                            ${detailHtml}
+                        </div>
                     </div>
-                    <div id="analysis-detail-${activeMember}" class="analysis-detail-box hidden">
-                        ${detailHtml}
-                    </div>
-                </div>
-            `;
+                `;
+            });
         };
 
-        // --- Split Bill Logic ---
         window.openSplitModal = function(id) {
             appState.editId = id; appState.editType = 'split';
             const container = document.getElementById('sp-members-container');
             container.innerHTML = '';
-
-            // 填入付款人選單
             const payerSel = document.getElementById('sp-payer');
             payerSel.innerHTML = '';
             currentTrip.members.forEach(m => {
@@ -2028,9 +1546,7 @@
                 document.getElementById('sp-date').value = data.date;
                 document.getElementById('sp-title').value = data.title;
                 document.getElementById('sp-curr').value = data.curr;
-                // 新增：回填總金額，不自動開啟平分以免覆蓋手動輸入
                 document.getElementById('sp-total').value = data.total || 0; 
-                // Reset check state
                 document.getElementById('sp-is-even-check').classList.remove('active'); 
                 payerSel.value = data.payer;
                 document.getElementById('btn-delete-split').style.display = 'flex';
@@ -2043,16 +1559,14 @@
                 document.getElementById('btn-delete-split').style.display = 'none';
             }
 
-            // 生成成員輸入列
             currentTrip.members.forEach(m => {
                 let should = '';
                 let paid = '';
-                let isChecked = true; // 預設都參與分攤
+                let isChecked = true; 
 
                 if (data && data.details && data.details[m]) {
                     should = data.details[m].should || '';
                     paid = data.details[m].paid || '';
-                    // 如果有編輯，且該成員需付金額為0，可能當時沒參與（這裡簡單判斷）
                     if(id && parseFloat(should) === 0) isChecked = false;
                 }
 
@@ -2069,42 +1583,21 @@
             window.openModal('split');
         };
 
-        // UI Helper: Toggle Checkbox
-        window.toggleSplitCheck = function(el) {
-            el.classList.toggle('active');
-        };
-
-        // Logic: Uncheck 'Even' box if manual edit
-        window.uncheckEven = function() {
-            document.getElementById('sp-is-even-check').classList.remove('active');
-        };
-
-        // Logic: Auto Calculate Split
+        window.toggleSplitCheck = function(el) { el.classList.toggle('active'); };
+        window.uncheckEven = function() { document.getElementById('sp-is-even-check').classList.remove('active'); };
         window.calcSplit = function() {
             const isEven = document.getElementById('sp-is-even-check').classList.contains('active');
-            if(!isEven) return; // If not even split mode, do nothing
-
+            if(!isEven) return; 
             const total = parseFloat(document.getElementById('sp-total').value) || 0;
-            // Select member checkboxes
-            const container = document.getElementById('sp-members-container');
-            const checks = container.querySelectorAll('.split-check.active');
+            const checks = document.getElementById('sp-members-container').querySelectorAll('.split-check.active');
             const count = checks.length;
-
             if(count === 0) return;
-
-            const share = Math.floor(total / count); // Simple floor, last one adjustment maybe? Keep simple for now
-            
-            // First clear all
+            const share = Math.floor(total / count); 
             document.querySelectorAll('.sp-should').forEach(inp => inp.value = 0);
-
-            // Fill selected
             checks.forEach(c => {
                 const m = c.getAttribute('data-member');
                 const input = document.querySelector(`.sp-should[data-member="${m}"]`);
-                if(input) {
-                    input.value = share;
-                    // input.disabled = true; // Optional: Disable manual edit while in Even mode
-                }
+                if(input) input.value = share;
             });
         };
 
@@ -2119,30 +1612,16 @@
 
             let details = {};
             let calculatedTotal = 0;
-            
             document.querySelectorAll('.sp-should').forEach(el => {
                 const m = el.getAttribute('data-member');
                 const row = el.parentElement;
                 const shouldVal = parseFloat(el.value) || 0;
                 const paidVal = parseFloat(row.querySelector('.sp-paid').value) || 0;
-                
-                details[m] = {
-                    should: shouldVal,
-                    paid: paidVal
-                };
+                details[m] = { should: shouldVal, paid: paidVal };
                 calculatedTotal += shouldVal;
             });
-
-            // Use the calculated total from members sum to be precise, or input total?
-            // Usually the sum of splits is the truth.
             const finalTotal = calculatedTotal > 0 ? calculatedTotal : totalInput;
-
-            const newItem = {
-                id: appState.editId || Date.now(),
-                date, title, payer, curr, 
-                total: finalTotal, 
-                details
-            };
+            const newItem = { id: appState.editId || Date.now(), date, title, payer, curr, total: finalTotal, details };
 
             if(appState.editId) {
                 const idx = currentTrip.splitBills.findIndex(x=>x.id===appState.editId);
@@ -2150,7 +1629,6 @@
             } else {
                 currentTrip.splitBills.push(newItem);
             }
-
             window.saveData();
             window.closeModal('split');
             window.renderSplitBills();
@@ -2168,27 +1646,18 @@
         window.renderSplitBills = function() {
             const list = document.getElementById('split-list-container');
             list.innerHTML = '';
-
             if(!currentTrip.splitBills || currentTrip.splitBills.length === 0) {
                 list.innerHTML = '<div style="text-align:center; padding:30px; color:#ccc;">尚無分帳紀錄<br><span style="font-size:0.8rem;">點擊 + 新增</span></div>';
                 return;
             }
-
             const sorted = [...currentTrip.splitBills].sort((a,b) => b.date.localeCompare(a.date));
-
             sorted.forEach(item => {
                 let membersHtml = '';
-                
                 currentTrip.members.forEach(m => {
                     const d = item.details[m] || {should:0, paid:0};
                     const owe = d.should - d.paid;
-                    
                     if (d.should > 0 || owe !== 0) {
-                        let statusHtml = '';
-                        if (owe > 0) statusHtml = `<span class="split-owe">欠 ${owe}</span>`;
-                        else if (owe < 0) statusHtml = `<span class="split-clean">找 ${Math.abs(owe)}</span>`;
-                        else statusHtml = `<span class="split-clean">✔ 結清</span>`;
-
+                        let statusHtml = owe > 0 ? `<span class="split-owe">欠 ${owe}</span>` : (owe < 0 ? `<span class="split-clean">找 ${Math.abs(owe)}</span>` : `<span class="split-clean">✔ 結清</span>`);
                         membersHtml += `
                             <div class="split-member-row">
                                 <div class="split-member-name">${m}</div>
@@ -2197,11 +1666,9 @@
                                     <span><span class="split-label">已付</span>${d.paid}</span>
                                     ${statusHtml}
                                 </div>
-                            </div>
-                        `;
+                            </div>`;
                     }
                 });
-
                 list.innerHTML += `
                     <div class="split-card" onclick="window.openSplitModal(${item.id})">
                         <div class="split-header">
@@ -2212,10 +1679,305 @@
                             <div class="split-payer-badge">墊: ${item.payer}</div>
                         </div>
                         <div>${membersHtml}</div>
-                    </div>
-                `;
+                    </div>`;
             });
         };
+
+        window.openJournalModal = function(id) {
+            appState.editId = id;
+            if (id) {
+                const j = currentTrip.journals.find(x => x.id === id);
+                document.getElementById('j-date').value = j.date;
+                fillMemberSelect('j-writer');
+                document.getElementById('j-writer').value = j.writer;
+                document.getElementById('j-content').value = j.content;
+            } else {
+                document.getElementById('j-date').value = new Date().toISOString().split('T')[0];
+                document.getElementById('j-content').value = '';
+                fillMemberSelect('j-writer');
+            }
+            window.openModal('journal');
+        };
+
+        function getFormattedTime() {
+            const now = new Date();
+            const pad = (n) => String(n).padStart(2,'0');
+            return `${now.getFullYear()}/${pad(now.getMonth()+1)}/${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}`;
+        }
+
+        window.saveJournal = function() {
+            const date = document.getElementById('j-date').value;
+            const writer = document.getElementById('j-writer').value;
+            const content = document.getElementById('j-content').value;
+            if(!content) return;
+            
+            if (appState.editId) {
+                const idx = currentTrip.journals.findIndex(x => x.id === appState.editId);
+                if (idx !== -1) {
+                    const oldJ = currentTrip.journals[idx];
+                    currentTrip.journals[idx] = { ...oldJ, date, writer, content, lastEdited: getFormattedTime() };
+                }
+            } else {
+                currentTrip.journals.unshift({ id: Date.now(), date, writer, content, comments: [] });
+            }
+            currentTrip.journals.sort((a,b) => b.date.localeCompare(a.date) || b.id - a.id);
+            window.saveData(); window.closeModal('journal');
+        };
+
+        window.addJournalComment = function(jId) {
+            const input = document.getElementById(`j-c-input-${jId}`);
+            const select = document.getElementById(`j-c-writer-${jId}`);
+            const text = input.value;
+            const writer = select.value;
+            
+            if(!text) return;
+            const jIdx = currentTrip.journals.findIndex(x => x.id === jId);
+            if(jIdx !== -1) {
+                if(!currentTrip.journals[jIdx].comments) currentTrip.journals[jIdx].comments = [];
+                currentTrip.journals[jIdx].comments.push({ id: Date.now(), text: text, writer: writer, time: getFormattedTime() });
+                window.saveData();
+            }
+        };
+
+        window.delJournalComment = function(jId, cId) {
+            if(!confirm('刪除留言?')) return;
+            const jIdx = currentTrip.journals.findIndex(x => x.id === jId);
+            if(jIdx !== -1 && currentTrip.journals[jIdx].comments) {
+                currentTrip.journals[jIdx].comments = currentTrip.journals[jIdx].comments.filter(c => c.id !== cId);
+                window.saveData();
+            }
+        };
+
+        function getPastelColor(str) {
+            const colors = ['#FCA5A5', '#FDBA74', '#FDE047', '#86EFAC', '#67E8F9', '#93C5FD', '#C4B5FD', '#F9A8D4'];
+            let hash = 0;
+            for (let i = 0; i < str.length; i++) hash = str.charCodeAt(i) + ((hash << 5) - hash);
+            return colors[Math.abs(hash) % colors.length];
+        }
+        
+        window.renderJournal = function() {
+            const list = document.getElementById('journal-list'); list.innerHTML = '';
+            if(!currentTrip.journals || currentTrip.journals.length===0) { list.innerHTML='<div style="text-align:center; color:#CCC; margin-top:20px;">還沒有日誌，寫一篇吧！</div>'; return; }
+            currentTrip.journals.sort((a,b) => b.date.localeCompare(a.date) || b.id - a.id);
+
+            currentTrip.journals.forEach(j => {
+                const d = new Date(j.date);
+                const day = d.getDate();
+                const ym = `${d.getFullYear()} 年 ${d.getMonth()+1} 月`;
+                const bg = getPastelColor(j.writer || 'A');
+                const lastEdit = j.lastEdited ? `最後編輯於 ${j.lastEdited}` : '';
+                
+                let commentsHtml = '';
+                if(j.comments && j.comments.length > 0) {
+                    j.comments.forEach(c => {
+                        const cBg = getPastelColor(c.writer || 'U');
+                        commentsHtml += `
+                            <div class="j-comment-row">
+                                <div class="j-comment-avatar" style="background:${cBg}">${(c.writer||'U')[0]}</div>
+                                <div class="j-comment-bubble">
+                                    <div>${c.text}</div>
+                                    <div class="j-comment-meta">
+                                        <span>${c.writer} • ${c.time.split(' ')[1]}</span>
+                                        <span class="j-del-comment" onclick="window.delJournalComment(${j.id}, ${c.id})">✕</span>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+                }
+                
+                let memberOpts = '';
+                currentTrip.members.forEach(m => { memberOpts += `<option value="${m}">${m}</option>`; });
+
+                list.innerHTML += `
+                <div class="journal-card">
+                    <div class="journal-header">
+                        <div class="j-date-box">
+                            <span class="j-day">${day}</span>
+                            <span class="j-ym">日 / ${ym}</span>
+                        </div>
+                        <div class="j-writer-badge" style="background:${bg}">${j.writer}</div>
+                    </div>
+                    <div class="journal-content">${j.content}</div>
+                    
+                    <div class="j-last-edit">${lastEdit}</div>
+
+                    <div class="j-footer">
+                        <div class="btn-list-action-group">
+                            <button class="btn-list-edit" onclick="window.openJournalModal(${j.id})">✎</button>
+                            <button class="btn-list-del" onclick="window.delItem('journals', ${j.id})"><svg class="icon-svg icon-sm"><use href="#icon-trash"></use></svg></button>
+                        </div>
+                    </div>
+
+                    <div class="j-comments-section">
+                        ${commentsHtml}
+                        <div class="j-input-area">
+                            <select id="j-c-writer-${j.id}" class="j-input-select">${memberOpts}</select>
+                            <input type="text" id="j-c-input-${j.id}" class="j-input-text" placeholder="留言...">
+                            <button class="j-send-btn" onclick="window.addJournalComment(${j.id})">➤</button>
+                        </div>
+                    </div>
+                </div>`;
+            });
+        };
+
+        window.addPackItem = function() {
+            const val = document.getElementById('pack-input').value;
+            if(!val) return;
+            let checks = {};
+            currentTrip.members.forEach(m => checks[m] = false);
+            currentTrip.packing.push({ id:Date.now(), text:val, checks: checks });
+            document.getElementById('pack-input').value = '';
+            window.saveData();
+        };
+        window.toggleMemberCheck = function(itemId, member) {
+            const item = currentTrip.packing.find(x => x.id === itemId);
+            if(item) {
+                if(!item.checks) item.checks = {};
+                item.checks[member] = !item.checks[member];
+                window.saveData();
+            }
+        };
+        window.renderPacking = function() {
+            const list = document.getElementById('list-packing'); 
+            list.innerHTML = '';
+            (currentTrip.packing || []).forEach(i => {
+                let membersHtml = '<div class="pack-members-row">';
+                currentTrip.members.forEach(m => {
+                    const isChecked = i.checks && i.checks[m];
+                    const firstChar = m.charAt(0);
+                    membersHtml += `<div class="pack-avatar ${isChecked?'checked':''}" onclick="window.toggleMemberCheck(${i.id}, '${m}')">${firstChar}</div>`;
+                });
+                membersHtml += '</div>';
+                
+                list.innerHTML += `
+                    <div class="pack-item-card" data-id="${i.id}">
+                        <div class="pack-info"><span class="pack-name">${i.text}</span></div>
+                        <div style="display:flex; align-items:center;">${membersHtml}<button class="pack-btn-del" onclick="window.delItem('packing', ${i.id})">✕</button></div>
+                    </div>`;
+            });
+            if (sortablePacking) { sortablePacking.destroy(); }
+            sortablePacking = new Sortable(list, {
+                animation: 150, delay: 300, delayOnTouchOnly: true, ghostClass: 'sortable-ghost',
+                onEnd: function (evt) {
+                    if (evt.newIndex === evt.oldIndex) return;
+                    const movedItem = currentTrip.packing.splice(evt.oldIndex, 1)[0];
+                    currentTrip.packing.splice(evt.newIndex, 0, movedItem);
+                    window.saveData();
+                }
+            });
+        };
+
+        window.switchListSub = function(t) { 
+            appState.listType=t; 
+            document.querySelectorAll('#tab-shopping .sub-nav-btn').forEach(b=>b.classList.toggle('active', (t==='shop'&&b.innerText.includes('購物'))||(t==='food'&&b.innerText.includes('美食')))); 
+            window.renderLists(); 
+        };
+        
+        window.openShoppingModal = function(id) {
+            appState.editId = id; 
+            const arr = appState.listType === 'shop' ? 'shopping' : 'foodList';
+            if (id) {
+                const item = currentTrip[arr].find(i => i.id === id);
+                if (item) {
+                    document.getElementById('s-name').value = item.text || '';
+                    document.getElementById('s-loc').value = item.location || '';
+                    document.getElementById('s-open').value = item.open || item.price || '';
+                    document.getElementById('s-note').value = item.note || ''; 
+                    fillMemberSelect('s-owner');
+                    document.getElementById('s-owner').value = item.owner || '';
+                }
+            } else {
+                document.getElementById('s-name').value = '';
+                document.getElementById('s-loc').value = '';
+                document.getElementById('s-open').value = '';
+                document.getElementById('s-note').value = '';
+                fillMemberSelect('s-owner');
+            }
+            window.openModal('shopping');
+        };
+
+        window.saveShoppingItem = function() {
+            const name = document.getElementById('s-name').value;
+            const loc = document.getElementById('s-loc').value;
+            const open = document.getElementById('s-open').value;
+            const owner = document.getElementById('s-owner').value;
+            const note = document.getElementById('s-note').value;
+            
+            if(!name) return;
+            const arr = appState.listType==='shop'?'shopping':'foodList';
+            
+            if (appState.editId) {
+                const idx = currentTrip[arr].findIndex(i => i.id === appState.editId);
+                if (idx !== -1) {
+                    currentTrip[arr][idx] = { ...currentTrip[arr][idx], text: name, location: loc, open: open, owner: owner, note: note };
+                }
+            } else {
+                currentTrip[arr].push({ id: Date.now(), text: name, open: open, location: loc, owner: owner, note: note, checked: false });
+            }
+            window.saveData(); window.closeModal('shopping'); window.renderLists();
+        };
+
+        window.toggleShopNote = function(btn) { btn.closest('.check-item').classList.toggle('show-note'); };
+
+        window.renderLists = function() {
+            const listContainer = document.getElementById('list-items-container'); 
+            listContainer.innerHTML = '';
+            const arr = appState.listType==='shop'?'shopping':'foodList';
+            
+            (currentTrip[arr]||[]).forEach(i => {
+                const displayTime = i.open || i.price;
+                let pillTime = displayTime ? `<span class="meta-pill meta-time"><svg class="icon-svg"><use href="#icon-clock"/></svg>${displayTime}</span>` : '';
+                let pillLoc = i.location ? `<span class="meta-pill meta-loc"><svg class="icon-svg"><use href="#icon-map-pin"/></svg>${i.location}</span>` : '';
+                let ownerHtml = i.owner ? `<div class="member-badge-pill">${i.owner}</div>` : '';
+                const hasNote = i.note && i.note.trim().length > 0;
+                const noteToggleBtn = hasNote ? `<button class="note-toggle-btn" onclick="event.stopPropagation(); window.toggleShopNote(this)">▼</button>` : '';
+                const notePanel = hasNote ? `<div class="check-note-panel">${i.note}</div>` : '';
+
+                listContainer.innerHTML += `
+                    <div class="card check-item ${i.checked?'checked':''}" data-id="${i.id}">
+                        <div class="check-item-body">
+                            <div class="check-left">
+                                <div class="check-name-row">
+                                    <div class="check-box" onclick="event.stopPropagation(); window.toggleCheck('${arr}', ${i.id})"></div>
+                                    <div class="check-text">${i.text}${noteToggleBtn}</div>
+                                </div>
+                                ${ (i.location || displayTime) ? '<div class="check-separator"></div>' : '' }
+                                <div class="check-meta-row">${pillLoc}${pillTime}</div>
+                            </div>
+                            <div class="check-right">
+                                ${ownerHtml}
+                                <div class="btn-list-action-group">
+                                    <button class="btn-list-edit" onclick="event.stopPropagation(); window.openShoppingModal(${i.id})">✎</button>
+                                    <button class="btn-list-del" onclick="event.stopPropagation(); window.delItem('${arr}', ${i.id})"><svg class="icon-svg icon-sm"><use href="#icon-trash"></use></svg></button>
+                                </div>
+                            </div>
+                        </div>
+                        ${notePanel}
+                    </div>`;
+            });
+
+            if (sortableInstance) { sortableInstance.destroy(); }
+            sortableInstance = new Sortable(listContainer, {
+                animation: 150, delay: 300, delayOnTouchOnly: true, touchStartThreshold: 5, ghostClass: 'sortable-ghost',
+                onEnd: function (evt) {
+                    if (evt.newIndex === evt.oldIndex) return;
+                    const movedItem = currentTrip[arr].splice(evt.oldIndex, 1)[0];
+                    currentTrip[arr].splice(evt.newIndex, 0, movedItem);
+                    window.saveData();
+                }
+            });
+        };
+
+        window.toggleCheck = function(arr, id) { const i=currentTrip[arr].find(x=>x.id===id); if(i){i.checked=!i.checked; window.saveData();} };
+        window.delItem = function(arr, id) { if(confirm('刪除？')){ currentTrip[arr]=currentTrip[arr].filter(x=>x.id!==id); window.saveData(); } };
+        window.goHome = function() { 
+            if(unsubscribe) unsubscribe();
+            document.getElementById('view-home').classList.remove('hidden'); 
+            document.getElementById('view-detail').classList.add('hidden'); 
+            window.renderHome();
+        };
+        window.shareTrip = function() { navigator.clipboard.writeText(currentTrip.id).then(()=>alert("ID已複製: "+currentTrip.id)); };
 
         window.openMap = function(e, loc) { e.stopPropagation(); window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(loc)}`); };
         window.fetchRate = async function() {
@@ -2232,15 +1994,12 @@
             try {
                 const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(currentTrip.city)}&count=1&language=zh&format=json`);
                 const geoData = await geoRes.json();
-                
                 if(!geoData.results || geoData.results.length === 0) {
                      document.getElementById('weather-loc').innerText = "找不到地點";
                      return;
                 }
-                
                 const {latitude, longitude, name} = geoData.results[0];
                 document.getElementById('weather-loc').innerText = name;
-                
                 const wRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&daily=weathercode,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_probability_max&timezone=auto&start_date=${dateStr}&end_date=${dateStr}`);
                 const wData = await wRes.json();
                 if(wData.daily) {
@@ -2262,9 +2021,8 @@
             document.getElementById('weather-text').innerText = t;
         }
 
-        // --- Itinerary ---
         window.getTargetDateStr = function(startStr, dayOffset) {
-            if(!startStr) return new Date().toISOString().split('T')[0]; // Safe Fallback
+            if(!startStr) return new Date().toISOString().split('T')[0];
             const parts = startStr.split('-');
             if(parts.length !== 3) return new Date().toISOString().split('T')[0];
             const d = new Date(parts[0], parts[1]-1, parts[2]);
@@ -2298,10 +2056,7 @@
                     appState.dayIdx=i; 
                     window.renderAllDetail();
                 };
-                
                 if(dc) dc.appendChild(div);
-                
-                // For Money Tab
                 if(mc) {
                     const divM = div.cloneNode(true); 
                     divM.onclick=()=>{
@@ -2328,27 +2083,18 @@
             if(!currentTrip) return;
             if(!currentTrip.itinerary) currentTrip.itinerary = [];
 
-            // Flight Logic (Using array structure)
             const currentDayDate = window.getTargetDateStr(currentTrip.startDate, appState.dayIdx);
             let fList = [];
-            let title = '';
 
-            // Combine outbound and inbound checking
             if (currentTrip.flights) {
-                // Check Outbound
                 if (currentTrip.flights.out) {
                     currentTrip.flights.out.forEach(f => {
-                        if (f.date === currentDayDate) {
-                            fList.push({ ...f, type: 'OUTBOUND' });
-                        }
+                        if (f.date === currentDayDate) fList.push({ ...f, type: 'OUTBOUND' });
                     });
                 }
-                // Check Inbound
                 if (currentTrip.flights.in) {
                     currentTrip.flights.in.forEach(f => {
-                        if (f.date === currentDayDate) {
-                            fList.push({ ...f, type: 'INBOUND' });
-                        }
+                        if (f.date === currentDayDate) fList.push({ ...f, type: 'INBOUND' });
                     });
                 }
             }
@@ -2358,38 +2104,25 @@
                 fList.forEach(f => {
                     const depTermHtml = f.depTerm ? `<span class="bp-term">${f.depTerm}</span>` : '';
                     const arrTermHtml = f.arrTerm ? `<span class="bp-term">${f.arrTerm}</span>` : '';
-                    
                     flightsHtml += `
                     <div class="bp-card">
                         <div class="bp-header">${f.type === 'OUTBOUND' ? '去程 OUTBOUND' : '回程 INBOUND'}</div>
                         <div class="bp-body">
-                            <div class="bp-group" style="flex:1;">
-                                <div class="bp-time-row">
-                                    <span class="bp-time">${f.depTime||'--:--'}</span>
-                                    <span class="bp-tz">UTC${f.depTz>=0?'+':''}${f.depTz}</span>
-                                </div>
-                                <div class="bp-loc-row">
-                                    <span class="bp-code">${f.depAir||'DEP'}</span>
-                                    ${depTermHtml}
-                                </div>
+                            <div class="bp-group">
+                                <span class="bp-code">${f.depAir||'DEP'}</span>
+                                ${depTermHtml}
+                                <span class="bp-time">${f.depTime||'--:--'}</span>
                             </div>
-
                             <div class="bp-center">
-                                <div style="font-size:0.75rem; font-weight:bold; white-space:nowrap;">${f.airline}</div>
+                                <div style="font-size:0.8rem;">${f.airline}</div>
                                 <div class="bp-line"></div>
-                                <div style="color:var(--primary); font-weight:bold; font-size:0.8rem;">${f.code}</div>
+                                <div style="color:var(--primary); font-weight:bold;">${f.code}</div>
                                 <div class="bp-duration">${calcDuration(f.depTime,f.depTz,f.arrTime,f.arrTz)}</div>
                             </div>
-
-                            <div class="bp-group" style="flex:1;">
-                                <div class="bp-time-row">
-                                    <span class="bp-time">${f.arrTime||'--:--'}</span>
-                                    <span class="bp-tz">UTC${f.arrTz>=0?'+':''}${f.arrTz}</span>
-                                </div>
-                                <div class="bp-loc-row">
-                                    <span class="bp-code">${f.arrAir||'ARR'}</span>
-                                    ${arrTermHtml}
-                                </div>
+                            <div class="bp-group">
+                                <span class="bp-code">${f.arrAir||'ARR'}</span>
+                                ${arrTermHtml}
+                                <span class="bp-time">${f.arrTime||'--:--'}</span>
                             </div>
                         </div>
                     </div>`;
@@ -2399,16 +2132,12 @@
                 flightC.innerHTML = '';
             }
 
-            // Itinerary Items: Match by DATE
             let mixed = (currentTrip.itinerary||[]).filter(x => {
-                // If item has date, match date. If legacy item (no date), match dayIdx (fallback)
                 if(x.date) return x.date === currentDayDate;
                 return x.dayIdx === appState.dayIdx;
             }).map(x=>({...x, src:'it'}));
 
-            // Charters also need date match
             (currentTrip.charters||[]).filter(x=>x.date===currentDayDate).forEach(x=>mixed.push({...x, src:'charter', loc:x.from, title:x.type}));
-            
             mixed.sort((a,b) => (a.time||'').localeCompare(b.time||''));
 
             const icons = { spot:'icon-spot', food:'icon-food', shop:'icon-nav-shop', transport:'icon-transport', other:'icon-star', charter:'icon-car' };
@@ -2428,9 +2157,7 @@
                     if(item.title && item.title!==item.loc) sub = `<div style="font-size:0.85rem; color:#999; margin-top:2px;">${item.title}</div>`; 
                 }
                 
-                if(item.open) {
-                     sub += `<div class="open-badge"><svg class="icon-svg"><use href="#icon-clock"></use></svg>${item.open}</div>`;
-                }
+                if(item.open) sub += `<div class="open-badge"><svg class="icon-svg"><use href="#icon-clock"></use></svg>${item.open}</div>`;
 
                 const clickAction = item.src==='charter' ? `window.openCharterModal(${item.id})` : `window.editItinerary(${item.id})`;
                 const mapBtn = (item.loc || item.dest) ? `<button class="btn-map-icon" onclick="event.stopPropagation(); window.openMap(event, '${item.type==='transport'?item.dest:item.loc}')"><svg class="icon-svg icon-sm"><use href="#icon-map-pin"></use></svg></button>` : '';
@@ -2438,7 +2165,6 @@
                 if(list) list.innerHTML += `<div class="timeline-item" onclick="${clickAction}"><div class="time-bubble">${timeHTML}</div><div class="it-card type-${item.type}"><div class="it-icon"><svg class="icon-svg icon-sm"><use href="#${icons[item.type]||'icon-star'}"></use></svg></div><div style="flex:1; min-width:0;"><div style="font-weight:bold; font-size:1.05rem;">${title}</div>${sub}<div class="it-note">${item.note||''}</div></div><div class="it-actions">${mapBtn}</div></div></div>`;
             });
 
-            // Night Stay
             if(nightStayC) {
                 const stay = (currentTrip.hotels||[]).find(h => {
                     const checkIn = new Date(h.date);
@@ -2447,22 +2173,18 @@
                     const currentD = new Date(currentDayDate);
                     return currentD >= checkIn && currentD < checkOut;
                 });
-                if(stay) {
-                    nightStayC.innerHTML = `<div class="night-stay-box"><svg class="icon-svg"><use href="#icon-moon"></use></svg><div><div style="font-size:0.8rem; opacity:0.8;">Tonight's Stay</div><div style="font-weight:bold; font-size:1.1rem;">${stay.name}</div><div style="font-size:0.8rem;">${stay.address}</div></div></div>`;
-                }
+                if(stay) nightStayC.innerHTML = `<div class="night-stay-box"><svg class="icon-svg"><use href="#icon-moon"></use></svg><div><div style="font-size:0.8rem; opacity:0.8;">Tonight's Stay</div><div style="font-weight:bold; font-size:1.1rem;">${stay.name}</div><div style="font-size:0.8rem;">${stay.address}</div></div></div>`;
             }
         };
 
         window.openNewItinerary = function() {
             appState.editId = null;
-            // 清空
             ['i-time','i-title','i-loc','i-note','i-open','i-end-time','i-dest'].forEach(id=>document.getElementById(id).value='');
-            // 預設填入當前分頁的日期
             document.getElementById('i-date').value = window.getTargetDateStr(currentTrip.startDate, appState.dayIdx);
             
             const typeSelect = document.getElementById('i-type');
             typeSelect.value = 'spot';
-            typeSelect.dispatchEvent(new Event('change')); // Trigger visibility logic
+            typeSelect.dispatchEvent(new Event('change')); 
             window.openModal('itinerary');
         };
         window.editItinerary = function(id) {
@@ -2470,7 +2192,6 @@
             if(!item) return;
             appState.editId = id;
             document.getElementById('i-time').value=item.time;
-            // 如果舊資料沒有日期，就幫他算一個填進去
             document.getElementById('i-date').value = item.date || window.getTargetDateStr(currentTrip.startDate, item.dayIdx);
             
             const typeSelect = document.getElementById('i-type');
@@ -2494,8 +2215,8 @@
             
             const newItem = { 
                 id: appState.editId || Date.now(), 
-                dayIdx: appState.dayIdx, // Kept for legacy reference but date is primary now
-                date: date, // Save the specific date
+                dayIdx: appState.dayIdx, 
+                date: date, 
                 time, type: document.getElementById('i-type').value, title: document.getElementById('i-title').value, loc, note: document.getElementById('i-note').value, open: document.getElementById('i-open').value, endTime: document.getElementById('i-end-time').value, dest: document.getElementById('i-dest').value 
             };
             
@@ -2523,7 +2244,6 @@
             endTimeWrapper.classList.add('hidden');
             destWrapper.classList.add('hidden');
             titleWrapper.classList.add('hidden');
-            
             startTimeLabel.innerText = "開始時間";
             locInput.placeholder = "Google Maps 地點";
 
@@ -2541,7 +2261,6 @@
         });
 
         window.renderHome();
-
     </script>
 </body>
 </html>
