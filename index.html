@@ -49,7 +49,6 @@
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        /* 優化底部留白：原本 padding-bottom 過大，改為適應 Nav 高度即可 */
         body { margin: 0; padding: 0; font-family: 'Zen Maru Gothic', sans-serif; background-color: var(--bg-body); color: var(--text); padding-bottom: calc(var(--nav-height) + 20px); -webkit-overflow-scrolling: touch; }
         .hidden { display: none !important; }
 
@@ -86,7 +85,6 @@
         .header-title { position: absolute; left: 50%; transform: translateX(-50%); font-size: 1.3rem; color: var(--text); font-weight: 900; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 60%; text-align: center; pointer-events: none;}
         .back-btn, .btn-ghost { position: relative; z-index: 10; }
         
-        /* 優化底部留白：減少 container 預設底部距離 */
         .container { padding: 20px; padding-bottom: 80px; max-width: 600px; margin: 0 auto; }
         
         .card { background: var(--card-bg); border-radius: var(--radius-L); padding: 20px; margin-bottom: 20px; box-shadow: var(--shadow-card); position: relative; border: 1px solid rgba(255,255,255,0.8); }
@@ -106,7 +104,7 @@
         .sub-nav-btn { flex: 0 0 auto; padding: 8px 18px; border: 1px solid transparent; background: white; border-radius: 30px; font-size: 0.9rem; color: var(--text-light); font-weight: 700; box-shadow: 0 2px 6px rgba(0,0,0,0.04); transition: 0.2s; display: flex; align-items: center; gap: 6px; }
         .sub-nav-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(127, 169, 190, 0.3); transform: translateY(-1px); }
 
-        /* Flight Compact Card Style (New) */
+        /* Flight Compact Card Style */
         .flight-compact-card {
             background: #F8FAFC; border-radius: 12px; padding: 12px; margin-bottom: 10px;
             border: 1px solid #E2E8F0; display: flex; align-items: center; justify-content: space-between;
@@ -145,7 +143,7 @@
 
         .meta-pill svg { width: 12px; height: 12px; }
 
-        .check-right { display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; padding--left: 10px; flex-shrink: 0; min-width: 60px; }
+        .check-right { display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; padding-left: 10px; flex-shrink: 0; min-width: 60px; }
         .member-badge-pill { font-size: 0.7rem; background: var(--text); color: white; padding: 4px 10px; border-radius: 10px; font-weight: bold; opacity: 0.8;}
         
         .btn-list-action-group { display: flex; gap: 8px; }
@@ -392,7 +390,7 @@
         <div style="text-align:center; padding-top:80px; padding-bottom:30px;">
             <div style="font-size:3rem; margin-bottom:10px;">☁️</div>
             <h1 style="color:var(--primary-dark); margin:0; font-size:2rem; letter-spacing:1px;">旅遊手帳</h1>
-            <p style="color:var(--text-light); font-size:0.9rem; margin-top:5px;">Version 10.3</p>
+            <p style="color:var(--text-light); font-size:0.9rem; margin-top:5px;">Version 10.4</p>
         </div>
         <div class="container" style="padding-bottom:20px;">
             <div class="card" style="padding:15px; display:flex; gap:10px;">
@@ -561,7 +559,7 @@
         </div>
     </div>
 
-    <!-- NEW: Flight Modal -->
+    <!-- Flight Modal -->
     <div id="modal-flight" class="modal hidden">
         <div class="modal-content">
             <h3>✈️ 編輯航班</h3>
@@ -676,9 +674,14 @@
             <div id="m-payer-wrapper" class="chip-group" style="margin-bottom:15px;"></div>
 
             <span class="card-label">方式</span>
-            <div class="chip-group" style="margin-bottom:15px;">
+            <div class="chip-group" style="margin-bottom:10px;">
                 <button class="chip-btn method-btn" onclick="window.setMoneyMethod('cash', this)">現金</button>
                 <button class="chip-btn method-btn" onclick="window.setMoneyMethod('card', this)">信用卡</button>
+                <button class="chip-btn method-btn" onclick="window.setMoneyMethod('other', this)">其他</button>
+            </div>
+            
+            <div id="m-method-other-wrapper" class="hidden" style="margin-bottom:15px;">
+                <input id="m-method-other-input" placeholder="輸入方式 (如: 西瓜卡, LINE Pay)..." style="background:white; border:1px solid var(--primary);">
             </div>
 
             <div class="input-group">
@@ -965,6 +968,7 @@
             if(unsubscribe) unsubscribe();
             document.getElementById('view-home').classList.add('hidden');
             document.getElementById('view-detail').classList.remove('hidden');
+            
             unsubscribe = onSnapshot(doc(db, "trips", id), (doc) => {
                 if(doc.exists()) {
                     currentTrip = doc.data();
@@ -992,6 +996,20 @@
                     document.getElementById('header-trip-name-info').innerText = currentTrip.name;
                     document.getElementById('header-trip-name-itinerary').innerText = currentTrip.name;
                     
+                    // Auto Day Selection
+                    if(currentTrip.startDate) {
+                        const start = new Date(currentTrip.startDate);
+                        const today = new Date();
+                        start.setHours(0,0,0,0);
+                        today.setHours(0,0,0,0);
+                        const diffDays = Math.floor((today - start) / (1000 * 60 * 60 * 24));
+                        if(diffDays >= 0 && diffDays < currentTrip.days) {
+                            appState.dayIdx = diffDays;
+                        } else {
+                            appState.dayIdx = 0;
+                        }
+                    }
+
                     const activeTabId = document.querySelector('.nav-item.active').getAttribute('onclick').match(/'([^']+)'/)[1];
                     if(activeTabId === 'itinerary') window.renderAllDetail();
                     else if(activeTabId === 'money') { 
@@ -1009,7 +1027,6 @@
                     else if(activeTabId === 'journal') window.renderJournal();
                 }
             });
-            appState.dayIdx = 0;
             window.switchTab('info');
             window.updateCountdown();
             window.fetchRate();
@@ -1075,7 +1092,7 @@
             else { map[type].forEach(k => document.getElementById(k).value = ''); }
         }
 
-        // --- Info: Flights (New Logic) ---
+        // --- Info: Flights ---
         function renderTimezoneOptions(selectId, selected) {
             const el = document.getElementById(selectId);
             el.innerHTML = '';
@@ -1109,7 +1126,6 @@
                 const div = document.createElement('div');
                 div.className = 'flight-compact-card';
                 div.onclick = () => window.openFlightModal(dir, idx);
-                
                 div.innerHTML = `
                     <div class="fc-left">
                         <div class="fc-date">${fl.date || '未定日期'}</div>
@@ -1130,17 +1146,11 @@
         }
 
         window.addFlight = function(dir) {
-            // Open modal for a new flight immediately
             appState.flightDir = dir;
-            appState.flightIdx = null; // New
-            
-            // Clear inputs
+            appState.flightIdx = null; 
             ['f-date','f-code','f-airline','f-dep-time','f-dep-air','f-dep-term','f-arr-time','f-arr-air','f-arr-term'].forEach(id => document.getElementById(id).value='');
-            
-            // Default Timezones
             renderTimezoneOptions('f-dep-tz', dir==='out'?8:9);
             renderTimezoneOptions('f-arr-tz', dir==='out'?9:8);
-            
             window.openModal('flight');
         };
 
@@ -1148,67 +1158,44 @@
             appState.flightDir = dir;
             appState.flightIdx = idx;
             const f = currentTrip.flights[dir][idx];
-            
             document.getElementById('f-date').value = f.date || '';
             document.getElementById('f-code').value = f.code || '';
             document.getElementById('f-airline').value = f.airline || '';
-            
             document.getElementById('f-dep-time').value = f.depTime || '';
             document.getElementById('f-dep-air').value = f.depAir || '';
             document.getElementById('f-dep-term').value = f.depTerm || '';
             renderTimezoneOptions('f-dep-tz', f.depTz || (dir==='out'?8:9));
-
             document.getElementById('f-arr-time').value = f.arrTime || '';
             document.getElementById('f-arr-air').value = f.arrAir || '';
             document.getElementById('f-arr-term').value = f.arrTerm || '';
             renderTimezoneOptions('f-arr-tz', f.arrTz || (dir==='out'?9:8));
-
             window.openModal('flight');
         };
 
         window.saveFlight = function() {
             const dir = appState.flightDir;
             const idx = appState.flightIdx;
-            
             const newFlight = {
-                date: v('f-date'),
-                code: v('f-code'),
-                airline: v('f-airline'),
-                depTime: v('f-dep-time'),
-                depAir: v('f-dep-air'),
-                depTerm: v('f-dep-term'),
-                depTz: v('f-dep-tz'),
-                arrTime: v('f-arr-time'),
-                arrAir: v('f-arr-air'),
-                arrTerm: v('f-arr-term'),
-                arrTz: v('f-arr-tz')
+                date: v('f-date'), code: v('f-code'), airline: v('f-airline'),
+                depTime: v('f-dep-time'), depAir: v('f-dep-air'), depTerm: v('f-dep-term'), depTz: v('f-dep-tz'),
+                arrTime: v('f-arr-time'), arrAir: v('f-arr-air'), arrTerm: v('f-arr-term'), arrTz: v('f-arr-tz')
             };
+            if (idx === null) currentTrip.flights[dir].push(newFlight);
+            else currentTrip.flights[dir][idx] = newFlight;
             
-            if (idx === null) {
-                // Add new
-                currentTrip.flights[dir].push(newFlight);
-            } else {
-                // Update
-                currentTrip.flights[dir][idx] = newFlight;
-            }
-            
-            // Sort by Date then Time
             currentTrip.flights[dir].sort((a,b) => {
                 const da = a.date + a.depTime;
                 const db = b.date + b.depTime;
                 return da.localeCompare(db);
             });
-
-            window.saveData();
-            window.closeModal('flight');
+            window.saveData(); window.closeModal('flight');
         };
 
         window.deleteFlight = function() {
             if (appState.flightIdx === null) return;
             if(confirm('確定刪除此航班？')) {
                 currentTrip.flights[appState.flightDir].splice(appState.flightIdx, 1);
-                window.saveData();
-                window.closeModal('flight');
+                window.saveData(); window.closeModal('flight');
             }
         };
 
@@ -1306,6 +1293,7 @@
         window.openMoneyModal = function(id) {
             appState.editId = id; appState.editType='money';
             document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('m-method-other-wrapper').classList.add('hidden');
 
             if(id) {
                 const m = currentTrip.money.find(x=>x.id===id);
@@ -1314,12 +1302,20 @@
                 document.getElementById('m-date').value = m.date;
                 document.getElementById('m-curr').value = m.curr || 'NT$';
                 document.getElementById('m-note').value = m.note || ''; 
+                document.getElementById('m-method-other-input').value = '';
+
                 moneyState.payer = m.payer; 
-                moneyState.method = m.method;
+                
+                if (m.method === 'cash' || m.method === 'card') {
+                    moneyState.method = m.method;
+                } else {
+                    moneyState.method = 'other';
+                    document.getElementById('m-method-other-input').value = m.method; 
+                }
             } else {
-                ['m-title','m-cost','m-note'].forEach(k=>document.getElementById(k).value='');
+                ['m-title','m-cost','m-note', 'm-method-other-input'].forEach(k=>document.getElementById(k).value='');
                 moneyState.payer = currentTrip.members[0]; 
-                moneyState.method = 'cash';
+                moneyState.method = 'cash'; 
                 const d = new Date(currentTrip.startDate); 
                 d.setDate(d.getDate() + appState.dayIdx);
                 document.getElementById('m-date').value = d.toISOString().split('T')[0];
@@ -1327,10 +1323,12 @@
             
             renderPayerBtns(); 
             renderMethodBtns();
+            if(moneyState.method === 'other') {
+                document.getElementById('m-method-other-wrapper').classList.remove('hidden');
+            }
             
             const delBtn = document.getElementById('btn-delete-money');
             if(id) delBtn.style.display = 'flex'; else delBtn.style.display = 'none';
-            
             window.openModal('money');
         };
         
@@ -1357,27 +1355,37 @@
             document.querySelectorAll('.method-btn').forEach(b => {
                 b.classList.remove('active');
                 const text = b.innerText;
-                if((text==='現金' && moneyState.method==='cash') || (text==='信用卡' && moneyState.method==='card')) {
+                if((text==='現金' && moneyState.method==='cash') || (text==='信用卡' && moneyState.method==='card') || (text==='其他' && moneyState.method==='other')) {
                    b.classList.add('active'); 
                 }
             });
         }
-        window.setMoneyMethod = function(m, el) { moneyState.method=m; renderMethodBtns(); };
+        window.setMoneyMethod = function(m, el) { 
+            moneyState.method = m; 
+            renderMethodBtns();
+            const inputWrapper = document.getElementById('m-method-other-wrapper');
+            if(m === 'other') {
+                inputWrapper.classList.remove('hidden');
+                document.getElementById('m-method-other-input').focus();
+            } else {
+                inputWrapper.classList.add('hidden');
+            }
+        };
         
         window.saveMoney = function() {
             const title = v('m-title');
             const cost = parseFloat(v('m-cost'));
             if(!title || isNaN(cost)) return alert('請輸入項目與金額');
+            
+            let finalMethod = moneyState.method;
+            if (finalMethod === 'other') {
+                finalMethod = document.getElementById('m-method-other-input').value.trim() || '其他';
+            }
 
             saveItem('money', { 
-                dayIdx: appState.dayIdx, 
-                date: v('m-date'), 
-                title: title, 
-                cost: cost, 
-                curr: document.getElementById('m-curr').value, 
-                payer: moneyState.payer, 
-                method: moneyState.method,
-                note: v('m-note') 
+                dayIdx: appState.dayIdx, date: v('m-date'), title: title, cost: cost, 
+                curr: document.getElementById('m-curr').value, payer: moneyState.payer, 
+                method: finalMethod, note: v('m-note') 
             });
         };
 
@@ -1402,7 +1410,11 @@
             });
             
             const dailyItems = (currentTrip.money||[]).filter(i=>i.dayIdx===appState.dayIdx);
-            const methodMap = { 'cash': '現金', 'card': '信用卡', 'other': '其他' };
+            const getMethodLabel = (val) => {
+                if(val === 'cash') return '現金';
+                if(val === 'card') return '信用卡';
+                return val;
+            };
             
             let displayItems = [];
             if(moneyListMemberFilter === 'all') {
@@ -1432,6 +1444,8 @@
             } else {
                 displayItems.slice().reverse().forEach(i => {
                     const noteHtml = i.note ? `<span style="font-size:0.85rem; color:#999; font-weight:normal; margin-left:6px;">(${i.note})</span>` : '';
+                    const methodLabel = getMethodLabel(i.method);
+
                     list.innerHTML += `
                     <div class="money-item-row" onclick="window.openMoneyModal(${i.id})">
                         <div style="display:flex; align-items:center; gap:12px;">
@@ -1439,7 +1453,7 @@
                                 <div class="money-title">${i.title}${noteHtml}</div>
                                 <div class="money-meta">
                                     <span class="money-tag">${i.payer}</span>
-                                    <span>${methodMap[i.method]}</span>
+                                    <span>${methodLabel}</span>
                                 </div>
                             </div>
                         </div>
