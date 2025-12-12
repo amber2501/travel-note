@@ -104,9 +104,10 @@
         .sub-nav-btn { flex: 0 0 auto; padding: 8px 18px; border: 1px solid transparent; background: white; border-radius: 30px; font-size: 0.9rem; color: var(--text-light); font-weight: 700; box-shadow: 0 2px 6px rgba(0,0,0,0.04); transition: 0.2s; display: flex; align-items: center; gap: 6px; }
         .sub-nav-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(127, 169, 190, 0.3); transform: translateY(-1px); }
 
-        /* Shopping List Item Style */
-        .check-item { display: flex; padding: 16px; background: white; border-radius: var(--radius-M); margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); border: 1px solid #F0F0F0; transition: 0.2s; align-items: stretch; user-select: none; }
+        /* Shopping List Item Style (UPDATED) */
+        .check-item { display: flex; flex-direction: column; padding: 16px; background: white; border-radius: var(--radius-M); margin-bottom: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); border: 1px solid #F0F0F0; transition: 0.2s; user-select: none; }
         .check-item:active { transform: scale(0.99); background: #FAFAFA;}
+        .check-item-body { display: flex; align-items: stretch; width: 100%; } /* Wrapper for top part */
         .sortable-ghost { opacity: 0.4; background: #F2F9FD; }
         
         .check-left { flex: 1; display: flex; flex-direction: column; min-width: 0; gap: 8px; justify-content: center;}
@@ -137,6 +138,13 @@
 
         .checked .check-text { text-decoration: line-through; color: var(--text-done); }
         .checked .meta-pill { opacity: 0.5; }
+        
+        /* Note Dropdown Styles */
+        .check-note-panel { display: none; margin-top: 12px; padding-top: 12px; border-top: 1px dashed #E2E8F0; font-size: 0.9rem; color: #666; white-space: pre-wrap; padding-left: 42px; line-height: 1.6;}
+        .check-item.show-note .check-note-panel { display: block; }
+        .note-toggle-btn { background: none; border: none; color: var(--primary); cursor: pointer; font-size: 0.8rem; padding: 2px 6px; border-radius: 4px; transition: 0.2s; margin-left: 5px; }
+        .note-toggle-btn:active { background: var(--primary-light); }
+        .check-item.show-note .note-toggle-btn { transform: rotate(180deg); }
 
         /* Packing List Simplification */
         .pack-item-card { background: white; border-radius: 16px; padding: 12px 16px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 6px rgba(0,0,0,0.03); border: 1px solid #F5F5F5; user-select: none; }
@@ -388,7 +396,7 @@
         <div style="text-align:center; padding-top:80px; padding-bottom:30px;">
             <div style="font-size:3rem; margin-bottom:10px;">☁️</div>
             <h1 style="color:var(--primary-dark); margin:0; font-size:2rem; letter-spacing:1px;">旅遊手帳</h1>
-            <p style="color:var(--text-light); font-size:0.9rem; margin-top:5px;">Version 10.1</p>
+            <p style="color:var(--text-light); font-size:0.9rem; margin-top:5px;">Version 10.2</p>
         </div>
         <div class="container" style="padding-bottom:20px;">
             <div class="card" style="padding:15px; display:flex; gap:10px;">
@@ -709,6 +717,7 @@
             <div class="input-group"><span class="card-label">誰的/推薦人</span><select id="s-owner" style="padding:0 14px;"></select></div>
             <div class="input-group"><span class="card-label">地點 / 店名</span><input id="s-loc" placeholder="在哪裡買?"></div>
             <div class="input-group"><span class="card-label">營業時間</span><input id="s-open" placeholder="e.g. 10:00 - 20:00"></div>
+            <div class="input-group"><span class="card-label">備註</span><textarea id="s-note" style="height:60px;"></textarea></div>
             <div class="row" style="margin-top:20px; gap:10px;">
                 <div class="col"><button class="btn" onclick="window.closeModal('shopping')">取消</button></div>
                 <div class="col"><button class="btn btn-primary" onclick="window.saveShoppingItem()">儲存</button></div>
@@ -1307,6 +1316,7 @@
                     document.getElementById('s-name').value = item.text || '';
                     document.getElementById('s-loc').value = item.location || '';
                     document.getElementById('s-open').value = item.open || item.price || '';
+                    document.getElementById('s-note').value = item.note || ''; // Load note
                     fillMemberSelect('s-owner');
                     document.getElementById('s-owner').value = item.owner || '';
                 }
@@ -1314,6 +1324,7 @@
                 document.getElementById('s-name').value = '';
                 document.getElementById('s-loc').value = '';
                 document.getElementById('s-open').value = '';
+                document.getElementById('s-note').value = '';
                 fillMemberSelect('s-owner');
             }
             window.openModal('shopping');
@@ -1324,6 +1335,8 @@
             const loc = document.getElementById('s-loc').value;
             const open = document.getElementById('s-open').value;
             const owner = document.getElementById('s-owner').value;
+            const note = document.getElementById('s-note').value;
+            
             if(!name) return;
             
             const arr = appState.listType==='shop'?'shopping':'foodList';
@@ -1331,7 +1344,7 @@
             if (appState.editId) {
                 const idx = currentTrip[arr].findIndex(i => i.id === appState.editId);
                 if (idx !== -1) {
-                    currentTrip[arr][idx] = { ...currentTrip[arr][idx], text: name, location: loc, open: open, owner: owner };
+                    currentTrip[arr][idx] = { ...currentTrip[arr][idx], text: name, location: loc, open: open, owner: owner, note: note };
                 }
             } else {
                 currentTrip[arr].push({
@@ -1340,12 +1353,18 @@
                     open: open,     
                     location: loc, 
                     owner: owner, 
+                    note: note,
                     checked: false
                 });
             }
             window.saveData();
             window.closeModal('shopping');
             window.renderLists();
+        };
+
+        window.toggleShopNote = function(btn) {
+            const card = btn.closest('.check-item');
+            card.classList.toggle('show-note');
         };
 
         window.renderLists = function() {
@@ -1358,27 +1377,35 @@
                 let pillTime = displayTime ? `<span class="meta-pill meta-time"><svg class="icon-svg"><use href="#icon-clock"/></svg>${displayTime}</span>` : '';
                 let pillLoc = i.location ? `<span class="meta-pill meta-loc"><svg class="icon-svg"><use href="#icon-map-pin"/></svg>${i.location}</span>` : '';
                 let ownerHtml = i.owner ? `<div class="member-badge-pill">${i.owner}</div>` : '';
+                
+                // Note Logic
+                const hasNote = i.note && i.note.trim().length > 0;
+                const noteToggleBtn = hasNote ? `<button class="note-toggle-btn" onclick="event.stopPropagation(); window.toggleShopNote(this)">▼</button>` : '';
+                const notePanel = hasNote ? `<div class="check-note-panel">${i.note}</div>` : '';
 
                 listContainer.innerHTML += `
                     <div class="card check-item ${i.checked?'checked':''}" data-id="${i.id}">
-                        <div class="check-left">
-                            <div class="check-name-row">
-                                <div class="check-box" onclick="event.stopPropagation(); window.toggleCheck('${arr}', ${i.id})"></div>
-                                <div class="check-text">${i.text}</div>
+                        <div class="check-item-body">
+                            <div class="check-left">
+                                <div class="check-name-row">
+                                    <div class="check-box" onclick="event.stopPropagation(); window.toggleCheck('${arr}', ${i.id})"></div>
+                                    <div class="check-text">${i.text}${noteToggleBtn}</div>
+                                </div>
+                                ${ (i.location || displayTime) ? '<div class="check-separator"></div>' : '' }
+                                <div class="check-meta-row">
+                                    ${pillLoc}
+                                    ${pillTime}
+                                </div>
                             </div>
-                            ${ (i.location || displayTime) ? '<div class="check-separator"></div>' : '' }
-                            <div class="check-meta-row">
-                                ${pillLoc}
-                                ${pillTime}
+                            <div class="check-right">
+                                ${ownerHtml}
+                                <div class="btn-list-action-group">
+                                    <button class="btn-list-edit" onclick="event.stopPropagation(); window.openShoppingModal(${i.id})">✎</button>
+                                    <button class="btn-list-del" onclick="event.stopPropagation(); window.delItem('${arr}', ${i.id})"><svg class="icon-svg icon-sm"><use href="#icon-trash"></use></svg></button>
+                                </div>
                             </div>
                         </div>
-                        <div class="check-right">
-                            ${ownerHtml}
-                            <div class="btn-list-action-group">
-                                <button class="btn-list-edit" onclick="event.stopPropagation(); window.openShoppingModal(${i.id})">✎</button>
-                                <button class="btn-list-del" onclick="event.stopPropagation(); window.delItem('${arr}', ${i.id})"><svg class="icon-svg icon-sm"><use href="#icon-trash"></use></svg></button>
-                            </div>
-                        </div>
+                        ${notePanel}
                     </div>`;
             });
 
